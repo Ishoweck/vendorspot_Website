@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { FiHeart, FiShoppingCart, FiStar, FiCheck } from "react-icons/fi";
 import { useCart } from "@/lib/CartContext";
 import { useToast } from "@/components/Toast";
@@ -27,16 +28,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard(props: ProductCardProps) {
-  const {
-    id,
-    _id,
-    name,
-    price,
-    slug,
-    images,
-    emoji,
-    color = "bg-gray-100",
-  } = props;
+  const { id, _id, name, price, slug, images, emoji, color = "bg-gray-100" } = props;
 
   const oldPrice = props.oldPrice || props.compareAtPrice || 0;
   const discount = props.discount || props.discountPercentage || (oldPrice > price ? Math.round(((oldPrice - price) / oldPrice) * 100) : 0);
@@ -49,6 +41,7 @@ export default function ProductCard(props: ProductCardProps) {
   const { addToCart } = useCart();
   const { toast } = useToast();
   const [added, setAdded] = useState(false);
+  const [liked, setLiked] = useState(false);
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -60,67 +53,66 @@ export default function ProductCard(props: ProductCardProps) {
   };
 
   return (
-    <Link
-      href={href}
-      className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow group block"
+    <motion.div
+      whileHover={{ y: -3 }}
+      transition={{ duration: 0.22 }}
     >
-      <div className={`relative ${productImage ? "bg-gray-50" : color} h-40 sm:h-48 flex items-center justify-center`}>
-        {discount > 0 && (
-          <span className="absolute top-2 left-2 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
-            -{discount}%
-          </span>
-        )}
-        <button
-          className="absolute top-2 right-2 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-gray-50 z-10"
-          onClick={(e) => e.preventDefault()}
-        >
-          <FiHeart className="w-3.5 h-3.5 text-gray-400" />
-        </button>
-        {productImage ? (
-          <img
-            src={productImage}
-            alt={name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-          />
-        ) : (
-          <span className="text-5xl opacity-50">{emoji || "📦"}</span>
-        )}
-      </div>
-      <div className="p-3">
-        {rating > 0 && (
-          <div className="flex items-center gap-1 mb-1">
-            <FiStar className="w-3 h-3 text-accent fill-accent" />
-            <span className="text-xs text-gray-600">
-              {rating.toFixed(1)} ({reviews})
+      <Link
+        href={href}
+        className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow group block h-full"
+      >
+        <div className={`relative ${productImage ? "bg-gray-50" : color} h-36 sm:h-44 md:h-48 flex items-center justify-center overflow-hidden`}>
+          {discount > 0 && (
+            <span className="absolute top-2 left-2 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
+              -{discount}%
             </span>
-          </div>
-        )}
-        <p className="text-sm font-medium text-dark truncate mb-1">{name}</p>
-        <div className="flex items-center justify-between">
-          <div>
-            <span className="text-sm font-bold text-dark">
-              ₦{price.toLocaleString()}
-            </span>
-            {oldPrice > 0 && oldPrice > price && (
-              <span className="text-[10px] text-gray-400 line-through ml-1">
-                ₦{oldPrice.toLocaleString()}
-              </span>
-            )}
-          </div>
+          )}
           <button
-            onClick={handleAddToCart}
-            className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${
-              added ? "bg-green-500" : "bg-primary hover:bg-primary-dark"
-            }`}
+            className="absolute top-2 right-2 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-gray-50 z-10 transition-colors"
+            onClick={(e) => { e.preventDefault(); setLiked((v) => !v); }}
           >
-            {added ? (
-              <FiCheck className="w-3.5 h-3.5 text-white" />
-            ) : (
-              <FiShoppingCart className="w-3.5 h-3.5 text-white" />
-            )}
+            <FiHeart className={`w-3.5 h-3.5 transition-colors ${liked ? "text-primary fill-primary" : "text-gray-400"}`} />
           </button>
+          {productImage ? (
+            <img
+              src={productImage}
+              alt={name}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+          ) : (
+            <span className="text-4xl sm:text-5xl opacity-50">{emoji || "📦"}</span>
+          )}
         </div>
-      </div>
-    </Link>
+
+        <div className="p-3">
+          {rating > 0 && (
+            <div className="flex items-center gap-1 mb-1">
+              <FiStar className="w-3 h-3 text-accent fill-accent" />
+              <span className="text-xs text-gray-500">{rating.toFixed(1)} ({reviews})</span>
+            </div>
+          )}
+          <p className="text-xs sm:text-sm font-medium text-dark truncate mb-2 leading-tight">{name}</p>
+          <div className="flex items-center justify-between gap-2">
+            <div className="min-w-0">
+              <span className="text-sm font-bold text-dark">₦{price.toLocaleString()}</span>
+              {oldPrice > 0 && oldPrice > price && (
+                <span className="text-[10px] text-gray-400 line-through ml-1 block sm:inline">
+                  ₦{oldPrice.toLocaleString()}
+                </span>
+              )}
+            </div>
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={handleAddToCart}
+              className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
+                added ? "bg-green-500" : "bg-primary hover:bg-primary-dark"
+              }`}
+            >
+              {added ? <FiCheck className="w-3.5 h-3.5 text-white" /> : <FiShoppingCart className="w-3.5 h-3.5 text-white" />}
+            </motion.button>
+          </div>
+        </div>
+      </Link>
+    </motion.div>
   );
 }

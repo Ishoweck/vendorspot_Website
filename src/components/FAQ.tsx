@@ -1,75 +1,82 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiChevronDown } from "react-icons/fi";
+import { fadeUp, stagger } from "@/lib/motion";
 
 const faqs = [
-  {
-    question: "What is Vendorspot?",
-    answer:
-      "Vendorspot is a secure marketplace where people can buy and sell physical and digital products, manage their stores, and enjoy seamless delivery services.",
-  },
-  {
-    question: "How do I start selling on Vendorspot?",
-    answer:
-      "Simply create an account, set up your store, list your products, and start receiving orders. It only takes a few minutes to get started.",
-  },
-  {
-    question: "How are deliveries handled?",
-    answer:
-      "We partner with reliable logistics providers to ensure your orders are delivered safely and on time across Nigeria.",
-  },
-  {
-    question: "Is it safe to buy on Vendorspot?",
-    answer:
-      "Yes! We offer buyer protection, verified vendors, and secure payments. Your money stays safe until your order is delivered successfully.",
-  },
-  {
-    question: "Can I earn on Vendorspot without selling my own products?",
-    answer:
-      "Absolutely! You can resell products from other vendors and earn commissions on every successful sale.",
-  },
-  {
-    question: "How long does delivery takes?",
-    answer:
-      "Delivery times vary depending on your location and the vendor. Most orders are delivered within 2-7 business days.",
-  },
+  { question: "What is Vendorspot?", answer: "Vendorspot is a secure marketplace where people can buy and sell physical and digital products, manage their stores, and enjoy seamless delivery services." },
+  { question: "How do I start selling on Vendorspot?", answer: "Simply create an account, set up your store, list your products, and start receiving orders. It only takes a few minutes to get started." },
+  { question: "How are deliveries handled?", answer: "We partner with reliable logistics providers to ensure your orders are delivered safely and on time across Nigeria." },
+  { question: "Is it safe to buy on Vendorspot?", answer: "Yes! We offer buyer protection, verified vendors, and secure payments. Your money stays safe until your order is delivered successfully." },
+  { question: "Can I earn on Vendorspot without selling my own products?", answer: "Absolutely! You can resell products from other vendors and earn commissions on every successful sale." },
+  { question: "How long does delivery take?", answer: "Delivery times vary depending on your location and the vendor. Most orders are delivered within 2–7 business days." },
 ];
 
 export default function FAQ() {
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState<number | null>(0);
 
   return (
-    <section className="py-16 px-4 bg-white">
-      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-dark mb-10 max-w-5xl mx-auto">
+    <section className="py-14 sm:py-16 px-4 bg-white">
+      <motion.h2
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        className="text-2xl sm:text-3xl md:text-4xl font-bold text-dark mb-10 max-w-5xl mx-auto"
+      >
         Frequently asked questions
-      </h2>
+      </motion.h2>
 
-      <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Questions list */}
-        <div className="space-y-3">
-          {faqs.map((faq, i) => (
+      <motion.div
+        variants={stagger}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-60px" }}
+        className="max-w-5xl mx-auto space-y-3"
+      >
+        {faqs.map((faq, i) => (
+          <motion.div
+            key={i}
+            variants={fadeUp}
+            className="border border-gray-200 rounded-2xl overflow-hidden"
+          >
             <button
-              key={i}
-              onClick={() => setActive(i)}
-              className={`w-full text-left px-5 py-4 rounded-xl border text-sm sm:text-base transition-colors ${
-                i === active
-                  ? "border-gray-400 bg-gray-50 font-semibold text-dark"
-                  : "border-gray-200 text-gray-700 hover:border-gray-300"
+              onClick={() => setActive(active === i ? null : i)}
+              className={`w-full flex items-center justify-between text-left px-5 py-4 text-sm sm:text-base font-medium transition-colors gap-4 ${
+                active === i ? "bg-dark text-white" : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
             >
-              {faq.question}
+              <span>{faq.question}</span>
+              <motion.div
+                animate={{ rotate: active === i ? 180 : 0 }}
+                transition={{ duration: 0.25 }}
+                className="flex-shrink-0"
+              >
+                <FiChevronDown className="w-4 h-4" />
+              </motion.div>
             </button>
-          ))}
-        </div>
 
-        {/* Answer panel */}
-        <div className="bg-dark text-white rounded-2xl p-6 sm:p-8 h-fit">
-          <p className="text-sm font-semibold mb-3">Reply:</p>
-          <p className="text-sm sm:text-base leading-relaxed text-gray-300">
-            {faqs[active].answer}
-          </p>
-        </div>
-      </div>
+            <AnimatePresence initial={false}>
+              {active === i && (
+                <motion.div
+                  key="answer"
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.28, ease: "easeInOut" }}
+                  className="overflow-hidden"
+                >
+                  <p className="px-5 py-4 text-sm text-gray-600 leading-relaxed bg-gray-50 border-t border-gray-100">
+                    {faq.answer}
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        ))}
+      </motion.div>
     </section>
   );
 }

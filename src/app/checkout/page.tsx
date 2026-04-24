@@ -77,6 +77,7 @@ export default function CheckoutPage() {
         const token = json.data?.accessToken || json.data?.token;
         if (token) {
           localStorage.setItem("vendorspot_token", token);
+          if (json.data?.user) localStorage.setItem("vendorspot_user", JSON.stringify(json.data.user));
           setIsAuthed(true);
           toast("Welcome! You can set your password later via email.", "success");
           // reload addresses now that we have a token

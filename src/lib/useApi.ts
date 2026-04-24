@@ -21,12 +21,19 @@ function extractData(responseData: unknown): unknown {
   return responseData;
 }
 
-export function useApi<T>(endpoint: string) {
+export function useApi<T>(endpoint: string | null) {
   const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(endpoint !== null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (endpoint === null) {
+      setData(null);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
     let cancelled = false;
 
     async function load() {

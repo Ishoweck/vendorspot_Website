@@ -1,43 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import RefundBanner from "@/components/RefundBanner";
-import { FiSearch, FiArrowRight } from "react-icons/fi";
+import { FiSearch, FiArrowRight, FiX } from "react-icons/fi";
 import { useApi } from "@/lib/useApi";
 import type { Product } from "@/lib/api";
+import { fadeUp, stagger, scaleIn } from "@/lib/motion";
 
 const features = [
   { label: "Shop with Confidence", icon: "/icons/prod_1.svg" },
-  { label: "Worldwide Delivery", icon: "/icons/prod_2.svg" },
-  { label: "Safe Payment", icon: "/icons/prod_3.svg" },
-  { label: "24/7 Support", icon: "/icons/prod_4.svg" },
+  { label: "Worldwide Delivery",   icon: "/icons/prod_2.svg" },
+  { label: "Safe Payment",         icon: "/icons/prod_3.svg" },
+  { label: "24/7 Support",         icon: "/icons/prod_4.svg" },
 ];
 
-// Fallback data when API is unavailable
 const fallbackProducts = Array.from({ length: 5 }, (_, i) => ({
-  id: String(i),
-  _id: String(i),
-  name: "Sample Product",
-  price: 45000,
-  compareAtPrice: 56250,
-  discountPercentage: 20,
-  averageRating: 4.8,
-  totalReviews: 120,
-  images: [],
-  slug: "",
-  color: ["bg-red-100", "bg-amber-100", "bg-emerald-100", "bg-sky-100", "bg-violet-100"][i],
+  id: String(i), _id: String(i),
+  name: "Sample Product", price: 45000, compareAtPrice: 56250, discountPercentage: 20,
+  averageRating: 4.8, totalReviews: 120, images: [], slug: "",
+  color: ["bg-red-100","bg-amber-100","bg-emerald-100","bg-sky-100","bg-violet-100"][i],
   emoji: "📦",
 }));
 
 function ProductSkeleton() {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden animate-pulse">
-      <div className="bg-gray-200 h-40 sm:h-48" />
+      <div className="bg-gray-200 h-36 sm:h-44" />
       <div className="p-3 space-y-2">
-        <div className="h-3 bg-gray-200 rounded w-1/2" />
+        <div className="h-2.5 bg-gray-200 rounded w-1/2" />
         <div className="h-3 bg-gray-200 rounded w-3/4" />
         <div className="h-4 bg-gray-200 rounded w-1/3" />
       </div>
@@ -46,161 +41,279 @@ function ProductSkeleton() {
 }
 
 function ProductSection({
-  title,
-  icon,
-  titleColor = "text-dark",
-  products,
-  loading,
-  fallback,
+  title, icon, titleColor = "text-dark", products, loading, fallback,
 }: {
-  title: string;
-  icon?: string;
-  titleColor?: string;
-  products: Product[] | null;
-  loading: boolean;
-  fallback: typeof fallbackProducts;
+  title: string; icon?: string; titleColor?: string;
+  products: Product[] | null; loading: boolean; fallback: typeof fallbackProducts;
 }) {
   const items = products && products.length > 0 ? products : loading ? [] : fallback;
 
   return (
-    <section className="py-10 px-4">
+    <section className="py-8 sm:py-10 px-4">
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className={`text-2xl sm:text-3xl font-bold ${titleColor} flex items-center gap-2`}>
+        <div className="flex items-center justify-between mb-6 sm:mb-8">
+          <motion.h2
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className={`text-xl sm:text-2xl md:text-3xl font-bold ${titleColor} flex items-center gap-2`}
+          >
             {icon && <span>{icon}</span>}
             {title}
-          </h2>
-          <a href="#" className="text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors">
-            View All
+          </motion.h2>
+          <a href="#" className="text-sm font-medium text-gray-500 hover:text-primary transition-colors flex items-center gap-1">
+            View All <FiArrowRight className="w-3.5 h-3.5" />
           </a>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-60px" }}
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"
+        >
           {loading
             ? Array.from({ length: 5 }, (_, i) => <ProductSkeleton key={i} />)
             : items.map((product) => (
-                <ProductCard key={product.id || product._id} {...product} />
+                <motion.div key={product.id || product._id} variants={fadeUp}>
+                  <ProductCard {...product} />
+                </motion.div>
               ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
 }
 
-export default function ProductsPage() {
-  const [search, setSearch] = useState("");
+function ProductsPageContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const urlQuery = searchParams.get("q") || "";
+  const [search, setSearch] = useState(urlQuery);
 
-  const { data: newArrivals, loading: loadingNew } = useApi<Product[]>("/products/new-arrivals?limit=10");
-  const { data: recommended, loading: loadingRec } = useApi<Product[]>("/products/recommended?limit=5");
-  const { data: flashSales, loading: loadingFlash } = useApi<Product[]>("/products/flash-sales?limit=5");
-  const { data: trending, loading: loadingTrend } = useApi<Product[]>("/products/trending?limit=5");
-  const { data: digital, loading: loadingDigital } = useApi<Product[]>("/products?productType=digital&limit=5");
+  useEffect(() => {
+    setSearch(urlQuery);
+  }, [urlQuery]);
+
+  const handleSearch = () => {
+    const q = search.trim();
+    if (q) {
+      router.push(`/products?q=${encodeURIComponent(q)}`);
+    } else {
+      router.push("/products");
+    }
+  };
+
+  const clearSearch = () => {
+    setSearch("");
+    router.push("/products");
+  };
+
+  const searchEndpoint = urlQuery
+    ? `/products/search?q=${encodeURIComponent(urlQuery)}&limit=20`
+    : null;
+
+  const { data: searchResults, loading: searchLoading } = useApi<Product[]>(searchEndpoint);
+  const { data: newArrivals,  loading: loadingNew    } = useApi<Product[]>(urlQuery ? null : "/products/new-arrivals?limit=10");
+  const { data: recommended,  loading: loadingRec    } = useApi<Product[]>(urlQuery ? null : "/products/recommended?limit=5");
+  const { data: flashSales,   loading: loadingFlash  } = useApi<Product[]>(urlQuery ? null : "/products/flash-sales?limit=5");
+  const { data: trending,     loading: loadingTrend  } = useApi<Product[]>(urlQuery ? null : "/products/trending?limit=5");
+  const { data: digital,      loading: loadingDigital} = useApi<Product[]>(urlQuery ? null : "/products?productType=digital&limit=5");
 
   return (
     <>
       <Navbar />
       <main className="flex-1">
-        {/* Purple hero with curve */}
-        <section className="relative bg-white">
-          <div
-            className="absolute inset-x-0 top-0 bg-violet-600"
-            style={{
-              height: "320px",
-              clipPath: "ellipse(85% 100% at 50% 0%)",
-            }}
-          />
-          <div className="relative z-10 pt-12 pb-16">
-            <h1 className="text-center text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-8 px-4">
+        {/* Hero */}
+        <section className="relative bg-white overflow-hidden">
+          <div className="absolute inset-x-0 top-0 bg-primary" style={{ height: "300px", clipPath: "ellipse(85% 100% at 50% 0%)" }} />
+          <div className="relative z-10 pt-10 sm:pt-14 pb-14 sm:pb-20">
+            <motion.h1
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              className="text-center text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-8 px-4 leading-tight"
+            >
               What do you want to buy?
-            </h1>
-            <div className="max-w-xl mx-auto px-4">
-              <div className="flex items-center bg-white rounded-full shadow-lg overflow-hidden">
-                <div className="pl-5 pr-3 text-gray-400">
-                  <FiSearch className="w-5 h-5" />
-                </div>
+            </motion.h1>
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              transition={{ delay: 0.1 }}
+              className="max-w-xl mx-auto px-4"
+            >
+              <div className="flex items-center bg-white rounded-full shadow-xl overflow-hidden">
+                <div className="pl-4 sm:pl-5 pr-2 text-gray-400"><FiSearch className="w-5 h-5" /></div>
                 <input
                   type="text"
-                  placeholder="Search for products, brand, categories or vendors"
+                  placeholder="Search products, brands, categories…"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="flex-1 py-3.5 pr-2 text-sm text-gray-700 placeholder-gray-400 outline-none"
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                  className="flex-1 py-3.5 pr-1 text-sm text-gray-700 placeholder-gray-400 outline-none min-w-0"
                 />
-                <button className="bg-accent hover:bg-accent-dark text-dark font-semibold text-sm px-6 py-3 mr-1 rounded-full transition-colors">
+                {search && (
+                  <button onClick={clearSearch} className="p-2 text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0">
+                    <FiX className="w-4 h-4" />
+                  </button>
+                )}
+                <button
+                  onClick={handleSearch}
+                  className="bg-accent hover:bg-accent-dark text-dark font-semibold text-sm px-4 sm:px-6 py-3 mr-1 rounded-full transition-colors flex-shrink-0"
+                >
                   Search
                 </button>
               </div>
-            </div>
+            </motion.div>
           </div>
         </section>
 
-        {/* Feature badges */}
-        <section className="pt-28 pb-10 px-4">
-          <div className="max-w-4xl mx-auto rounded-2xl py-8 px-6" style={{ backgroundColor: "#ede1fd" }}>
-            <div className="flex flex-wrap justify-center gap-6 sm:gap-10 md:gap-14">
-              {features.map((f) => (
-                <div key={f.label} className="flex flex-col items-center gap-2">
-                  <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-amber-100 flex items-center justify-center shadow-sm p-4">
-                    <img src={f.icon} alt={f.label} className="w-full h-full object-contain" />
+        <AnimatePresence mode="wait">
+          {urlQuery ? (
+            /* ── Search Results ── */
+            <motion.div
+              key="search-results"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -16 }}
+              transition={{ duration: 0.35 }}
+            >
+              <section className="py-8 sm:py-10 px-4">
+                <div className="max-w-6xl mx-auto">
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-dark">
+                        Results for &ldquo;{urlQuery}&rdquo;
+                      </h2>
+                      {!searchLoading && searchResults && (
+                        <p className="text-sm text-gray-400 mt-1">{searchResults.length} product{searchResults.length !== 1 ? "s" : ""} found</p>
+                      )}
+                    </div>
+                    <button
+                      onClick={clearSearch}
+                      className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-primary transition-colors"
+                    >
+                      <FiX className="w-4 h-4" /> Clear
+                    </button>
                   </div>
-                  <span className="text-xs sm:text-sm font-medium text-gray-700 text-center">
-                    {f.label}
-                  </span>
+
+                  {searchLoading ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+                      {Array.from({ length: 10 }, (_, i) => <ProductSkeleton key={i} />)}
+                    </div>
+                  ) : !searchResults || searchResults.length === 0 ? (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="flex flex-col items-center justify-center py-24 text-center"
+                    >
+                      <div className="text-5xl mb-4">🔍</div>
+                      <p className="text-lg font-semibold text-gray-700 mb-2">No products found</p>
+                      <p className="text-sm text-gray-400 mb-6">Try a different keyword or browse categories below</p>
+                      <button
+                        onClick={clearSearch}
+                        className="bg-primary text-white text-sm font-semibold px-6 py-2.5 rounded-full hover:bg-primary-dark transition-colors"
+                      >
+                        Browse All Products
+                      </button>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      variants={stagger}
+                      initial="hidden"
+                      animate="visible"
+                      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"
+                    >
+                      {searchResults.map((product) => (
+                        <motion.div key={product.id || product._id} variants={fadeUp}>
+                          <ProductCard {...product} />
+                        </motion.div>
+                      ))}
+                    </motion.div>
+                  )}
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
+              </section>
+            </motion.div>
+          ) : (
+            /* ── Normal browse view ── */
+            <motion.div
+              key="browse"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+            >
+              {/* Feature badges */}
+              <section className="pt-6 sm:pt-10 pb-8 sm:pb-10 px-4">
+                <motion.div
+                  variants={stagger}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  className="max-w-4xl mx-auto rounded-2xl py-7 sm:py-8 px-4 sm:px-6"
+                  style={{ backgroundColor: "#ede1fd" }}
+                >
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 justify-items-center">
+                    {features.map((f) => (
+                      <motion.div key={f.label} variants={scaleIn} className="flex flex-col items-center gap-2 sm:gap-3">
+                        <motion.div
+                          whileHover={{ scale: 1.08 }}
+                          className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-amber-100 flex items-center justify-center shadow-sm p-3 sm:p-4"
+                        >
+                          <img src={f.icon} alt={f.label} className="w-full h-full object-contain" />
+                        </motion.div>
+                        <span className="text-[11px] sm:text-xs md:text-sm font-medium text-gray-700 text-center leading-tight">{f.label}</span>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              </section>
 
-        {/* New Arrivals */}
-        <ProductSection title="New Arrivals" products={newArrivals} loading={loadingNew} fallback={fallbackProducts} />
+              <ProductSection title="New Arrivals" products={newArrivals} loading={loadingNew} fallback={fallbackProducts} />
+              <ProductSection title="Recommended for you" titleColor="text-primary" products={recommended} loading={loadingRec} fallback={fallbackProducts} />
+              <ProductSection title="Flash Sales" icon="🔥" products={flashSales} loading={loadingFlash} fallback={fallbackProducts} />
 
-        {/* Recommended for you */}
-        <ProductSection
-          title="Recommended for you"
-          titleColor="text-primary"
-          products={recommended}
-          loading={loadingRec}
-          fallback={fallbackProducts}
-        />
+              {/* Digital banner */}
+              <section className="px-4 py-5 sm:py-6">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5 }}
+                  className="max-w-6xl mx-auto bg-gradient-to-r from-primary to-primary-dark rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 overflow-hidden"
+                >
+                  <div>
+                    <p className="text-accent text-xs font-bold tracking-wider uppercase mb-1">Instant Delivery</p>
+                    <h3 className="text-white text-xl sm:text-2xl md:text-3xl font-bold mb-2">Digital Products</h3>
+                    <p className="text-white/70 text-sm mb-4">E-books, courses, software keys &amp; more.</p>
+                    <a href="#" className="inline-flex items-center gap-2 border border-white text-white text-sm font-medium rounded-full px-5 py-2 hover:bg-white/10 transition-colors">
+                      Browse Digital <FiArrowRight className="w-4 h-4" />
+                    </a>
+                  </div>
+                  <div className="hidden sm:flex text-6xl md:text-8xl opacity-70 text-white font-mono select-none">&lt;/&gt;</div>
+                </motion.div>
+              </section>
 
-        {/* Flash Sales */}
-        <ProductSection title="Flash Sales" icon="🔥" products={flashSales} loading={loadingFlash} fallback={fallbackProducts} />
+              <ProductSection title="Digital Products" icon="📦" products={digital} loading={loadingDigital} fallback={fallbackProducts} />
+              <ProductSection title="Trending Now" products={trending} loading={loadingTrend} fallback={fallbackProducts} />
 
-        {/* Digital Products Banner */}
-        <section className="px-4 py-6">
-          <div className="max-w-6xl mx-auto bg-gradient-to-r from-violet-600 to-purple-700 rounded-2xl p-8 flex items-center justify-between overflow-hidden">
-            <div>
-              <p className="text-accent text-xs font-bold tracking-wider uppercase mb-1">
-                Instant Delivery
-              </p>
-              <h3 className="text-white text-2xl sm:text-3xl font-bold mb-2">
-                Digital Products
-              </h3>
-              <p className="text-white/70 text-sm mb-4">
-                E-books, courses, software keys &amp; more.
-              </p>
-              <a
-                href="#"
-                className="inline-flex items-center gap-2 border border-white text-white text-sm font-medium rounded-full px-5 py-2 hover:bg-white/10 transition-colors"
-              >
-                Browse Digital <FiArrowRight className="w-4 h-4" />
-              </a>
-            </div>
-            <div className="hidden sm:flex text-7xl md:text-8xl opacity-80 text-white">
-              &lt;/&gt;
-            </div>
-          </div>
-        </section>
-
-        {/* Digital Products Grid */}
-        <ProductSection title="Digital Products" icon="📦" products={digital} loading={loadingDigital} fallback={fallbackProducts} />
-
-        {/* Trending Now */}
-        <ProductSection title="Trending Now" products={trending} loading={loadingTrend} fallback={fallbackProducts} />
-
-        {/* Refund Banner */}
-        <RefundBanner />
+              <RefundBanner />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
       <Footer />
     </>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense>
+      <ProductsPageContent />
+    </Suspense>
   );
 }

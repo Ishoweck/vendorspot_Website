@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
+import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
@@ -11,6 +12,7 @@ import {
   FiShoppingBag, FiCheck, FiPackage,
 } from "react-icons/fi";
 import { useToast } from "@/components/Toast";
+import { fadeUp, stagger } from "@/lib/motion";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
 
@@ -172,7 +174,7 @@ export default function ShopDetailPage() {
       <main className="bg-gray-50 min-h-screen pb-16">
 
         {/* ── Banner ── */}
-        <div className="relative h-32 sm:h-40 w-full bg-gradient-to-r from-gray-200 to-gray-300 overflow-hidden">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative h-32 sm:h-40 w-full bg-gradient-to-r from-gray-200 to-gray-300 overflow-hidden">
           {vendor.businessBanner && (
             <img
               src={vendor.businessBanner}
@@ -182,11 +184,11 @@ export default function ShopDetailPage() {
           )}
           {/* subtle dark overlay so avatar pops */}
           <div className="absolute inset-0 bg-black/10" />
-        </div>
+        </motion.div>
 
         {/* ── Profile card ── */}
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm -mt-6 relative z-10 p-5">
+          <motion.div variants={fadeUp} initial="hidden" animate="visible" className="bg-white rounded-2xl border border-gray-100 shadow-sm -mt-6 relative z-10 p-5">
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
 
               {/* Avatar */}
@@ -262,10 +264,10 @@ export default function ShopDetailPage() {
                 {vendor.businessDescription}
               </p>
             )}
-          </div>
+          </motion.div>
 
           {/* ── Products ── */}
-          <div className="mt-7">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="mt-7">
             <div className="flex items-center gap-2 mb-5">
               <FiShoppingBag className="w-4 h-4 text-dark" />
               <h2 className="text-base font-bold text-dark">Products</h2>
@@ -280,7 +282,7 @@ export default function ShopDetailPage() {
                 <p className="text-sm">No products listed yet.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {products.map((product) => (
                   <ProductCard
                     key={product._id}
@@ -293,9 +295,9 @@ export default function ShopDetailPage() {
                     totalReviews={product.totalReviews}
                   />
                 ))}
-              </div>
+              </motion.div>
             )}
-          </div>
+          </motion.div>
         </div>
       </main>
       <Footer />
