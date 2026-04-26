@@ -10,14 +10,7 @@ import RefundBanner from "@/components/RefundBanner";
 import { FiSearch, FiArrowRight, FiX } from "react-icons/fi";
 import { useApi } from "@/lib/useApi";
 import type { Product } from "@/lib/api";
-import { fadeUp, stagger, scaleIn } from "@/lib/motion";
-
-const features = [
-  { label: "Shop with Confidence", icon: "/icons/prod_1.svg" },
-  { label: "Worldwide Delivery",   icon: "/icons/prod_2.svg" },
-  { label: "Safe Payment",         icon: "/icons/prod_3.svg" },
-  { label: "24/7 Support",         icon: "/icons/prod_4.svg" },
-];
+import { fadeUp, stagger } from "@/lib/motion";
 
 const fallbackProducts = Array.from({ length: 5 }, (_, i) => ({
   id: String(i), _id: String(i),
@@ -127,14 +120,13 @@ function ProductsPageContent() {
       <Navbar />
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative bg-white overflow-hidden">
-          <div className="absolute inset-x-0 top-0 bg-primary" style={{ height: "300px", clipPath: "ellipse(85% 100% at 50% 0%)" }} />
-          <div className="relative z-10 pt-10 sm:pt-14 pb-14 sm:pb-20">
+        <section className="relative bg-primary overflow-hidden">
+          <div className="relative z-10 pt-[100px] sm:pt-[120px] pb-14 sm:pb-16">
             <motion.h1
               variants={fadeUp}
               initial="hidden"
               animate="visible"
-              className="text-center text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-8 px-4 leading-tight"
+              className="text-center text-4xl sm:text-5xl md:text-6xl font-extrabold text-white mb-10 px-4 leading-tight"
             >
               What do you want to buy?
             </motion.h1>
@@ -145,7 +137,7 @@ function ProductsPageContent() {
               transition={{ delay: 0.1 }}
               className="max-w-xl mx-auto px-4"
             >
-              <div className="flex items-center bg-white rounded-full shadow-xl overflow-hidden">
+              <div className="flex items-center bg-white rounded-[8px] shadow-xl overflow-hidden">
                 <div className="pl-4 sm:pl-5 pr-2 text-gray-400"><FiSearch className="w-5 h-5" /></div>
                 <input
                   type="text"
@@ -153,7 +145,7 @@ function ProductsPageContent() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                  className="flex-1 py-3.5 pr-1 text-sm text-gray-700 placeholder-gray-400 outline-none min-w-0"
+                  className="flex-1 py-4 pr-1 text-sm text-gray-700 placeholder-gray-400 outline-none min-w-0"
                 />
                 {search && (
                   <button onClick={clearSearch} className="p-2 text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0">
@@ -162,13 +154,14 @@ function ProductsPageContent() {
                 )}
                 <button
                   onClick={handleSearch}
-                  className="bg-accent hover:bg-accent-dark text-dark font-semibold text-sm px-4 sm:px-6 py-3 mr-1 rounded-full transition-colors flex-shrink-0"
+                  className="bg-accent hover:bg-accent-dark text-dark font-semibold text-sm px-5 sm:px-7 py-3.5 mr-1 rounded-[6px] transition-colors flex-shrink-0"
                 >
                   Search
                 </button>
               </div>
             </motion.div>
           </div>
+          <div className="absolute bottom-0 inset-x-0 h-12 bg-white" style={{ borderRadius: "50% 50% 0 0 / 100% 100% 0 0" }} />
         </section>
 
         <AnimatePresence mode="wait">
@@ -246,32 +239,6 @@ function ProductsPageContent() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
             >
-              {/* Feature badges */}
-              <section className="pt-6 sm:pt-10 pb-8 sm:pb-10 px-4">
-                <motion.div
-                  variants={stagger}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                  className="max-w-4xl mx-auto rounded-2xl py-7 sm:py-8 px-4 sm:px-6"
-                  style={{ backgroundColor: "#ede1fd" }}
-                >
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 justify-items-center">
-                    {features.map((f) => (
-                      <motion.div key={f.label} variants={scaleIn} className="flex flex-col items-center gap-2 sm:gap-3">
-                        <motion.div
-                          whileHover={{ scale: 1.08 }}
-                          className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-amber-100 flex items-center justify-center shadow-sm p-3 sm:p-4"
-                        >
-                          <img src={f.icon} alt={f.label} className="w-full h-full object-contain" />
-                        </motion.div>
-                        <span className="text-[11px] sm:text-xs md:text-sm font-medium text-gray-700 text-center leading-tight">{f.label}</span>
-                      </motion.div>
-                    ))}
-                  </div>
-                </motion.div>
-              </section>
-
               <ProductSection title="New Arrivals" products={newArrivals} loading={loadingNew} fallback={fallbackProducts} />
               <ProductSection title="Recommended for you" titleColor="text-primary" products={recommended} loading={loadingRec} fallback={fallbackProducts} />
               <ProductSection title="Flash Sales" icon="🔥" products={flashSales} loading={loadingFlash} fallback={fallbackProducts} />

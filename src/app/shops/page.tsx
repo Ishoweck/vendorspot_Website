@@ -127,14 +127,13 @@ export default function ShopsPage() {
       <Navbar />
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative bg-white overflow-hidden">
-          <div className="absolute inset-x-0 top-0 bg-accent" style={{ height: "260px", clipPath: "ellipse(85% 100% at 50% 0%)" }} />
-          <div className="relative z-10 pt-10 sm:pt-14 pb-12 sm:pb-16">
+        <section className="relative bg-accent overflow-hidden">
+          <div className="relative z-10 pt-[100px] sm:pt-[120px] pb-14 sm:pb-16">
             <motion.h1
               variants={fadeUp}
               initial="hidden"
               animate="visible"
-              className="text-center text-3xl sm:text-4xl md:text-5xl font-bold text-dark mb-8 px-4 leading-tight"
+              className="text-center text-4xl sm:text-5xl md:text-6xl font-extrabold text-dark mb-10 px-4 leading-tight"
             >
               Discover Amazing Shops
             </motion.h1>
@@ -145,26 +144,27 @@ export default function ShopsPage() {
               transition={{ delay: 0.1 }}
               className="max-w-xl mx-auto px-4"
             >
-              <div className="flex items-center bg-white rounded-full shadow-xl overflow-hidden">
+              <div className="flex items-center bg-white rounded-[8px] shadow-xl overflow-hidden">
                 <div className="pl-4 sm:pl-5 pr-2 text-gray-400"><FiSearch className="w-5 h-5" /></div>
                 <input
                   type="text"
                   placeholder="Search shops, vendors…"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="flex-1 py-3.5 pr-1 text-sm text-gray-700 placeholder-gray-400 outline-none min-w-0"
+                  className="flex-1 py-4 pr-1 text-sm text-gray-700 placeholder-gray-400 outline-none min-w-0"
                 />
                 {search && (
                   <button onClick={clearSearch} className="p-2 text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0">
                     <FiX className="w-4 h-4" />
                   </button>
                 )}
-                <button className="bg-dark hover:bg-gray-800 text-white font-semibold text-sm px-4 sm:px-6 py-3 mr-1 rounded-full transition-colors flex-shrink-0">
+                <button className="bg-dark hover:bg-gray-800 text-white font-semibold text-sm px-5 sm:px-7 py-3.5 mr-1 rounded-[6px] transition-colors flex-shrink-0">
                   Search
                 </button>
               </div>
             </motion.div>
           </div>
+          <div className="absolute bottom-0 inset-x-0 h-12 bg-white" style={{ borderRadius: "50% 50% 0 0 / 100% 100% 0 0" }} />
         </section>
 
         {/* Top Sellers row — hidden while searching */}
@@ -174,19 +174,19 @@ export default function ShopsPage() {
               initial={{ opacity: 1 }}
               exit={{ opacity: 0, height: 0, marginTop: 0, paddingTop: 0, paddingBottom: 0 }}
               transition={{ duration: 0.3 }}
-              className="pt-4 sm:pt-6 pb-8 px-4 overflow-hidden"
+              className="pt-8 sm:pt-10 pb-10 px-4 overflow-hidden"
             >
-              <div className="max-w-4xl mx-auto">
+              <div className="max-w-7xl mx-auto px-0 sm:px-2 lg:px-4">
                 <motion.h2
                   variants={fadeUp}
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true }}
-                  className="text-xl sm:text-2xl font-bold text-dark mb-5 flex items-center gap-2"
+                  className="text-xl sm:text-2xl font-bold text-dark mb-6 flex items-center gap-2"
                 >
                   Top Sellers <span>⭐</span>
                 </motion.h2>
-                <div className="flex gap-4 sm:gap-6 overflow-x-auto pb-2 scrollbar-hide">
+                <div className="flex gap-5 sm:gap-8 overflow-x-auto pb-2 scrollbar-hide justify-start sm:justify-center flex-wrap sm:flex-nowrap">
                   {loading
                     ? Array.from({ length: 7 }, (_, i) => (
                         <div key={i} className="flex flex-col items-center gap-2 min-w-[64px] animate-pulse">

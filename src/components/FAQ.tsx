@@ -18,65 +18,67 @@ export default function FAQ() {
   const [active, setActive] = useState<number | null>(0);
 
   return (
-    <section className="py-14 sm:py-16 px-4 bg-white">
-      <motion.h2
-        variants={fadeUp}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        className="text-2xl sm:text-3xl md:text-4xl font-bold text-dark mb-10 max-w-5xl mx-auto"
-      >
-        Frequently asked questions
-      </motion.h2>
+    <section className="py-[100px] sm:py-[120px] bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.h2
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="text-3xl sm:text-4xl md:text-5xl font-bold text-dark mb-12"
+        >
+          Frequently asked questions
+        </motion.h2>
 
-      <motion.div
-        variants={stagger}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-60px" }}
-        className="max-w-5xl mx-auto space-y-3"
-      >
-        {faqs.map((faq, i) => (
-          <motion.div
-            key={i}
-            variants={fadeUp}
-            className="border border-gray-200 rounded-2xl overflow-hidden"
-          >
-            <button
-              onClick={() => setActive(active === i ? null : i)}
-              className={`w-full flex items-center justify-between text-left px-5 py-4 text-sm sm:text-base font-medium transition-colors gap-4 ${
-                active === i ? "bg-dark text-white" : "bg-white text-gray-700 hover:bg-gray-50"
-              }`}
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-60px" }}
+          className="space-y-3"
+        >
+          {faqs.map((faq, i) => (
+            <motion.div
+              key={i}
+              variants={fadeUp}
+              className="border border-gray-200 rounded-2xl overflow-hidden"
             >
-              <span>{faq.question}</span>
-              <motion.div
-                animate={{ rotate: active === i ? 180 : 0 }}
-                transition={{ duration: 0.25 }}
-                className="flex-shrink-0"
+              <button
+                onClick={() => setActive(active === i ? null : i)}
+                className={`w-full flex items-center justify-between text-left px-6 py-5 text-sm sm:text-base font-medium transition-colors gap-4 ${
+                  active === i ? "bg-dark text-white" : "bg-white text-gray-700 hover:bg-gray-50"
+                }`}
               >
-                <FiChevronDown className="w-4 h-4" />
-              </motion.div>
-            </button>
-
-            <AnimatePresence initial={false}>
-              {active === i && (
+                <span>{faq.question}</span>
                 <motion.div
-                  key="answer"
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.28, ease: "easeInOut" }}
-                  className="overflow-hidden"
+                  animate={{ rotate: active === i ? 180 : 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="flex-shrink-0"
                 >
-                  <p className="px-5 py-4 text-sm text-gray-600 leading-relaxed bg-gray-50 border-t border-gray-100">
-                    {faq.answer}
-                  </p>
+                  <FiChevronDown className="w-5 h-5" />
                 </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        ))}
-      </motion.div>
+              </button>
+
+              <AnimatePresence initial={false}>
+                {active === i && (
+                  <motion.div
+                    key="answer"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.28, ease: "easeInOut" }}
+                    className="overflow-hidden"
+                  >
+                    <p className="px-6 py-5 text-sm sm:text-base text-gray-600 leading-relaxed bg-gray-50 border-t border-gray-100">
+                      {faq.answer}
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
     </section>
   );
 }

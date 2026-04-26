@@ -190,7 +190,9 @@ export default function CheckoutPage() {
       const res = await fetch(`${API_BASE}/orders/delivery-rates?${params}`, { headers: authHeaders() });
       const json = await res.json();
       if (json.success) {
-        const list: DeliveryRate[] = json.data?.rates || [];
+        const list: DeliveryRate[] = (json.data?.rates || []).filter(
+          (r: DeliveryRate) => r.type !== "store_pickup" && r.type !== "pickup" && r.type !== "self_pickup"
+        );
         setRates(list);
         setRatesLoaded(true);
         if (list.length === 0) toast("No shipping options available for this address.", "warning");
@@ -234,6 +236,11 @@ export default function CheckoutPage() {
         const json = await res.json();
         if (json.success) {
           const authUrl = json.data?.payment?.authorization_url;
+          const reference = json.data?.payment?.reference || json.data?.reference;
+          const orderId = json.data?.order?._id || json.data?.orderId;
+          if (reference && orderId) {
+            localStorage.setItem("vendorspot_pending_payment", JSON.stringify({ reference, orderId }));
+          }
           if (authUrl) {
             window.location.href = authUrl;
           } else {

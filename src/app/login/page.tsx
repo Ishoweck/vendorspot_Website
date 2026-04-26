@@ -120,7 +120,7 @@ export default function LoginPage() {
         </form>
 
         {/* Divider */}
-        <motion.div variants={fadeUp} className="flex items-center gap-3 my-6">
+        <motion.div variants={fadeUp} className="flex items-center gap-3 mt-10 mb-6">
           <div className="flex-1 h-px bg-gray-200" />
           <span className="text-xs text-gray-400 whitespace-nowrap">or sign in with</span>
           <div className="flex-1 h-px bg-gray-200" />

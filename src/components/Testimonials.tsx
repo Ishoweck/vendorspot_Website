@@ -33,70 +33,79 @@ export default function Testimonials() {
   };
 
   return (
-    <section className="py-14 sm:py-16 px-4 bg-purple-50">
-      <motion.h2
-        variants={fadeUp}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        className="text-center text-2xl sm:text-3xl md:text-4xl font-bold text-purple-600 mb-10"
-      >
-        What People Are Saying
-      </motion.h2>
-
-      <div className="max-w-2xl mx-auto relative px-8 sm:px-10">
-        <button
-          onClick={() => go(current - 1)}
-          className="absolute left-0 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 bg-white rounded-full shadow-md flex items-center justify-center text-gray-600 hover:bg-gray-50 z-10 transition-colors"
+    <section className="py-[100px] sm:py-[120px] bg-purple-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.h2
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="text-center text-3xl sm:text-4xl md:text-5xl font-bold text-purple-700 mb-14"
         >
-          <FiChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-        </button>
-        <button
-          onClick={() => go(current + 1)}
-          className="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 bg-white rounded-full shadow-md flex items-center justify-center text-gray-600 hover:bg-gray-50 z-10 transition-colors"
-        >
-          <FiChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
-        </button>
+          What People Are Saying
+        </motion.h2>
 
-        <div className="overflow-hidden">
-          <AnimatePresence mode="wait" custom={dir}>
-            <motion.div
-              key={current}
-              custom={dir}
-              initial={{ opacity: 0, x: dir * 40 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: dir * -40 }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
-              className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm"
-            >
-              <div className="flex gap-1 mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <span key={i} className="text-yellow-400 text-sm">★</span>
-                ))}
-              </div>
-              <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-6 italic">
-                &ldquo;{testimonials[current].text}&rdquo;
-              </p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-purple-200 flex items-center justify-center text-purple-700 font-bold text-sm flex-shrink-0">
-                  {testimonials[current].name.charAt(0)}
+        <div className="relative flex items-center">
+          {/* Prev arrow — aligns to left margin, distinct styling */}
+          <button
+            onClick={() => go(current - 1)}
+            className="flex-shrink-0 w-11 h-11 sm:w-12 sm:h-12 border-2 border-purple-300 rounded-full flex items-center justify-center text-purple-500 hover:border-purple-500 hover:text-purple-700 transition-colors bg-white"
+            aria-label="Previous review"
+          >
+            <FiChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+          </button>
+
+          {/* Review card */}
+          <div className="flex-1 mx-4 sm:mx-8 overflow-hidden">
+            <AnimatePresence mode="wait" custom={dir}>
+              <motion.div
+                key={current}
+                custom={dir}
+                initial={{ opacity: 0, x: dir * 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: dir * -50 }}
+                transition={{ duration: 0.35, ease: "easeOut" }}
+                className="bg-white rounded-2xl px-8 sm:px-12 py-10 sm:py-12 shadow-sm"
+              >
+                <div className="flex gap-1 mb-5">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i} className="text-yellow-400 text-lg">★</span>
+                  ))}
                 </div>
-                <div>
-                  <p className="font-semibold text-sm text-dark">{testimonials[current].name}</p>
-                  <p className="text-xs text-gray-500">{testimonials[current].role}</p>
+                <p className="text-gray-600 text-base sm:text-lg leading-relaxed mb-8">
+                  &ldquo;{testimonials[current].text}&rdquo;
+                </p>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-purple-200 flex items-center justify-center text-purple-700 font-bold text-base flex-shrink-0">
+                    {testimonials[current].name.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="font-bold text-sm sm:text-base text-dark">{testimonials[current].name}</p>
+                    <p className="text-sm text-gray-500">{testimonials[current].role}</p>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Next arrow — aligns to right margin, filled/accent styling */}
+          <button
+            onClick={() => go(current + 1)}
+            className="flex-shrink-0 w-11 h-11 sm:w-12 sm:h-12 bg-purple-600 rounded-full flex items-center justify-center text-white hover:bg-purple-700 transition-colors shadow-md"
+            aria-label="Next review"
+          >
+            <FiChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+          </button>
         </div>
 
-        <div className="flex justify-center gap-2 mt-5">
+        {/* Dots */}
+        <div className="flex justify-center gap-2 mt-8">
           {testimonials.map((_, i) => (
             <button
               key={i}
               onClick={() => go(i)}
               className={`rounded-full transition-all duration-300 ${
-                i === current ? "bg-purple-600 w-5 h-2.5" : "bg-purple-300 w-2.5 h-2.5"
+                i === current ? "bg-purple-600 w-6 h-3" : "bg-purple-300 w-3 h-3"
               }`}
             />
           ))}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,6 +17,20 @@ export default function CartPage() {
   const [couponInput, setCouponInput] = useState("");
   const [couponMsg, setCouponMsg] = useState<{ text: string; ok: boolean } | null>(null);
   const [applyingCoupon, setApplyingCoupon] = useState(false);
+
+  // Check if user is returning from a Paystack payment
+  useEffect(() => {
+    const pending = localStorage.getItem("vendorspot_pending_payment");
+    if (pending) {
+      try {
+        const { reference, orderId } = JSON.parse(pending);
+        localStorage.removeItem("vendorspot_pending_payment");
+        router.replace(`/orders/${orderId}/payment-callback?reference=${reference}`);
+      } catch {
+        localStorage.removeItem("vendorspot_pending_payment");
+      }
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleApplyCoupon = async () => {
     if (!couponInput.trim()) return;
