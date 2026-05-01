@@ -122,7 +122,7 @@ export default function ShopDetailPage() {
     return (
       <>
         <Navbar />
-        <main className="min-h-screen bg-gray-50">
+        <main className="min-h-screen bg-gray-50 mt-16">
           <div className="bg-gray-200 h-32 w-full animate-pulse" />
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm -mt-6 p-5 animate-pulse">
@@ -156,7 +156,7 @@ export default function ShopDetailPage() {
     return (
       <>
         <Navbar />
-        <main className="min-h-screen flex flex-col items-center justify-center gap-4">
+        <main className="min-h-screen flex flex-col items-center justify-center gap-4 mt-16">
           <FiPackage className="w-12 h-12 text-gray-300" />
           <p className="text-gray-500 font-medium">Shop not found</p>
           <Link href="/shops" className="text-primary text-sm font-medium hover:underline">
@@ -171,7 +171,7 @@ export default function ShopDetailPage() {
   return (
     <>
       <Navbar />
-      <main className="bg-gray-50 min-h-screen pb-16">
+      <main className="bg-gray-50 min-h-screen pt-16 pb-16">
 
         {/* ── Banner ── */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative h-32 sm:h-40 w-full bg-gradient-to-r from-gray-200 to-gray-300 overflow-hidden">

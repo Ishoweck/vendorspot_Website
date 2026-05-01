@@ -18,7 +18,7 @@ export default function FAQ() {
   const [active, setActive] = useState<number | null>(0);
 
   return (
-    <section className="py-[100px] sm:py-[120px] bg-white">
+    <section className="pt-[60px] pb-[100px] sm:pb-[120px] bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.h2
           variants={fadeUp}

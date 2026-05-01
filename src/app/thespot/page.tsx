@@ -44,19 +44,31 @@ export default function TheSpotPage() {
     <>
       <Navbar />
       <main className="flex-1">
-        {/* Hero */}
-        <section className="relative bg-[#e8d7fd] overflow-hidden pb-[100px] sm:pb-[120px]">
+        {/* Hero — SVG background, heading only */}
+        <section
+          className="relative"
+          style={{
+            backgroundImage: "url('/spot_rec.svg')",
+            backgroundSize: "100% 100%",
+            backgroundRepeat: "no-repeat",
+            minHeight: `max(240px, ${((865 / 1440) * 100).toFixed(2)}vw)`,
+          }}
+        >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.h1
               variants={fadeUp}
               initial="hidden"
               animate="visible"
-              className="pt-16 sm:pt-20 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-dark leading-tight text-center mb-10 sm:mb-12"
+              className="pt-20 sm:pt-24 lg:pt-28 text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-extrabold text-dark leading-tight text-center mb-6 sm:mb-10 lg:mb-12"
             >
               Building a Secure and Trusted<br className="hidden sm:block" /> Platform for everyone.
             </motion.h1>
+          </div>
+        </section>
 
-            {/* Founder card */}
+        {/* Founder card — pulled up so SVG shaped bottom lands ~halfway through the card */}
+        <div className="relative -mt-[60px] sm:-mt-[20vw] lg:-mt-[30vw] pb-[60px] sm:pb-[100px] lg:pb-[120px]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               variants={fadeUp}
               initial="hidden"
@@ -67,14 +79,17 @@ export default function TheSpotPage() {
               <div className="bg-primary text-white text-center font-bold text-base sm:text-lg py-4 px-6">
                 Founder&apos;s Story
               </div>
-              <div className="p-6 sm:p-10 grid grid-cols-1 md:grid-cols-5 gap-8 sm:gap-10">
+              <div className="p-5 sm:p-8 md:p-10 grid grid-cols-1 md:grid-cols-5 gap-6 sm:gap-8 md:gap-10">
                 <motion.div variants={slideLeft} initial="hidden" whileInView="visible" viewport={{ once: true }} className="md:col-span-3 space-y-4 text-sm sm:text-base text-gray-700 leading-relaxed">
-                  <p>Vendorspot was born out of frustration — the kind that comes from watching good vendors lose money to scammers and buyers lose trust in online shopping altogether.</p>
-                  <p>In 2022, we introduced a verification system that gave vendors credibility and helped over 500 businesses sell with confidence. We also stepped in to resolve disputes, ensuring fairness and accountability on both sides.</p>
-                  <p>Beyond trust, we supported real growth, helping vendors access grants, funding, and business registration opportunities that changed lives.</p>
-                  <p>But we knew community alone wasn&apos;t enough.</p>
-                  <p>In 2023, we took it further and built Vendorspot into a full marketplace, a platform designed to eliminate fear from online transactions. With escrow payments, verified vendors, and integrated tools, we created a system where sellers can grow without stress, and buyers can shop with complete confidence.</p>
-                  <p className="font-bold text-dark">Vendorspot is more than a platform.<br />It&apos;s a response to a broken system, and a commitment to fixing it.</p>
+                  <p>Vendorspot did not begin as a business idea. It began as a response to a problem I experienced repeatedly.</p>
+                  <p>Like many people, I grew tired of the stress that comes with physical markets and turned to online shopping for convenience. Instead, I encountered a different set of challenges. Fake products, no return policies, and in some cases, sellers disappearing after payment.</p>
+                  <p>The experience became more personal when I ordered a pair of sneakers for my younger brother&apos;s graduation. I paid an Instagram vendor two days before the event. On the morning of the ceremony, after being assured the rider was on the way, I was blocked.</p>
+                  <p>The disappointment, embarrassment, and sense of helplessness stayed with me. It was clear that this was not an isolated issue but a systemic one.</p>
+                  <p>In 2021, I set out to address it by building a community of trusted vendors. These were individuals committed to selling honestly and growing their businesses the right way. We focused on verification, visibility, and accountability, ensuring that buyers were connected only with vendors who met defined standards.</p>
+                  <p>As the community expanded, trust grew with it. By 2022, we had supported over 500 vendors, introduced a structured verification system, and actively resolved disputes to maintain fairness and credibility across the network.</p>
+                  <p>However, it became evident that community alone was not enough. Trust needed infrastructure.</p>
+                  <p>In 2023, we evolved Vendorspot into a full marketplace. We introduced escrow payments, strengthened vendor verification, and built tools designed to support sustainable growth. The goal was simple: to remove uncertainty from online transactions and create a system that works for both buyers and sellers.</p>
+                  <p className="font-bold text-dark">Today, Vendorspot represents more than a platform. It is a deliberate effort to fix a broken experience and to build a safer, more reliable environment for commerce.</p>
                 </motion.div>
                 <motion.div variants={slideRight} initial="hidden" whileInView="visible" viewport={{ once: true }} className="md:col-span-2 flex flex-col items-center justify-start">
                   <div className="w-full max-w-[200px] sm:max-w-[260px] mx-auto">
@@ -90,7 +105,7 @@ export default function TheSpotPage() {
               </div>
             </motion.div>
           </div>
-        </section>
+        </div>
 
         {/* Core Values marquee */}
         <section className="py-[100px] sm:py-[120px] bg-white overflow-hidden">
@@ -108,7 +123,7 @@ export default function TheSpotPage() {
           <div className="overflow-hidden">
             <div className="animate-marquee gap-4" style={{ width: "max-content" }}>
               {[...coreValues, ...coreValues].map(({ title, bg, description, Icon }, i) => (
-                <div key={`${title}-${i}`} className={`${bg} rounded-2xl p-6 flex flex-col justify-between flex-shrink-0 w-[220px] sm:w-[240px] mx-2 h-[240px]`}>
+                <div key={`${title}-${i}`} className={`${bg} rounded-2xl p-5 sm:p-6 flex flex-col justify-between flex-shrink-0 w-[180px] sm:w-[220px] md:w-[240px] mx-2 h-[220px] sm:h-[240px]`}>
                   <div>
                     <span className="inline-block bg-white/20 text-white text-sm font-bold px-3 py-1 rounded-full mb-3">{title}</span>
                     <p className="text-white text-xs leading-relaxed line-clamp-5">{description}</p>
@@ -135,7 +150,7 @@ export default function TheSpotPage() {
               Our People
             </motion.h2>
 
-            <div className="relative flex items-center max-w-lg mx-auto">
+            <div className="relative flex items-center max-w-3xl mx-auto">
               {/* Prev — outlined */}
               <button
                 onClick={() => go(currentMember - 1)}
@@ -155,9 +170,9 @@ export default function TheSpotPage() {
                     transition={{ duration: 0.3 }}
                     className="bg-white rounded-2xl overflow-hidden shadow-lg"
                   >
-                    <div className="flex">
-                      <div className="w-1/2 bg-gray-100 flex items-center justify-center text-5xl min-h-[280px] sm:min-h-[320px]">👤</div>
-                      <div className="w-1/2 p-6 sm:p-8 flex flex-col justify-center gap-3">
+                    <div className="flex flex-col sm:flex-row">
+                      <div className="w-full sm:w-1/2 bg-gray-100 flex items-center justify-center text-4xl sm:text-5xl min-h-[160px] sm:min-h-[360px] md:min-h-[420px]">👤</div>
+                      <div className="w-full sm:w-1/2 p-5 sm:p-8 md:p-10 flex flex-col justify-center gap-4">
                         <div className="w-3 h-3 bg-primary rounded-full" />
                         <hr className="border-gray-200" />
                         <div>
@@ -188,16 +203,16 @@ export default function TheSpotPage() {
         </section>
 
         {/* Join banner */}
-        <section className="py-[100px] sm:py-[120px] bg-white">
+        <section className="pt-[100px] sm:pt-[120px] pb-[20px] bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-primary rounded-2xl px-8 sm:px-12 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
+              className="bg-dark rounded-2xl px-5 sm:px-8 md:px-12 py-6 sm:py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 sm:gap-6"
             >
-              <h3 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold">Join us.</h3>
-              <a href="#" className="flex items-center gap-3 text-white text-base sm:text-lg font-semibold hover:opacity-80 transition-opacity flex-shrink-0">
+              <h3 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">Join us.</h3>
+              <a href="#" className="flex items-center gap-2 sm:gap-3 text-white text-sm sm:text-base md:text-lg font-semibold hover:opacity-80 transition-opacity flex-shrink-0">
                 Apply for a role here
                 <span className="w-9 h-9 bg-accent rounded-full flex items-center justify-center flex-shrink-0">
                   <FiArrowRight className="w-4 h-4 text-dark" />

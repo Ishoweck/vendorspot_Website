@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { FiShoppingCart, FiMenu, FiX, FiChevronDown, FiPackage, FiBookOpen, FiMail, FiLogOut, FiUser, FiShoppingBag } from "react-icons/fi";
+import { FiShoppingCart, FiMenu, FiX, FiChevronDown, FiPackage, FiBookOpen, FiMail, FiLogOut, FiUser } from "react-icons/fi";
 import { useCart } from "@/lib/CartContext";
 
 const moreLinks = [
@@ -21,23 +21,35 @@ interface StoredUser {
   role?: string;
 }
 
+const heroPages = ['/', '/products', '/shops'];
+
 export default function Navbar() {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(false);
+  const pathname = usePathname();
+  const [mobileOpen, setMobileOpen]     = useState(false);
+  const [moreOpen, setMoreOpen]         = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [user, setUser] = useState<StoredUser | null>(null);
-  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [user, setUser]                 = useState<StoredUser | null>(null);
+  const [scrolled, setScrolled]         = useState(() => !heroPages.includes(pathname));
+  const closeTimer    = useRef<ReturnType<typeof setTimeout> | null>(null);
   const userMenuTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { itemCount } = useCart();
-  const pathname = usePathname();
 
   useEffect(() => {
-    const raw = localStorage.getItem("vendorspot_user");
+    const raw   = localStorage.getItem("vendorspot_user");
     const token = localStorage.getItem("vendorspot_token");
-    if (raw && token) {
-      try { setUser(JSON.parse(raw)); } catch {}
-    }
+    if (raw && token) { try { setUser(JSON.parse(raw)); } catch {} }
   }, []);
+
+  useEffect(() => {
+    if (!heroPages.includes(pathname)) {
+      setScrolled(true);
+      return;
+    }
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [pathname]);
 
   const handleLogout = () => {
     localStorage.removeItem("vendorspot_token");
@@ -49,44 +61,54 @@ export default function Navbar() {
 
   const openUserMenu  = () => { if (userMenuTimer.current) clearTimeout(userMenuTimer.current); setUserMenuOpen(true); };
   const closeUserMenu = () => { userMenuTimer.current = setTimeout(() => setUserMenuOpen(false), 120); };
+  const openMore      = () => { if (closeTimer.current)    clearTimeout(closeTimer.current);    setMoreOpen(true); };
+  const closeMore     = () => { closeTimer.current = setTimeout(() => setMoreOpen(false), 120); };
 
-  const openMore  = () => { if (closeTimer.current) clearTimeout(closeTimer.current); setMoreOpen(true); };
-  const closeMore = () => { closeTimer.current = setTimeout(() => setMoreOpen(false), 120); };
-
-  const navLinkClass = (href: string) =>
-    `px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
-      pathname === href
-        ? "bg-white text-primary font-semibold"
-        : "text-white/90 hover:text-white hover:bg-white/15"
+  const navLinkClass = (href: string) => {
+    const isActive = pathname === href;
+    if (scrolled) {
+      return `px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
+        isActive ? "bg-primary text-white font-semibold" : "text-gray-700 hover:text-dark hover:bg-gray-100"
+      }`;
+    }
+    return `px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
+      isActive ? "bg-white text-primary font-semibold" : "text-white/90 hover:text-white hover:bg-white/15"
     }`;
+  };
 
   return (
-    <nav className="w-full bg-primary sticky top-0 z-50 shadow-sm">
+    <nav className={`w-full fixed top-0 z-50 transition-all duration-300 ${scrolled ? "bg-white/95 backdrop-blur-sm shadow-sm" : ""}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
 
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-          <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center flex-shrink-0">
-            <FiShoppingBag className="w-4 h-4 text-dark" />
-          </div>
-          <span className="text-white font-bold text-lg leading-none">Vendorspot</span>
+        <Link href="/" className="flex-shrink-0">
+          <img
+            src="/VLogo.svg"
+            alt="Vendorspot"
+            className={`h-6 w-auto transition-all duration-300 ${scrolled ? "" : "brightness-0 invert"}`}
+          />
         </Link>
 
-        {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-1 border border-white/20 bg-white/10 rounded-full px-2 py-1">
-          <Link href="/thespot" className={navLinkClass("/thespot")}>TheSpot</Link>
-          <Link href="/shops"   className={navLinkClass("/shops")}>Shops</Link>
+        {/* Desktop nav pill */}
+        <div className={`hidden md:flex items-center gap-1 rounded-full px-2 py-1 border transition-all duration-300 ${
+          scrolled ? "border-gray-200 bg-gray-50" : "border-white/20 bg-white/10"
+        }`}>
+          <Link href="/thespot"  className={navLinkClass("/thespot")}>TheSpot</Link>
+          <Link href="/shops"    className={navLinkClass("/shops")}>Shops</Link>
           <Link href="/products" className={navLinkClass("/products")}>Products</Link>
 
           {/* More dropdown */}
           <div className="relative" onMouseEnter={openMore} onMouseLeave={closeMore}>
             <button
-              className="flex items-center gap-1 px-4 py-1.5 text-sm font-medium text-white/90 hover:text-white hover:bg-white/15 rounded-full transition-colors"
+              className={`flex items-center gap-1 px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
+                scrolled
+                  ? "text-gray-700 hover:text-dark hover:bg-gray-100"
+                  : "text-white/90 hover:text-white hover:bg-white/15"
+              }`}
               onClick={() => setMoreOpen((v) => !v)}
             >
               More
-              <span className="text-accent text-xs ml-0.5">&#9679;</span>
-              <FiChevronDown className={`w-3 h-3 ml-0.5 transition-transform duration-200 ${moreOpen ? "rotate-180" : ""}`} />
+              <FiChevronDown className={`w-3 h-3 ml-1 transition-transform duration-200 ${moreOpen ? "rotate-180" : ""}`} />
             </button>
 
             {moreOpen && (
@@ -116,13 +138,17 @@ export default function Navbar() {
           {user ? (
             <div className="relative hidden md:block" onMouseEnter={openUserMenu} onMouseLeave={closeUserMenu}>
               <button
-                className="flex items-center gap-2 border border-white/30 text-white rounded-full px-3 py-1.5 text-sm font-medium hover:bg-white/10 transition-colors"
+                className={`flex items-center gap-2 border rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+                  scrolled
+                    ? "border-gray-300 text-dark hover:bg-gray-50"
+                    : "border-white/30 text-white hover:bg-white/10"
+                }`}
                 onClick={() => setUserMenuOpen((v) => !v)}
               >
                 {user.avatar ? (
                   <img src={user.avatar} alt="" className="w-6 h-6 rounded-full object-cover" />
                 ) : (
-                  <span className="w-6 h-6 rounded-full bg-white/20 text-white text-xs font-bold flex items-center justify-center">
+                  <span className={`w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center ${scrolled ? "bg-gray-200 text-dark" : "bg-white/20 text-white"}`}>
                     {user.firstName?.charAt(0) || user.email?.charAt(0) || "U"}
                   </span>
                 )}
@@ -153,7 +179,14 @@ export default function Navbar() {
               )}
             </div>
           ) : (
-            <Link href="/login" className="hidden md:flex items-center gap-2 border border-white/30 text-white rounded-full px-5 py-2 text-sm font-medium hover:bg-white/10 transition-colors">
+            <Link
+              href="/login"
+              className={`hidden md:flex items-center gap-2 border rounded-full px-5 py-2 text-sm font-medium transition-colors ${
+                scrolled
+                  ? "border-gray-300 text-dark hover:bg-gray-50"
+                  : "border-white/30 text-white hover:bg-white/10"
+              }`}
+            >
               <FiUser className="w-4 h-4" />
               Log In
             </Link>
@@ -168,7 +201,10 @@ export default function Navbar() {
             )}
           </Link>
 
-          <button className="md:hidden p-2 text-white" onClick={() => setMobileOpen(!mobileOpen)}>
+          <button
+            className={`md:hidden p-2 transition-colors ${scrolled ? "text-dark" : "text-white"}`}
+            onClick={() => setMobileOpen(!mobileOpen)}
+          >
             {mobileOpen ? <FiX className="w-6 h-6" /> : <FiMenu className="w-6 h-6" />}
           </button>
         </div>

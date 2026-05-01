@@ -219,7 +219,7 @@ export default function ProductDetailPage() {
     return (
       <>
         <Navbar />
-        <main className="min-h-screen bg-gray-50">
+        <main className="min-h-screen bg-gray-50 mt-16">
           <div className="max-w-6xl mx-auto px-4 py-8 animate-pulse">
             <div className="h-4 bg-gray-200 rounded w-48 mb-6" />
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -243,7 +243,7 @@ export default function ProductDetailPage() {
     return (
       <>
         <Navbar />
-        <main className="min-h-screen flex items-center justify-center">
+        <main className="min-h-screen flex items-center justify-center mt-16">
           <p className="text-gray-500">Product not found.</p>
         </main>
         <Footer />
@@ -254,7 +254,7 @@ export default function ProductDetailPage() {
   return (
     <>
       <Navbar />
-      <main className="bg-gray-50 min-h-screen pb-16">
+      <main className="bg-gray-50 min-h-screen pt-16 pb-16">
         {/* Breadcrumb */}
         <div className="max-w-6xl mx-auto px-4 py-4 text-xs text-gray-500 flex items-center gap-1.5">
           <Link href="/" className="hover:text-primary transition-colors">Home</Link>
@@ -265,14 +265,14 @@ export default function ProductDetailPage() {
         </div>
 
         <div className="max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
 
             {/* ── LEFT COLUMN ── */}
             <div className="lg:col-span-2 space-y-4">
 
               {/* Product card */}
               <div className="bg-white rounded-2xl p-5 shadow-sm">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
 
                   {/* Image gallery */}
                   <div>

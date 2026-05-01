@@ -105,33 +105,31 @@ function ResetPasswordContent() {
   return (
     <div className="min-h-screen bg-white flex flex-col overflow-hidden">
 
-      {/* Header */}
-      <div className="relative bg-primary flex-shrink-0" style={{ minHeight: 220 }}>
+      {/* Header arch */}
+      <div className="relative flex-shrink-0" style={{ height: "max(170px, 28.06vw)" }}>
+        <img src="/auth_rec1.svg" alt="" className="absolute inset-0 w-full h-full object-fill block" aria-hidden="true" />
         <div className="absolute top-5 left-5 z-10">
-          <Link href="/" className="text-sm font-bold border-2 border-white text-white rounded-full px-4 py-1.5 hover:bg-white/10 transition-colors">
-            Vendorspot
+          <Link href="/" className="hover:opacity-80 transition-opacity">
+            <img src="/VLogo.svg" alt="Vendorspot" className="h-7 w-auto" />
           </Link>
         </div>
-        <Link href="/forgot-password" className="absolute top-5 right-5 z-10 text-white text-sm font-medium hover:opacity-80 transition-opacity">
+        <Link href="/forgot-password" className="absolute top-5 right-5 z-10 text-gray-600 text-sm font-medium hover:opacity-80 transition-opacity">
           Back
         </Link>
-
         <motion.div
           initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-          className="flex flex-col items-center justify-end h-full px-6 pb-10 pt-16 text-center"
+          className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
         >
-          <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center mb-3">
-            <FiLock className="w-7 h-7 text-white" />
+          <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+            <FiLock className="w-7 h-7 text-primary" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white leading-tight">Reset Password</h1>
-          <p className="text-white/70 text-sm mt-2 max-w-xs">
+          <h1 className="text-2xl sm:text-3xl font-bold text-dark leading-tight">Reset Password</h1>
+          <p className="text-gray-500 text-sm mt-2 max-w-xs">
             Enter the code sent to{" "}
-            <span className="text-white font-medium">{email || "your email"}</span>
+            <span className="text-dark font-medium">{email || "your email"}</span>
             {" "}and choose a new password.
           </p>
         </motion.div>
-
-        <div className="absolute bottom-0 left-0 right-0 h-10 bg-white" style={{ borderRadius: "50% 50% 0 0 / 100% 100% 0 0" }} />
       </div>
 
       {/* Body */}
@@ -233,9 +231,7 @@ function ResetPasswordContent() {
       </motion.div>
 
       <div className="flex-shrink-0">
-        <svg viewBox="0 0 375 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full block">
-          <path d="M0 80 C 90 0, 285 0, 375 80 L375 80 L0 80 Z" fill="#1a1a1a"/>
-        </svg>
+        <img src="/auth_rec2.svg" alt="" className="w-full block" />
       </div>
     </div>
   );

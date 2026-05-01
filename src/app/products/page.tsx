@@ -43,7 +43,7 @@ function ProductSection({
 
   return (
     <section className="py-8 sm:py-10 px-4">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-6 sm:mb-8">
           <motion.h2
             variants={fadeUp}
@@ -120,21 +120,28 @@ function ProductsPageContent() {
       <Navbar />
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative bg-primary overflow-hidden">
-          <div className="relative z-10 pt-[100px] sm:pt-[120px] pb-14 sm:pb-16">
+        <section
+          className="relative"
+          style={{
+            backgroundImage: "url('/prod_rec.svg')",
+            backgroundSize: "100% 100%",
+            backgroundRepeat: "no-repeat",
+            minHeight: `max(340px, ${((481 / 1440) * 100).toFixed(2)}vw)`,
+          }}
+        >
+          <div className="relative z-10 pt-24 sm:pt-28 lg:pt-[100px] pb-8 sm:pb-12 lg:pb-16">
             <motion.h1
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              className="text-center text-4xl sm:text-5xl md:text-6xl font-extrabold text-white mb-10 px-4 leading-tight"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="text-center text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-8 sm:mb-10 px-4 leading-tight"
             >
               What do you want to buy?
             </motion.h1>
             <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              transition={{ delay: 0.1 }}
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="max-w-xl mx-auto px-4"
             >
               <div className="flex items-center bg-white rounded-[8px] shadow-xl overflow-hidden">
@@ -161,7 +168,6 @@ function ProductsPageContent() {
               </div>
             </motion.div>
           </div>
-          <div className="absolute bottom-0 inset-x-0 h-12 bg-white" style={{ borderRadius: "50% 50% 0 0 / 100% 100% 0 0" }} />
         </section>
 
         <AnimatePresence mode="wait">
@@ -175,7 +181,7 @@ function ProductsPageContent() {
               transition={{ duration: 0.35 }}
             >
               <section className="py-8 sm:py-10 px-4">
-                <div className="max-w-6xl mx-auto">
+                <div className="max-w-7xl mx-auto">
                   <div className="flex items-center justify-between mb-6">
                     <div>
                       <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-dark">
@@ -250,17 +256,19 @@ function ProductsPageContent() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5 }}
-                  className="max-w-6xl mx-auto bg-gradient-to-r from-primary to-primary-dark rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 overflow-hidden"
+                  className="max-w-7xl mx-auto bg-primary rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 overflow-hidden"
                 >
                   <div>
-                    <p className="text-accent text-xs font-bold tracking-wider uppercase mb-1">Instant Delivery</p>
-                    <h3 className="text-white text-xl sm:text-2xl md:text-3xl font-bold mb-2">Digital Products</h3>
-                    <p className="text-white/70 text-sm mb-4">E-books, courses, software keys &amp; more.</p>
-                    <a href="#" className="inline-flex items-center gap-2 border border-white text-white text-sm font-medium rounded-full px-5 py-2 hover:bg-white/10 transition-colors">
+                    <p className="text-accent text-xs font-bold tracking-widest uppercase mb-2">Instant Delivery</p>
+                    <h3 className="text-white text-2xl sm:text-3xl md:text-4xl font-extrabold mb-2">Digital Products</h3>
+                    <p className="text-white/70 text-sm mb-5">E-books, courses, software keys &amp; more.</p>
+                    <a href="#" className="inline-flex items-center gap-2 bg-accent hover:bg-accent-dark text-dark text-sm font-bold rounded-lg px-5 py-2.5 transition-colors">
                       Browse Digital <FiArrowRight className="w-4 h-4" />
                     </a>
                   </div>
-                  <div className="hidden sm:flex text-6xl md:text-8xl opacity-70 text-white font-mono select-none">&lt;/&gt;</div>
+                  <div className="hidden sm:flex items-center justify-center bg-white/10 rounded-2xl w-20 h-20 md:w-24 md:h-24 flex-shrink-0">
+                    <span className="text-3xl md:text-4xl text-white font-mono font-bold select-none">&lt;/&gt;</span>
+                  </div>
                 </motion.div>
               </section>
 

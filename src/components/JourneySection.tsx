@@ -6,20 +6,20 @@ import { fadeUp, stagger } from "@/lib/motion";
 
 const journeyCards = [
   {
-    title: "Sell on the Spot",
-    description: "Create your store in minutes, list products easily, and start receiving orders instantly. Vendorspot gives you the tools to sell faster, reach more buyers, and grow.",
+    title: "Sell faster. Reach more buyers.",
+    description: "Set up your store in minutes and start getting orders right away.",
     bgColor: "bg-purple-100",
     image: "/icons/vsp-build.svg",
   },
   {
-    title: "Resell & earn",
-    description: "Discover products, share them with your audience, and earn commissions on every successful sale. No inventory needed — just promote, sell, and earn consistently.",
+    title: "Earn by reselling products",
+    description: "Discover items, share with your audience, and earn commissions on every sale.",
     bgColor: "bg-orange-100",
     image: "/icons/vsp-resell.svg",
   },
   {
-    title: "Build with us",
-    description: "Be part of a fast-growing platform shaping the future of commerce. Learn, contribute, and grow your career while helping vendors and buyers succeed every day.",
+    title: "Build the future of commerce with us",
+    description: "Learn, contribute, and grow while making an impact.",
     bgColor: "bg-blue-100",
     image: "/icons/vsp-sell.svg",
   },
@@ -34,7 +34,7 @@ export default function JourneySection() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="text-center text-3xl sm:text-4xl md:text-5xl font-bold text-dark mb-14"
+          className="text-center text-3xl sm:text-4xl md:text-5xl font-bold text-dark mb-8 sm:mb-12 md:mb-14"
         >
           Join us in this journey
         </motion.h2>

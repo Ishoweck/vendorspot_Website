@@ -60,7 +60,7 @@ export default function OrdersPage() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 bg-gray-50 min-h-screen py-6 sm:py-8 px-4">
+      <main className="flex-1 bg-gray-50 min-h-screen pt-20 sm:pt-24 pb-6 sm:pb-8 px-4">
         <div className="max-w-3xl mx-auto">
           <motion.h1 variants={fadeUp} initial="hidden" animate="visible" className="text-xl sm:text-2xl font-bold text-dark mb-6">
             My Orders

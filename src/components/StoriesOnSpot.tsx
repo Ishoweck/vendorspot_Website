@@ -28,9 +28,9 @@ const stories = [
 
 export default function StoriesOnSpot() {
   return (
-    <section className="py-[100px] sm:py-[120px] bg-white">
+    <section className="pt-[100px] sm:pt-[120px] pb-[60px] bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-12 sm:mb-14">
+        <div className="flex items-center justify-between mb-8 sm:mb-12 md:mb-14">
           <motion.h2
             variants={fadeUp}
             initial="hidden"

@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { useApi } from "@/lib/useApi";
 import type { VendorProfile } from "@/lib/api";
-import { stagger, fadeUp } from "@/lib/motion";
+import { fadeUp } from "@/lib/motion";
 import Link from "next/link";
 
 const colors = [
@@ -27,13 +27,7 @@ export default function TopSellers() {
         >
           <h3 className="text-white text-xl sm:text-2xl font-bold mb-8">Top Sellers ⭐</h3>
 
-          <motion.div
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-4 sm:grid-cols-7 gap-3 sm:gap-4"
-          >
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
             {loading
               ? Array.from({ length: 7 }, (_, i) => (
                   <div key={i} className="flex flex-col items-center gap-2 animate-pulse">
@@ -67,7 +61,7 @@ export default function TopSellers() {
                     </span>
                   </motion.div>
                 ))}
-          </motion.div>
+          </div>
         </motion.div>
       </div>
     </section>

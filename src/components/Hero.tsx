@@ -12,7 +12,6 @@ import {
 import Link from "next/link";
 import { useApi } from "@/lib/useApi";
 import type { Category } from "@/lib/api";
-import { fadeUp, stagger } from "@/lib/motion";
 import type { IconType } from "react-icons";
 
 const fallbackCategories = [
@@ -71,27 +70,44 @@ export default function Hero() {
         }));
 
   return (
-    <section className="relative bg-primary overflow-hidden">
-      {/* Content */}
-      <div className="relative z-10 pt-[100px] sm:pt-[120px]">
+    <section
+      className="relative overflow-hidden"
+      style={{ minHeight: `max(660px, ${((865 / 1440) * 100).toFixed(2)}vw)` }}
+    >
+      {/* Inline SVG — renders immediately with no network request, guarantees red background from top on all devices */}
+      <svg
+        aria-hidden="true"
+        className="absolute top-0 left-0 w-full pointer-events-none select-none"
+        style={{ height: `max(660px, ${((865 / 1440) * 100).toFixed(2)}vw)` }}
+        viewBox="0 0 1440 865"
+        preserveAspectRatio="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M0 0H1440V754.238L1091.82 847.748C1088.28 848.698 1084.65 849.256 1081 849.413L718 865L355.076 849.416C351.37 849.257 347.694 848.686 344.114 847.714L0 754.238V0Z"
+          fill="#D7004B"
+        />
+      </svg>
+
+      {/* Content in normal flow */}
+      <div className="relative z-10 pt-24 sm:pt-28 lg:pt-[100px]">
 
         {/* Heading */}
         <motion.h1
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          className="text-center text-4xl sm:text-5xl md:text-6xl font-extrabold text-white mb-10 px-4 leading-tight"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="text-center text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 sm:mb-10 px-4 leading-tight"
         >
-          What do you want to buy?
+          Find your favourite item
         </motion.h1>
 
         {/* Search bar */}
         <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          transition={{ delay: 0.1 }}
-          className="max-w-xl mx-auto px-4 mb-12 sm:mb-16"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="max-w-2xl mx-auto px-4 mb-8 sm:mb-12 lg:mb-16"
         >
           <div className="flex items-center bg-white rounded-[8px] shadow-xl overflow-hidden">
             <div className="pl-4 sm:pl-5 pr-2 text-gray-400">
@@ -116,10 +132,10 @@ export default function Hero() {
 
         {/* Category icons */}
         <motion.div
-          variants={stagger}
-          initial="hidden"
-          animate="visible"
-          className="flex md:justify-center items-start gap-5 sm:gap-8 md:gap-12 px-6 overflow-x-auto scrollbar-hide md:overflow-visible pb-6 md:pb-0"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="flex md:justify-center items-start gap-4 sm:gap-8 md:gap-12 px-6 overflow-x-auto scrollbar-hide md:overflow-visible pb-6 md:pb-0"
         >
           {loading
             ? fallbackCategories.map((_, i) => (
@@ -129,20 +145,26 @@ export default function Hero() {
                 </div>
               ))
             : categories.map((cat, i) => (
-                <motion.div key={cat._id} variants={fadeUp} className="flex-shrink-0">
+                <motion.div
+                  key={cat._id}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.45, delay: 0.25 + i * 0.07 }}
+                  className="flex-shrink-0"
+                >
                   <Link href={`/products?category=${cat.slug}`} className="flex flex-col items-center gap-3 group">
                     <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}>
                       {cat.image ? (
                         <div className="rounded-full p-1 bg-white/20">
-                          <img src={cat.image} alt={cat.name} className="w-16 h-16 sm:w-20 sm:h-20 md:w-22 md:h-22 rounded-full object-cover" />
+                          <img src={cat.image} alt={cat.name} className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover" />
                         </div>
                       ) : (
-                        <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full ${cat.bg} flex items-center justify-center shadow-lg`}>
-                          <cat.Icon className="w-8 h-8 sm:w-9 sm:h-9 text-white" />
+                        <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full ${cat.bg} flex items-center justify-center shadow-lg`}>
+                          <cat.Icon className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
                         </div>
                       )}
                     </motion.div>
-                    <span className="text-[11px] sm:text-xs font-semibold text-white text-center max-w-[72px] leading-tight">
+                    <span className="text-xs sm:text-sm font-semibold text-white text-center max-w-[84px] leading-tight">
                       {cat.name}
                     </span>
                   </Link>
@@ -152,11 +174,10 @@ export default function Hero() {
 
         {/* App download buttons */}
         <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          transition={{ delay: 0.3 }}
-          className="flex flex-wrap justify-center gap-4 px-4 pt-[120px] pb-16"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 px-6 sm:px-4 pt-8 sm:pt-16 pb-8 sm:pb-16"
         >
           {[
             {
@@ -175,7 +196,7 @@ export default function Hero() {
               href="#"
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
-              className="flex items-center gap-3 bg-dark text-white rounded-xl px-7 py-4 hover:bg-gray-800 transition-colors shadow-md min-w-[160px]"
+              className="flex items-center justify-center gap-3 bg-dark text-white rounded-xl px-8 py-3.5 hover:bg-gray-800 transition-colors shadow-md w-full sm:w-auto"
             >
               <svg viewBox="0 0 24 24" className="w-7 h-7 fill-current flex-shrink-0"><path d={path} /></svg>
               <div className="flex flex-col">
@@ -187,8 +208,6 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* White wave transition to next section */}
-      <div className="absolute bottom-0 inset-x-0 h-16 bg-white" style={{ borderRadius: "50% 50% 0 0 / 100% 100% 0 0" }} />
     </section>
   );
 }

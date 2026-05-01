@@ -127,21 +127,28 @@ export default function ShopsPage() {
       <Navbar />
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative bg-accent overflow-hidden">
-          <div className="relative z-10 pt-[100px] sm:pt-[120px] pb-14 sm:pb-16">
+        <section
+          className="relative"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,${encodeURIComponent('<svg width="1440" height="481" viewBox="0 0 1440 481" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 -384H1440V370.238L1091.82 463.748C1088.28 464.698 1084.65 465.256 1081 465.413L718 481L355.076 465.416C351.37 465.257 347.694 464.686 344.114 463.714L0 370.238V-384Z" fill="#FFD600"/></svg>')}")`,
+            backgroundSize: "100% 100%",
+            backgroundRepeat: "no-repeat",
+            minHeight: `max(340px, ${((481 / 1440) * 100).toFixed(2)}vw)`,
+          }}
+        >
+          <div className="relative z-10 pt-24 sm:pt-28 lg:pt-[100px] pb-8 sm:pb-12 lg:pb-16">
             <motion.h1
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              className="text-center text-4xl sm:text-5xl md:text-6xl font-extrabold text-dark mb-10 px-4 leading-tight"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="text-center text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-dark mb-8 sm:mb-10 px-4 leading-tight"
             >
               Discover Amazing Shops
             </motion.h1>
             <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              transition={{ delay: 0.1 }}
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="max-w-xl mx-auto px-4"
             >
               <div className="flex items-center bg-white rounded-[8px] shadow-xl overflow-hidden">
@@ -164,7 +171,6 @@ export default function ShopsPage() {
               </div>
             </motion.div>
           </div>
-          <div className="absolute bottom-0 inset-x-0 h-12 bg-white" style={{ borderRadius: "50% 50% 0 0 / 100% 100% 0 0" }} />
         </section>
 
         {/* Top Sellers row — hidden while searching */}
@@ -182,7 +188,7 @@ export default function ShopsPage() {
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true }}
-                  className="text-xl sm:text-2xl font-bold text-dark mb-6 flex items-center gap-2"
+                  className="text-xl sm:text-2xl font-bold text-dark mb-6 flex items-center justify-center gap-2 w-full text-center"
                 >
                   Top Sellers <span>⭐</span>
                 </motion.h2>

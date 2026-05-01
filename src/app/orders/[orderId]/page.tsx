@@ -193,7 +193,7 @@ export default function OrderPage() {
     return (
       <>
         <Navbar />
-        <main className="flex-1 bg-gray-50 py-8 px-4 min-h-screen">
+        <main className="flex-1 bg-gray-50 pt-20 sm:pt-24 pb-6 sm:pb-8 px-3 sm:px-4 min-h-screen">
           <div className="max-w-2xl mx-auto space-y-4 animate-pulse">
             <div className="h-6 bg-gray-200 rounded w-48" />
             <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-3">
@@ -284,7 +284,7 @@ export default function OrderPage() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 bg-gray-50 py-8 px-4 min-h-screen">
+      <main className="flex-1 bg-gray-50 pt-20 sm:pt-24 pb-6 sm:pb-8 px-3 sm:px-4 min-h-screen">
         <div className="max-w-2xl mx-auto space-y-4">
 
           {/* Back link */}

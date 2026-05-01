@@ -275,11 +275,11 @@ export default function CheckoutPage() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 bg-gray-50 py-8 px-4">
+      <main className="flex-1 bg-gray-50 pt-20 sm:pt-24 pb-6 sm:pb-8 px-3 sm:px-4">
         <div className="max-w-6xl mx-auto">
           {!isAuthed ? (
             <div className="max-w-md mx-auto">
-              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 sm:p-8">
                 <h1 className="text-xl font-bold text-dark mb-1">Checkout</h1>
                 <p className="text-sm text-gray-500 mb-6">Enter your email to continue as a guest — no password needed.</p>
 
@@ -321,7 +321,7 @@ export default function CheckoutPage() {
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
               {/* ── Left column ── */}
               <div className="lg:col-span-2 space-y-4">
                 <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
