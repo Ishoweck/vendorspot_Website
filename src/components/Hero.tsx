@@ -90,7 +90,7 @@ export default function Hero() {
       </svg>
 
       {/* Content in normal flow */}
-      <div className="relative z-10 pt-24 sm:pt-28 lg:pt-[100px]">
+      <div className="relative z-10 pt-[160px] sm:pt-[180px] lg:pt-[200px]">
 
         {/* Heading */}
         <motion.h1
@@ -177,7 +177,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 px-6 sm:px-4 pt-8 sm:pt-16 pb-8 sm:pb-16"
+          className="flex flex-row flex-wrap justify-center gap-3 sm:gap-4 px-6 sm:px-4 pt-8 sm:pt-16 pb-8 sm:pb-16"
         >
           {[
             {
@@ -196,7 +196,7 @@ export default function Hero() {
               href="#"
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
-              className="flex items-center justify-center gap-3 bg-dark text-white rounded-xl px-8 py-3.5 hover:bg-gray-800 transition-colors shadow-md w-full sm:w-auto"
+              className="flex items-center justify-center gap-3 bg-dark text-white rounded-xl px-6 sm:px-8 py-3.5 hover:bg-gray-800 transition-colors shadow-md w-auto min-w-[150px] sm:min-w-[180px]"
             >
               <svg viewBox="0 0 24 24" className="w-7 h-7 fill-current flex-shrink-0"><path d={path} /></svg>
               <div className="flex flex-col">

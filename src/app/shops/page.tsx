@@ -128,15 +128,15 @@ export default function ShopsPage() {
       <main className="flex-1">
         {/* Hero */}
         <section
-          className="relative"
+          className="relative flex flex-col"
           style={{
-            backgroundImage: `url("data:image/svg+xml,${encodeURIComponent('<svg width="1440" height="481" viewBox="0 0 1440 481" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 -384H1440V370.238L1091.82 463.748C1088.28 464.698 1084.65 465.256 1081 465.413L718 481L355.076 465.416C351.37 465.257 347.694 464.686 344.114 463.714L0 370.238V-384Z" fill="#FFD600"/></svg>')}")`,
+            backgroundImage: `url("data:image/svg+xml,${encodeURIComponent('<svg width="1440" height="481" viewBox="0 0 1440 481" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 -384H1440V370.238L1091.82 463.748C1088.28 464.698 1084.65 465.256 1081 465.413L718 481L355.076 465.416C351.37 465.257 347.694 464.686 344.114 463.714L0 370.238V-384Z" fill="#ffc300"/></svg>')}")`,
             backgroundSize: "100% 100%",
             backgroundRepeat: "no-repeat",
             minHeight: `max(340px, ${((481 / 1440) * 100).toFixed(2)}vw)`,
           }}
         >
-          <div className="relative z-10 pt-24 sm:pt-28 lg:pt-[100px] pb-8 sm:pb-12 lg:pb-16">
+          <div className="relative z-10 flex-1 flex flex-col items-center justify-center pt-16 pb-8 sm:pb-12 lg:pb-16">
             <motion.h1
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
@@ -182,13 +182,13 @@ export default function ShopsPage() {
               transition={{ duration: 0.3 }}
               className="pt-8 sm:pt-10 pb-10 px-4 overflow-hidden"
             >
-              <div className="max-w-7xl mx-auto px-0 sm:px-2 lg:px-4">
+              <div className="max-w-6xl mx-auto px-4">
                 <motion.h2
                   variants={fadeUp}
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true }}
-                  className="text-xl sm:text-2xl font-bold text-dark mb-6 flex items-center justify-center gap-2 w-full text-center"
+                  className="text-xl sm:text-2xl font-bold text-dark mb-6 flex items-center gap-2"
                 >
                   Top Sellers <span>⭐</span>
                 </motion.h2>

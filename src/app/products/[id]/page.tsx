@@ -13,6 +13,7 @@ import {
   FiLink, FiUserPlus, FiX, FiCopy, FiCheck, FiSend,
   FiChevronDown, FiChevronUp,
 } from "react-icons/fi";
+import { useCart } from "@/lib/CartContext";
 import { FaFacebook, FaInstagram, FaWhatsapp } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 
@@ -63,6 +64,15 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState(0);
   const [saved, setSaved] = useState(false);
+  const [addedToCart, setAddedToCart] = useState(false);
+  const { addToCart } = useCart();
+
+  const handleAddToCart = async () => {
+    if (!product) return;
+    await addToCart(product.id, { _id: product.id, name: product.name, price: product.price, images: product.images || [] }, 1);
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 1500);
+  };
 
   // Ask a question state
   const [showAskModal, setShowAskModal] = useState(false);
@@ -329,8 +339,14 @@ export default function ProductDetailPage() {
                       </div>
                     )}
 
-                    <button className="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 rounded-xl mb-3 transition-colors">
-                      Select variation
+                    <button
+                      onClick={handleAddToCart}
+                      className={`w-full font-semibold py-3 rounded-xl mb-3 transition-colors flex items-center justify-center gap-2 ${
+                        addedToCart ? "bg-green-500 text-white" : "bg-primary hover:bg-primary/90 text-white"
+                      }`}
+                    >
+                      {addedToCart ? <FiCheck className="w-4 h-4" /> : <FiShoppingCart className="w-4 h-4" />}
+                      {addedToCart ? "Added to Cart!" : "Add to Cart"}
                     </button>
 
                     {/* Referral + Ask */}

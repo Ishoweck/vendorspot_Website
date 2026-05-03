@@ -34,17 +34,18 @@ function ProductSkeleton() {
 }
 
 function ProductSection({
-  title, icon, titleColor = "text-dark", products, loading, fallback,
+  title, icon, titleColor = "text-dark", products, loading, fallback, horizontal = false,
 }: {
   title: string; icon?: string; titleColor?: string;
   products: Product[] | null; loading: boolean; fallback: typeof fallbackProducts;
+  horizontal?: boolean;
 }) {
   const items = products && products.length > 0 ? products : loading ? [] : fallback;
 
   return (
-    <section className="py-8 sm:py-10 px-4">
+    <section className="py-8 sm:py-10">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-6 sm:mb-8">
+        <div className="flex items-center justify-between mb-6 sm:mb-8 px-4">
           <motion.h2
             variants={fadeUp}
             initial="hidden"
@@ -60,21 +61,36 @@ function ProductSection({
           </a>
         </div>
 
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
-          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"
-        >
-          {loading
-            ? Array.from({ length: 5 }, (_, i) => <ProductSkeleton key={i} />)
-            : items.map((product) => (
-                <motion.div key={product.id || product._id} variants={fadeUp}>
-                  <ProductCard {...product} />
-                </motion.div>
-              ))}
-        </motion.div>
+        {horizontal ? (
+          <div className="flex gap-3 sm:gap-4 overflow-x-auto px-4 pb-3 scrollbar-hide">
+            {loading
+              ? Array.from({ length: 5 }, (_, i) => (
+                  <div key={i} className="flex-shrink-0 w-40 sm:w-44"><ProductSkeleton /></div>
+                ))
+              : items.map((product) => (
+                  <div key={product.id || product._id} className="flex-shrink-0 w-40 sm:w-44">
+                    <ProductCard {...product} />
+                  </div>
+                ))}
+          </div>
+        ) : (
+          <motion.div
+            key={loading ? "loading" : "loaded"}
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-60px" }}
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 px-4"
+          >
+            {loading
+              ? Array.from({ length: 5 }, (_, i) => <ProductSkeleton key={i} />)
+              : items.map((product) => (
+                  <motion.div key={product.id || product._id} variants={fadeUp}>
+                    <ProductCard {...product} />
+                  </motion.div>
+                ))}
+          </motion.div>
+        )}
       </div>
     </section>
   );
@@ -121,7 +137,7 @@ function ProductsPageContent() {
       <main className="flex-1">
         {/* Hero */}
         <section
-          className="relative"
+          className="relative flex flex-col"
           style={{
             backgroundImage: "url('/prod_rec.svg')",
             backgroundSize: "100% 100%",
@@ -129,14 +145,14 @@ function ProductsPageContent() {
             minHeight: `max(340px, ${((481 / 1440) * 100).toFixed(2)}vw)`,
           }}
         >
-          <div className="relative z-10 pt-24 sm:pt-28 lg:pt-[100px] pb-8 sm:pb-12 lg:pb-16">
+          <div className="relative z-10 flex-1 flex flex-col items-center justify-center pt-16 pb-8 sm:pb-12 lg:pb-16">
             <motion.h1
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="text-center text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-8 sm:mb-10 px-4 leading-tight"
             >
-              What do you want to buy?
+              Find your favourite item
             </motion.h1>
             <motion.div
               initial={{ opacity: 0, y: 24 }}
@@ -246,7 +262,7 @@ function ProductsPageContent() {
               transition={{ duration: 0.25 }}
             >
               <ProductSection title="New Arrivals" products={newArrivals} loading={loadingNew} fallback={fallbackProducts} />
-              <ProductSection title="Recommended for you" titleColor="text-primary" products={recommended} loading={loadingRec} fallback={fallbackProducts} />
+              <ProductSection title="Recommended for you" titleColor="text-primary" products={recommended} loading={loadingRec} fallback={fallbackProducts} horizontal />
               <ProductSection title="Flash Sales" icon="🔥" products={flashSales} loading={loadingFlash} fallback={fallbackProducts} />
 
               {/* Digital banner */}

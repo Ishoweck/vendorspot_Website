@@ -33,7 +33,7 @@ export default function Testimonials() {
   };
 
   return (
-    <section className="py-12 sm:py-[120px] bg-primary">
+    <section className="py-16 sm:py-[160px] bg-primary">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.h2
           variants={fadeUp}
@@ -66,9 +66,9 @@ export default function Testimonials() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: dir * -50 }}
                 transition={{ duration: 0.35, ease: "easeOut" }}
-                className="bg-white rounded-2xl px-5 sm:px-10 md:px-12 py-5 sm:py-10 md:py-12 shadow-sm max-w-2xl mx-auto"
+                className="bg-white rounded-2xl px-5 sm:px-8 py-5 sm:py-6 shadow-sm max-w-2xl mx-auto h-[210px] sm:h-[230px] overflow-hidden flex flex-col justify-between"
               >
-                <p className="text-gray-600 text-base sm:text-lg leading-relaxed mb-4 sm:mb-8">
+                <p className="text-gray-600 text-xs sm:text-sm leading-relaxed line-clamp-4 sm:line-clamp-5 mb-0">
                   {testimonials[current].text}
                 </p>
                 <div className="flex items-center gap-4">

@@ -19,16 +19,16 @@ const contactInfo = [
   {
     Icon: FiMail,
     label: "Email Us",
-    value: "support@vendorspot.com",
-    href: "mailto:support@vendorspot.com",
+    value: "support@vendorspotng.com",
+    href: "mailto:support@vendorspotng.com",
     bg: "bg-blue-50",
     iconColor: "text-blue-500",
   },
   {
     Icon: FiPhone,
     label: "Call Us",
-    value: "+234 xxx xxx xxxx",
-    href: "tel:+234000000000",
+    value: "(+234) 704 5882 161",
+    href: "tel:+2347045882161",
     bg: "bg-emerald-50",
     iconColor: "text-emerald-500",
   },
@@ -52,34 +52,24 @@ export default function ContactPage() {
       <Navbar />
       <main className="flex-1">
         {/* Hero */}
-        <section
-          className="relative"
-          style={{
-            backgroundImage: "url('/spot_rec.svg')",
-            backgroundSize: "100% 100%",
-            backgroundRepeat: "no-repeat",
-            minHeight: `max(280px, ${((481 / 1440) * 100).toFixed(2)}vw)`,
-          }}
-        >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.h1
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              className="pt-24 sm:pt-28 lg:pt-[100px] text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-dark leading-tight text-center mb-4"
-            >
-              Get in Touch
-            </motion.h1>
-            <motion.p
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              transition={{ delay: 0.12 }}
-              className="text-center text-sm sm:text-base text-dark/70 pb-8"
-            >
-              We&apos;re here to help. Send us a message and we&apos;ll respond as soon as possible.
-            </motion.p>
-          </div>
+        <section className="w-full bg-primary flex flex-col items-center justify-center py-20 sm:py-28 px-4" style={{ minHeight: "280px" }}>
+          <motion.h1
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight text-center mb-4 pt-8"
+          >
+            Get in Touch
+          </motion.h1>
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.12 }}
+            className="text-center text-sm sm:text-base text-white/80 max-w-md"
+          >
+            We&apos;re here to help. Send us a message and we&apos;ll respond as soon as possible.
+          </motion.p>
         </section>
 
         {/* Contact info cards */}

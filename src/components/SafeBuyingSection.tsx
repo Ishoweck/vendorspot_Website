@@ -39,7 +39,7 @@ export default function SafeBuyingSection() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white max-w-md leading-tight"
+            className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold text-white md:whitespace-nowrap leading-none"
           >
             Shop with confidence
           </motion.h2>

@@ -59,7 +59,7 @@ export default function TheSpotPage() {
               variants={fadeUp}
               initial="hidden"
               animate="visible"
-              className="pt-20 sm:pt-24 lg:pt-28 text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-extrabold text-dark leading-tight text-center mb-6 sm:mb-10 lg:mb-12"
+              className="pt-24 sm:pt-28 text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-extrabold text-dark leading-tight text-center mb-6 sm:mb-10 lg:mb-12"
             >
               Building a Secure and Trusted<br className="hidden sm:block" /> Platform for everyone.
             </motion.h1>
@@ -209,7 +209,7 @@ export default function TheSpotPage() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-dark rounded-2xl px-5 sm:px-8 md:px-12 py-6 sm:py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 sm:gap-6"
+              className="bg-primary rounded-2xl px-5 sm:px-8 md:px-12 py-6 sm:py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 sm:gap-6"
             >
               <h3 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">Join us.</h3>
               <a href="#" className="flex items-center gap-2 sm:gap-3 text-white text-sm sm:text-base md:text-lg font-semibold hover:opacity-80 transition-opacity flex-shrink-0">
@@ -222,7 +222,7 @@ export default function TheSpotPage() {
           </div>
         </section>
 
-        <div className="bg-white"><FAQ /></div>
+        <div className="bg-white pt-10 sm:pt-16"><FAQ /></div>
         <RefundBanner />
       </main>
       <Footer />

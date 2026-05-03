@@ -10,9 +10,10 @@ import Link from "next/link";
 
 const footerLinks: Record<string, { label: string; href: string }[]> = {
   "About Us": [
-    { label: "Terms & Conditions", href: "/terms" },
-    { label: "Privacy Policy",     href: "/privacy" },
-    { label: "FAQs",               href: "/#faq" },
+    { label: "Terms & Conditions",  href: "/terms" },
+    { label: "Privacy Policy",      href: "/privacy" },
+    { label: "Delete Account",      href: "/delete-account" },
+    { label: "FAQs",                href: "/#faq" },
   ],
   "Customer Care": [
     { label: "Help Center",       href: "/help" },
@@ -21,18 +22,18 @@ const footerLinks: Record<string, { label: string; href: string }[]> = {
     { label: "Returns & Refunds", href: "/refunds" },
   ],
   "Contact Us": [
-    { label: "Lagos, Nigeria",         href: "#" },
-    { label: "support@vendorspot.com", href: "mailto:support@vendorspot.com" },
-    { label: "Tel: +234 xxx xxx xxxx", href: "tel:+234000000000" },
+    { label: "Lagos, Nigeria",              href: "#" },
+    { label: "support@vendorspotng.com",    href: "mailto:support@vendorspotng.com" },
+    { label: "(+234) 704 5882 161",         href: "tel:+2347045882161" },
   ],
 };
 
 const socials = [
-  { name: "X (Twitter)", Icon: FaXTwitter,    href: "#" },
-  { name: "Facebook",    Icon: FaFacebookF,   href: "#" },
-  { name: "TikTok",      Icon: FaTiktok,      href: "#" },
-  { name: "Instagram",   Icon: FiInstagram,   href: "#" },
-  { name: "LinkedIn",    Icon: FaLinkedinIn,  href: "#" },
+  { name: "X (Twitter)", Icon: FaXTwitter,    href: "https://x.com/vendorsspot" },
+  { name: "Facebook",    Icon: FaFacebookF,   href: "https://www.facebook.com/onlinetradefair" },
+  { name: "TikTok",      Icon: FaTiktok,      href: "https://www.tiktok.com/@vendorsspot" },
+  { name: "Instagram",   Icon: FiInstagram,   href: "https://www.instagram.com/vendorsspot" },
+  { name: "LinkedIn",    Icon: FaLinkedinIn,  href: "https://www.linkedin.com/company/vendorspot/" },
 ];
 
 const appButtons = [
@@ -82,24 +83,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* App download buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-            {appButtons.map(({ label, sub, path }) => (
-              <motion.a
-                key={label}
-                href="#"
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.97 }}
-                className="flex items-center gap-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl px-6 py-2.5 transition-colors border border-gray-600 flex-1 sm:flex-none"
-              >
-                <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current flex-shrink-0"><path d={path} /></svg>
-                <div className="flex flex-col">
-                  <span className="text-[10px] text-white/60 leading-none">{sub}</span>
-                  <span className="text-sm font-bold leading-snug">{label}</span>
-                </div>
-              </motion.a>
-            ))}
-          </div>
         </div>
       </motion.div>
 

@@ -16,30 +16,31 @@ export default function TopSellers() {
   const sellers = (vendors || []).slice(0, 7);
 
   return (
-    <section className="py-[100px] sm:py-[120px] bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="my-6 sm:my-8 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="bg-gradient-to-r from-indigo-600 to-purple-500 rounded-2xl px-6 sm:px-10 py-8"
+          className="rounded-xl px-4 sm:px-6 py-3 sm:py-4 w-full max-w-xl"
+          style={{ background: "#8744ff" }}
         >
-          <h3 className="text-white text-xl sm:text-2xl font-bold mb-8">Top Sellers ⭐</h3>
+          <h3 className="text-white text-sm font-bold mb-3">Top Sellers ⭐</h3>
 
-          <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
+          <div className="flex flex-wrap gap-3 sm:gap-4">
             {loading
               ? Array.from({ length: 7 }, (_, i) => (
-                  <div key={i} className="flex flex-col items-center gap-2 animate-pulse">
-                    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/20" />
-                    <div className="w-12 h-2.5 bg-white/20 rounded" />
+                  <div key={i} className="flex flex-col items-center gap-1 animate-pulse">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/20" />
+                    <div className="w-10 h-2 bg-white/20 rounded" />
                   </div>
                 ))
               : sellers.map((vendor, i) => (
                   <motion.div
                     key={vendor.id}
                     variants={fadeUp}
-                    className="flex flex-col items-center gap-2"
+                    className="flex flex-col items-center gap-1"
                   >
                     <Link href={`/shops/${vendor.id}`}>
                       <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
@@ -47,17 +48,17 @@ export default function TopSellers() {
                           <img
                             src={vendor.image}
                             alt={vendor.name}
-                            className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-white shadow-md object-cover"
+                            className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-white/60 shadow object-cover"
                           />
                         ) : (
-                          <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full ${colors[i % colors.length]} border-2 border-white flex items-center justify-center text-white text-lg font-bold shadow-md`}>
+                          <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full ${colors[i % colors.length]} border border-white/60 flex items-center justify-center text-white text-sm font-bold shadow`}>
                             {vendor.name?.charAt(0) || "?"}
                           </div>
                         )}
                       </motion.div>
                     </Link>
-                    <span className="text-white/90 text-[10px] sm:text-xs text-center truncate w-full max-w-[64px]">
-                      {vendor.name?.length > 10 ? vendor.name.slice(0, 9) + "…" : vendor.name}
+                    <span className="text-white/80 text-[9px] text-center truncate w-full max-w-[56px]">
+                      {vendor.name?.length > 8 ? vendor.name.slice(0, 7) + "…" : vendor.name}
                     </span>
                   </motion.div>
                 ))}
