@@ -10,10 +10,14 @@ export default function AffiliateLandingPage() {
   const { code } = useParams<{ code: string }>();
   const [attempted, setAttempted] = useState(false);
 
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
+
   useEffect(() => {
     if (!code) return;
     // Store affiliate code in sessionStorage so checkout can pick it up
     sessionStorage.setItem("affiliateCode", code);
+    // Track the click
+    fetch(`${API_BASE}/affiliate/track/${code}`).catch(() => {});
 
     // Try to open app
     const deepLink = `vendorspot://affiliate/${code}`;

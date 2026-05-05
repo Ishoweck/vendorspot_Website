@@ -213,7 +213,9 @@ export default function CheckoutPage() {
 
     setPlacingOrder(true);
     try {
-      const body = {
+      const pendingAffiliateCode = sessionStorage.getItem("affiliateCode") || undefined;
+
+      const body: Record<string, unknown> = {
         shippingAddress: {
           street: selectedAddress.street,
           city: selectedAddress.city,
@@ -225,6 +227,7 @@ export default function CheckoutPage() {
         selectedDeliveryPrice: selectedRate.price,
         selectedCourier: selectedRate.courier,
         vendorBreakdown: selectedRate.vendorBreakdown || [],
+        ...(pendingAffiliateCode && { affiliateCode: pendingAffiliateCode }),
       };
 
       if (paymentMethod === "paystack") {
@@ -258,6 +261,7 @@ export default function CheckoutPage() {
         });
         const json = await res.json();
         if (json.success) {
+          sessionStorage.removeItem("affiliateCode");
           await clearCart();
           const orderId = json.data?.order?._id || "new";
           router.push(`/orders/${orderId}?confirmed=true`);

@@ -56,10 +56,13 @@ export default function ProductDetailPage() {
   const params = useParams();
   const id = params?.id as string;
 
-  // Capture affiliate ref from URL and persist for checkout
+  // Capture affiliate ref from URL, persist for checkout, and track the click
   useEffect(() => {
     const ref = new URLSearchParams(window.location.search).get("ref");
-    if (ref) sessionStorage.setItem("affiliateCode", ref);
+    if (!ref) return;
+    sessionStorage.setItem("affiliateCode", ref);
+    // Fire-and-forget click tracking
+    fetch(`${API_BASE}/affiliate/track/${ref}`).catch(() => {});
   }, []);
 
   const [product, setProduct] = useState<ProductDetail | null>(null);

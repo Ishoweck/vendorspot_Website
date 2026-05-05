@@ -41,6 +41,7 @@ export default function PaymentCallbackPage() {
         });
         const json = await res.json();
         if (json.success) {
+          sessionStorage.removeItem("affiliateCode");
           await clearCart();
           const id = json.data?.order?.orderNumber || json.data?.order?._id || reference;
           setOrderId(id);
