@@ -101,6 +101,17 @@ export default function ShopDetailPage() {
     }
   };
 
+  const openInApp = () => {
+    const deepLink = `vendorspot://vendor/${id}`;
+    window.location.href = deepLink;
+    setTimeout(() => {
+      window.location.href =
+        /android/i.test(navigator.userAgent)
+          ? "https://play.google.com/store/apps/details?id=com.vendorspot.app"
+          : "https://apps.apple.com/app/vendorspot/id000000000";
+    }, 1500);
+  };
+
   const handleShare = async () => {
     const url = window.location.href;
     const title = vendor?.businessName ? `${vendor.businessName} on Vendorspot` : "Check out this shop on Vendorspot";
@@ -172,6 +183,19 @@ export default function ShopDetailPage() {
     <>
       <Navbar />
       <main className="bg-gray-50 min-h-screen pt-16 pb-16">
+        {/* Open in App Banner */}
+        <div className="bg-[#CC3366] text-white px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <img src="/VLogo.svg" alt="Vendorspot" className="w-7 h-7 rounded" />
+            <span className="text-sm font-medium">View this store in the Vendorspot app</span>
+          </div>
+          <button
+            onClick={openInApp}
+            className="bg-white text-[#CC3366] text-xs font-bold px-4 py-1.5 rounded-full whitespace-nowrap"
+          >
+            Open App
+          </button>
+        </div>
 
         {/* ── Banner ── */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative h-32 sm:h-40 w-full bg-gradient-to-r from-gray-200 to-gray-300 overflow-hidden">

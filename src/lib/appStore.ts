@@ -2,7 +2,7 @@
 // Android package:  com.vendorspot.app
 // iOS bundle ID:    com.vendorspotng.vendorspot
 // URL scheme:       vendorspot://   (registered in app.json "scheme")
-// Universal Links:  applinks:vendorspot.com  (iOS associated domains)
+// Universal Links:  applinks:vendorspotng.com  (iOS associated domains)
 //
 // TODO: replace APP_STORE_URL numeric ID once the app is published on App Store
 export const APP_STORE_URL    = "https://apps.apple.com/app/vendorspot/id000000000"; // replace numeric id after App Store submission
@@ -11,7 +11,7 @@ export const ANDROID_PACKAGE  = "com.vendorspot.app";
 export const IOS_BUNDLE_ID    = "com.vendorspotng.vendorspot";
 
 // Universal Link (opens app on iOS if installed, falls back to website which can redirect to store)
-export const IOS_UNIVERSAL_LINK = "https://vendorspot.com/vendor-signup";
+export const IOS_UNIVERSAL_LINK = "https://vendorspotng.com/vendor-signup";
 // Custom scheme deep link (works on both platforms; Android Intent URL used for Android for reliable fallback)
 export const APP_DEEP_LINK    = "vendorspot://vendor-signup";
 // ────────────────────────────────────────────────────────────────────────────
@@ -34,7 +34,7 @@ export function detectOS(): OS {
  */
 export function openAppOrStore(os: OS = detectOS()) {
   if (os === "ios") {
-    // Universal Link: iOS opens the app if installed (via associated domain applinks:vendorspot.com),
+    // Universal Link: iOS opens the app if installed (via associated domain applinks:vendorspotng.com),
     // otherwise the website can handle the redirect to the App Store.
     // Falls back to App Store URL after 1.4s in case Universal Links aren't set up yet.
     window.location.href = IOS_UNIVERSAL_LINK;

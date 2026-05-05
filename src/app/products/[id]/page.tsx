@@ -56,6 +56,12 @@ export default function ProductDetailPage() {
   const params = useParams();
   const id = params?.id as string;
 
+  // Capture affiliate ref from URL and persist for checkout
+  useEffect(() => {
+    const ref = new URLSearchParams(window.location.search).get("ref");
+    if (ref) sessionStorage.setItem("affiliateCode", ref);
+  }, []);
+
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [vendor, setVendor] = useState<VendorDetail | null>(null);
   const [similar, setSimilar] = useState<ProductDetail[]>([]);
@@ -88,6 +94,21 @@ export default function ProductDetailPage() {
   const [showReferralCard, setShowReferralCard] = useState(false);
   const [referralError, setReferralError] = useState("");
   const [copied, setCopied] = useState(false);
+
+  const openInApp = () => {
+    const deepLink = `vendorspot://products/${id}`;
+    const fallback = `https://vendorspotng.com/products/${id}`;
+    const start = Date.now();
+    window.location.href = deepLink;
+    setTimeout(() => {
+      if (Date.now() - start < 2000) {
+        window.location.href =
+          /android/i.test(navigator.userAgent)
+            ? "https://play.google.com/store/apps/details?id=com.vendorspot.app"
+            : "https://apps.apple.com/app/vendorspot/id000000000";
+      }
+    }, 1500);
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -265,6 +286,19 @@ export default function ProductDetailPage() {
     <>
       <Navbar />
       <main className="bg-gray-50 min-h-screen pt-16 pb-16">
+        {/* Open in App Banner */}
+        <div className="bg-[#CC3366] text-white px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <img src="/VLogo.svg" alt="Vendorspot" className="w-7 h-7 rounded" />
+            <span className="text-sm font-medium">Get a better experience in the app</span>
+          </div>
+          <button
+            onClick={openInApp}
+            className="bg-white text-[#CC3366] text-xs font-bold px-4 py-1.5 rounded-full whitespace-nowrap"
+          >
+            Open App
+          </button>
+        </div>
         {/* Breadcrumb */}
         <div className="max-w-6xl mx-auto px-4 py-4 text-xs text-gray-500 flex items-center gap-1.5">
           <Link href="/" className="hover:text-primary transition-colors">Home</Link>
