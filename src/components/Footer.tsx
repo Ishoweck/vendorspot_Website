@@ -132,7 +132,7 @@ export default function Footer() {
             </motion.a>
           ))}
         </div>
-        <p className="text-center text-gray-500 text-xs">© 2025 Vendorspot (Yekini) Ltd. All rights reserved.</p>
+        <p className="text-center text-gray-500 text-xs">© 2024 Vendorspot. All rights reserved.</p>
       </div>
     </footer>
   );
