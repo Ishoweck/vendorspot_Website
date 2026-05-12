@@ -48,9 +48,7 @@ export default function TheSpotPage() {
         <section
           className="relative"
           style={{
-            backgroundImage: "url('/spot_rec.svg')",
-            backgroundSize: "100% 100%",
-            backgroundRepeat: "no-repeat",
+            backgroundColor: "rgba(138, 56, 245, 0.2)",
             minHeight: `max(240px, ${((865 / 1440) * 100).toFixed(2)}vw)`,
           }}
         >

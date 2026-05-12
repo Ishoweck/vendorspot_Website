@@ -71,24 +71,9 @@ export default function Hero() {
 
   return (
     <section
-      className="relative overflow-hidden"
+      className="relative overflow-hidden bg-primary"
       style={{ minHeight: `max(660px, ${((865 / 1440) * 100).toFixed(2)}vw)` }}
     >
-      {/* Inline SVG — renders immediately with no network request, guarantees red background from top on all devices */}
-      <svg
-        aria-hidden="true"
-        className="absolute top-0 left-0 w-full pointer-events-none select-none"
-        style={{ height: `max(660px, ${((865 / 1440) * 100).toFixed(2)}vw)` }}
-        viewBox="0 0 1440 865"
-        preserveAspectRatio="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M0 0H1440V754.238L1091.82 847.748C1088.28 848.698 1084.65 849.256 1081 849.413L718 865L355.076 849.416C351.37 849.257 347.694 848.686 344.114 847.714L0 754.238V0Z"
-          fill="#D7004B"
-        />
-      </svg>
-
       {/* Content in normal flow */}
       <div className="relative z-10 pt-[160px] sm:pt-[180px] lg:pt-[200px]">
 

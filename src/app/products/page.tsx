@@ -139,9 +139,7 @@ function ProductsPageContent() {
         <section
           className="relative flex flex-col"
           style={{
-            backgroundImage: "url('/prod_rec.svg')",
-            backgroundSize: "100% 100%",
-            backgroundRepeat: "no-repeat",
+            backgroundColor: "#8A38F5",
             minHeight: `max(340px, ${((481 / 1440) * 100).toFixed(2)}vw)`,
           }}
         >

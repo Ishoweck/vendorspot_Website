@@ -130,9 +130,7 @@ export default function ShopsPage() {
         <section
           className="relative flex flex-col"
           style={{
-            backgroundImage: `url("data:image/svg+xml,${encodeURIComponent('<svg width="1440" height="481" viewBox="0 0 1440 481" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 -384H1440V370.238L1091.82 463.748C1088.28 464.698 1084.65 465.256 1081 465.413L718 481L355.076 465.416C351.37 465.257 347.694 464.686 344.114 463.714L0 370.238V-384Z" fill="#ffc300"/></svg>')}")`,
-            backgroundSize: "100% 100%",
-            backgroundRepeat: "no-repeat",
+            backgroundColor: "#FFD600",
             minHeight: `max(340px, ${((481 / 1440) * 100).toFixed(2)}vw)`,
           }}
         >

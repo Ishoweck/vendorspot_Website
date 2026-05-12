@@ -14,23 +14,9 @@ export default function SafeBuyingSection() {
   const h = `max(800px, ${((948 / 1440) * 100).toFixed(2)}vw)`;
   return (
     <section
-      className="relative overflow-hidden py-24 sm:py-[120px]"
+      className="relative overflow-hidden py-24 sm:py-[120px] bg-primary"
       style={{ minHeight: h }}
     >
-      <svg
-        aria-hidden="true"
-        className="absolute top-0 left-0 w-full pointer-events-none select-none"
-        style={{ height: h }}
-        viewBox="0 0 1440 948"
-        preserveAspectRatio="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M0 851.885L349.5 921.64L718.5 948L1086.5 921.64L1440 851.885V109.083L1091.75 16.9714C1088.26 16.0487 1084.68 15.5063 1081.08 15.3539L718 0L354.996 15.3508C351.343 15.5053 347.718 16.0599 344.186 17.0048L0 109.083V851.885Z"
-          fill="#D7004B"
-        />
-      </svg>
-
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Text row */}
         <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-5 sm:gap-6 mb-6 sm:mb-14 md:mb-18">

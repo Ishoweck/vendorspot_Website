@@ -23,7 +23,7 @@ export default function RefundBanner() {
     <section className="relative bg-white overflow-hidden pt-24 sm:pt-32">
       <div
         className="absolute inset-x-0 bottom-0 bg-dark"
-        style={{ height: "80%", clipPath: "ellipse(85% 100% at 50% 100%)" }}
+        style={{ height: "80%" }}
       />
 
       <div className="relative z-10 text-center px-6 pb-16 sm:pb-20 pt-10 sm:pt-14">
