@@ -12,12 +12,12 @@ import { useApi } from "@/lib/useApi";
 import type { Product } from "@/lib/api";
 import { fadeUp, stagger } from "@/lib/motion";
 
+// Shown while the real API data is loading so the layout doesn't shift
 const fallbackProducts = Array.from({ length: 5 }, (_, i) => ({
   id: String(i), _id: String(i),
   name: "Sample Product", price: 45000, compareAtPrice: 56250, discountPercentage: 20,
   averageRating: 4.8, totalReviews: 120, images: [], slug: "",
   color: ["bg-red-100","bg-amber-100","bg-emerald-100","bg-sky-100","bg-violet-100"][i],
-  emoji: "📦",
 }));
 
 function ProductSkeleton() {
@@ -120,6 +120,7 @@ function ProductsPageContent() {
     router.push("/products");
   };
 
+  // Passing null to useApi skips the fetch entirely — used to disable browse sections while searching
   const searchEndpoint = urlQuery
     ? `/products/search?q=${encodeURIComponent(urlQuery)}&limit=20`
     : null;
@@ -223,7 +224,7 @@ function ProductsPageContent() {
                       animate={{ opacity: 1 }}
                       className="flex flex-col items-center justify-center py-24 text-center"
                     >
-                      <div className="text-5xl mb-4">🔍</div>
+                      <FiSearch className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                       <p className="text-lg font-semibold text-gray-700 mb-2">No products found</p>
                       <p className="text-sm text-gray-400 mb-6">Try a different keyword or browse categories below</p>
                       <button
@@ -261,7 +262,7 @@ function ProductsPageContent() {
             >
               <ProductSection title="New Arrivals" products={newArrivals} loading={loadingNew} fallback={fallbackProducts} />
               <ProductSection title="Recommended for you" titleColor="text-primary" products={recommended} loading={loadingRec} fallback={fallbackProducts} horizontal />
-              <ProductSection title="Flash Sales" icon="🔥" products={flashSales} loading={loadingFlash} fallback={fallbackProducts} />
+              <ProductSection title="Flash Sales" products={flashSales} loading={loadingFlash} fallback={fallbackProducts} />
 
               {/* Digital banner */}
               <section className="px-4 py-5 sm:py-6">
@@ -286,7 +287,7 @@ function ProductsPageContent() {
                 </motion.div>
               </section>
 
-              <ProductSection title="Digital Products" icon="📦" products={digital} loading={loadingDigital} fallback={fallbackProducts} />
+              <ProductSection title="Digital Products" products={digital} loading={loadingDigital} fallback={fallbackProducts} />
               <ProductSection title="Trending Now" products={trending} loading={loadingTrend} fallback={fallbackProducts} />
 
               <RefundBanner />

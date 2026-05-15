@@ -11,6 +11,7 @@ const phones = [
 ];
 
 export default function SafeBuyingSection() {
+  // Locks the aspect ratio to the original design canvas (948×1440) while clamping to a minimum
   const h = `max(800px, ${((948 / 1440) * 100).toFixed(2)}vw)`;
   return (
     <section
@@ -49,6 +50,7 @@ export default function SafeBuyingSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.65, delay: i * 0.14, ease: [0.25, 0.46, 0.45, 0.94] }}
+              // Center two phones are larger and always visible; outer two are smaller and hidden on mobile
               className={`relative ${
                 i === 1 || i === 2
                   ? "w-36 sm:w-44 md:w-56 z-10"

@@ -11,7 +11,7 @@ import {
   FiHeart, FiChevronLeft, FiChevronRight, FiShare2,
   FiMessageCircle, FiMapPin, FiShoppingCart, FiStar,
   FiLink, FiUserPlus, FiX, FiCopy, FiCheck, FiSend,
-  FiChevronDown, FiChevronUp,
+  FiChevronDown, FiChevronUp, FiPackage,
 } from "react-icons/fi";
 import { useCart } from "@/lib/CartContext";
 import { FaFacebook, FaInstagram, FaWhatsapp } from "react-icons/fa";
@@ -56,12 +56,12 @@ export default function ProductDetailPage() {
   const params = useParams();
   const id = params?.id as string;
 
-  // Capture affiliate ref from URL, persist for checkout, and track the click
+  // Capture ?ref= from the URL so checkout can credit the affiliate even after the user
+  // navigates away from this product page before completing the purchase
   useEffect(() => {
     const ref = new URLSearchParams(window.location.search).get("ref");
     if (!ref) return;
     sessionStorage.setItem("affiliateCode", ref);
-    // Fire-and-forget click tracking
     fetch(`${API_BASE}/affiliate/track/${ref}`).catch(() => {});
   }, []);
 
@@ -327,7 +327,7 @@ export default function ProductDetailPage() {
                       {images.length > 0 ? (
                         <img src={images[activeImage]} alt={product.name} className="w-full h-full object-contain" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-6xl">📦</div>
+                        <div className="w-full h-full flex items-center justify-center"><FiPackage className="w-16 h-16 text-gray-300" /></div>
                       )}
                     </div>
                     {images.length > 1 && (
@@ -561,7 +561,7 @@ export default function ProductDetailPage() {
                     <div className="flex items-center gap-1.5 mb-1">
                       <p className="text-sm font-bold text-dark">{vendor?.businessName || product.vendor?.name || "Vendor"}</p>
                       {(vendor?.verificationStatus === "verified" || product.vendor?.verified) && (
-                        <span className="text-primary text-sm">✔</span>
+                        <FiCheck className="w-4 h-4 text-primary flex-shrink-0" strokeWidth={2.5} />
                       )}
                     </div>
                     {vendor && (
@@ -607,7 +607,7 @@ export default function ProductDetailPage() {
                           <div>
                             <p className="text-xs font-semibold text-dark">
                               {r.user?.firstName} {r.user?.lastName}
-                              {r.verified && <span className="text-primary ml-1 text-[10px]">✔ Verified</span>}
+                              {r.verified && <span className="text-primary ml-1 text-[10px] inline-flex items-center gap-0.5"><FiCheck className="w-2.5 h-2.5" strokeWidth={3} /> Verified</span>}
                             </p>
                             <StarRating rating={r.rating} />
                           </div>

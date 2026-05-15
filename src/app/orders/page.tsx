@@ -105,7 +105,7 @@ export default function OrdersPage() {
                           {firstItem?.product?.images?.[0] ? (
                             <img src={firstItem.product.images[0]} alt={firstItem.product.name} className="w-full h-full object-cover" />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-xl">📦</div>
+                            <div className="w-full h-full flex items-center justify-center"><FiPackage className="w-5 h-5 text-gray-400" /></div>
                           )}
                         </div>
 

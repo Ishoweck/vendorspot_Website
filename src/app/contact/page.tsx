@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FAQ from "@/components/FAQ";
-import { FiMail, FiMapPin, FiPhone, FiSend } from "react-icons/fi";
+import { FiMail, FiMapPin, FiPhone, FiSend, FiCheck } from "react-icons/fi";
 import { fadeUp, slideLeft, slideRight, stagger } from "@/lib/motion";
 
 const contactInfo = [
@@ -144,7 +144,9 @@ export default function ContactPage() {
                     animate={{ opacity: 1, scale: 1 }}
                     className="bg-emerald-50 border border-emerald-200 rounded-2xl p-8 sm:p-10 text-center"
                   >
-                    <div className="text-4xl mb-4">✅</div>
+                    <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
+                      <FiCheck className="w-6 h-6 text-emerald-500" strokeWidth={2.5} />
+                    </div>
                     <h3 className="text-lg font-bold text-dark mb-2">Message Sent!</h3>
                     <p className="text-gray-500 text-sm">Thanks for reaching out. We&apos;ll get back to you shortly.</p>
                     <button

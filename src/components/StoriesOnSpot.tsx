@@ -38,7 +38,7 @@ export default function StoriesOnSpot() {
             viewport={{ once: true }}
             className="text-3xl sm:text-4xl md:text-5xl font-bold text-dark"
           >
-            Stories on Spot 🌍
+            Stories on Spot
           </motion.h2>
           <Link href="/thespot" className="text-sm font-medium text-gray-500 hover:text-primary transition-colors whitespace-nowrap">
             View All

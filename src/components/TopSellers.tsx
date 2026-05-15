@@ -26,7 +26,7 @@ export default function TopSellers() {
           className="rounded-xl px-4 sm:px-6 py-3 sm:py-4 w-full max-w-xl"
           style={{ background: "#8744ff" }}
         >
-          <h3 className="text-white text-sm font-bold mb-3">Top Sellers ⭐</h3>
+          <h3 className="text-white text-sm font-bold mb-3">Top Sellers</h3>
 
           <div className="flex flex-wrap gap-3 sm:gap-4">
             {loading

@@ -15,6 +15,7 @@ const faqs = [
 ];
 
 export default function FAQ() {
+  // null means all collapsed; initialising to 0 opens the first item on load
   const [active, setActive] = useState<number | null>(0);
 
   return (

@@ -34,6 +34,7 @@ export function useApi<T>(endpoint: string | null) {
       return;
     }
 
+    // Prevents stale setState calls when the component unmounts or the endpoint changes before the request finishes
     let cancelled = false;
 
     async function load() {

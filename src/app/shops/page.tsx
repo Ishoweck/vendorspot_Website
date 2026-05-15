@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
-import { FiSearch, FiMapPin, FiShare2, FiShoppingCart, FiUserPlus, FiX } from "react-icons/fi";
+import { FiSearch, FiMapPin, FiShare2, FiShoppingCart, FiUserPlus, FiX, FiCheck, FiShoppingBag } from "react-icons/fi";
 import { useApi } from "@/lib/useApi";
 import type { VendorProfile } from "@/lib/api";
 import { fadeUp } from "@/lib/motion";
@@ -69,7 +69,7 @@ function ShopCard({ shop, index }: { shop: VendorProfile; index: number }) {
       <div className="px-4 pt-9 pb-4 flex flex-col flex-1 min-h-0">
         <div className="flex items-center gap-1.5 mb-0.5">
           <p className="text-sm font-bold text-dark truncate">{shop.name}</p>
-          {shop.verified && <span className="text-accent text-sm leading-none flex-shrink-0">✔</span>}
+          {shop.verified && <FiCheck className="w-3.5 h-3.5 text-accent flex-shrink-0" strokeWidth={2.5} />}
         </div>
         <div className="flex items-center gap-1 text-xs text-gray-500 mb-1.5">
           <FiMapPin className="w-3 h-3 flex-shrink-0" />
@@ -99,6 +99,7 @@ export default function ShopsPage() {
   const [debouncedQ, setDebouncedQ] = useState("");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // 400ms debounce avoids a fetch on every keystroke while the user is still typing
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
@@ -188,7 +189,7 @@ export default function ShopsPage() {
                   viewport={{ once: true }}
                   className="text-xl sm:text-2xl font-bold text-dark mb-6 flex items-center gap-2"
                 >
-                  Top Sellers <span>⭐</span>
+                  Top Sellers
                 </motion.h2>
                 <div className="flex gap-5 sm:gap-8 overflow-x-auto pb-2 scrollbar-hide justify-start sm:justify-center flex-wrap sm:flex-nowrap">
                   {loading
@@ -274,7 +275,7 @@ export default function ShopsPage() {
                   exit={{ opacity: 0 }}
                   className="flex flex-col items-center justify-center py-24 text-center"
                 >
-                  <div className="text-5xl mb-4">🏪</div>
+                  <FiShoppingBag className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                   <p className="text-lg font-semibold text-gray-700 mb-2">
                     {isSearching ? "No shops found" : "No shops available"}
                   </p>

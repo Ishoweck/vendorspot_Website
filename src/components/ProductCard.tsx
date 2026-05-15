@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { FiHeart, FiShoppingCart, FiStar, FiCheck } from "react-icons/fi";
+import { FiHeart, FiShoppingCart, FiStar, FiCheck, FiPackage } from "react-icons/fi";
 import { useCart } from "@/lib/CartContext";
 import { useToast } from "@/components/Toast";
 
@@ -30,11 +30,13 @@ interface ProductCardProps {
 export default function ProductCard(props: ProductCardProps) {
   const { id, _id, name, price, slug, images, emoji, color = "bg-gray-100" } = props;
 
+  // API returns different field names depending on which endpoint was hit
   const oldPrice = props.oldPrice || props.compareAtPrice || 0;
   const discount = props.discount || props.discountPercentage || (oldPrice > price ? Math.round(((oldPrice - price) / oldPrice) * 100) : 0);
   const rating = props.rating || props.averageRating || 0;
   const reviews = props.reviews || props.totalReviews || 0;
   const productImage = images && images.length > 0 ? images[0] : null;
+  // Backend uses _id; some list responses also include id — prefer _id
   const productId = _id || id || "";
   const href = productId ? `/products/${productId}` : slug ? `/products/${slug}` : "#";
 
@@ -44,6 +46,7 @@ export default function ProductCard(props: ProductCardProps) {
   const [liked, setLiked] = useState(false);
 
   const handleAddToCart = async (e: React.MouseEvent) => {
+    // Stop propagation so clicking the cart button doesn't navigate to product page
     e.preventDefault();
     e.stopPropagation();
     await addToCart(productId, { _id: productId, name, price, images: images || [], slug }, 1);
@@ -80,7 +83,7 @@ export default function ProductCard(props: ProductCardProps) {
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
           ) : (
-            <span className="text-4xl sm:text-5xl opacity-50">{emoji || "📦"}</span>
+            <FiPackage className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300" />
           )}
         </div>
 

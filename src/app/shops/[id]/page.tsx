@@ -104,6 +104,7 @@ export default function ShopDetailPage() {
   const openInApp = () => {
     const deepLink = `vendorspot://vendor/${id}`;
     window.location.href = deepLink;
+    // If the app isn't installed the deep link silently fails, so fall back to the store after 1.5s
     setTimeout(() => {
       window.location.href =
         /android/i.test(navigator.userAgent)
@@ -231,7 +232,7 @@ export default function ShopDetailPage() {
                     {vendor.businessName}
                   </h1>
                   {vendor.verificationStatus === "verified" && (
-                    <span className="text-blue-500 text-base" title="Verified">✔</span>
+                    <FiCheck className="w-4 h-4 text-blue-500 flex-shrink-0" strokeWidth={2.5} title="Verified" />
                   )}
                   {vendor.isPremium && (
                     <span className="bg-yellow-400 text-dark text-[10px] font-bold px-2 py-0.5 rounded-full">PREMIUM</span>

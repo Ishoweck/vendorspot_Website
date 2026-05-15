@@ -1,5 +1,6 @@
 import type { Variants } from "framer-motion";
 
+// [0.25, 0.46, 0.45, 0.94] is Apple's standard ease-in-out cubic-bezier, used across iOS animations
 export const fadeUp: Variants = {
   hidden: { opacity: 0, y: 28 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] } },

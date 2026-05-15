@@ -3,7 +3,9 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
+// Flat placeholder fee shown before the user picks a courier at checkout
 const DELIVERY_FEE = 2500;
+// Key used to persist guest cart across page reloads
 const LOCAL_KEY = "vendorspot_cart";
 
 export interface CartProduct {
@@ -76,6 +78,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<Cart>(emptyCart);
   const [loading, setLoading] = useState(false);
 
+  // Re-fetches the full cart from the server so totals/discounts are always server-authoritative
   const fetchBackend = useCallback(async () => {
     if (!getToken()) return;
     try {
@@ -89,6 +92,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     } catch {}
   }, []);
 
+  // On mount: if the user is logged in, pull their server cart; otherwise hydrate from localStorage
   useEffect(() => {
     if (getToken()) {
       fetchBackend();
@@ -115,6 +119,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         await fetchBackend();
       } else {
         setCart((prev) => {
+          // Guest cart: merge quantities for the same product+variant pair, or append new entry
           const existing = prev.items.find((i) => i.product._id === productId && i.variant === variant);
           const newItems = existing
             ? prev.items.map((i) => (i === existing ? { ...i, quantity: i.quantity + quantity } : i))

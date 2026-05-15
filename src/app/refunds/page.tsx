@@ -2,6 +2,7 @@
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { FiCheck } from "react-icons/fi";
 
 const eligibleReturns = [
   "If the size is correct but the item doesn't fit as expected, you may only return clothing and shoes.",
@@ -61,7 +62,7 @@ export default function RefundsPage() {
               <ul className="space-y-3">
                 {eligibleReturns.map((item, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm sm:text-base text-gray-600 leading-relaxed">
-                    <span className="text-emerald-500 mt-1 flex-shrink-0">✓</span>
+                    <FiCheck className="w-4 h-4 text-emerald-500 mt-1 flex-shrink-0" strokeWidth={2.5} />
                     {item}
                   </li>
                 ))}

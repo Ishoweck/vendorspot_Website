@@ -21,6 +21,8 @@ export default function PaymentCallbackPage() {
   const router = useRouter();
   const { clearCart } = useCart();
 
+  // Paystack appends reference & trxref as query params, but the route already captures it
+  // as orderId because the redirect URL pattern is /orders/{reference}/payment-callback
   const reference = (params.orderId as string) || searchParams.get("reference") || searchParams.get("trxref") || "";
 
   const [status, setStatus] = useState<"loading" | "success" | "failed">("loading");

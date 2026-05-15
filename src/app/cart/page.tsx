@@ -8,7 +8,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import RefundBanner from "@/components/RefundBanner";
 import { useCart } from "@/lib/CartContext";
-import { FiMinus, FiPlus, FiTag, FiLock, FiShoppingBag, FiArrowRight, FiTrash2 } from "react-icons/fi";
+import { FiMinus, FiPlus, FiTag, FiLock, FiShoppingBag, FiArrowRight, FiTrash2, FiPackage } from "react-icons/fi";
 import { fadeUp, stagger } from "@/lib/motion";
 
 export default function CartPage() {
@@ -18,7 +18,8 @@ export default function CartPage() {
   const [couponMsg, setCouponMsg] = useState<{ text: string; ok: boolean } | null>(null);
   const [applyingCoupon, setApplyingCoupon] = useState(false);
 
-  // Check if user is returning from a Paystack payment
+  // Paystack redirects back to the site after payment, which can land here if the user
+  // navigated to /cart first. Pick up the stored reference and forward to the callback route.
   useEffect(() => {
     const pending = localStorage.getItem("vendorspot_pending_payment");
     if (pending) {
@@ -97,7 +98,7 @@ export default function CartPage() {
                             {item.product.images?.[0] ? (
                               <img src={item.product.images[0]} alt={item.product.name} className="w-full h-full object-cover" />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center text-2xl">📦</div>
+                              <div className="w-full h-full flex items-center justify-center"><FiPackage className="w-6 h-6 text-gray-400" /></div>
                             )}
                           </div>
 

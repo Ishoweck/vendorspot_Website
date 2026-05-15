@@ -14,15 +14,14 @@ export default function AffiliateLandingPage() {
 
   useEffect(() => {
     if (!code) return;
-    // Store affiliate code in sessionStorage so checkout can pick it up
     sessionStorage.setItem("affiliateCode", code);
-    // Track the click
     fetch(`${API_BASE}/affiliate/track/${code}`).catch(() => {});
 
-    // Try to open app
+    // Try to hand off to the native app; if the scheme isn't handled the browser stays on this page
     const deepLink = `vendorspot://affiliate/${code}`;
     window.location.href = deepLink;
 
+    // After 1.5s with no navigation we assume the app isn't installed; show the store buttons
     const timer = setTimeout(() => {
       setAttempted(true);
     }, 1500);

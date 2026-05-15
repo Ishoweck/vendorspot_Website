@@ -8,7 +8,7 @@ import Footer from "@/components/Footer";
 import RefundBanner from "@/components/RefundBanner";
 import { useCart } from "@/lib/CartContext";
 import { useToast } from "@/components/Toast";
-import { FiMapPin, FiTag, FiTruck, FiChevronRight, FiCheck, FiPlus, FiCreditCard, FiLoader } from "react-icons/fi";
+import { FiMapPin, FiTag, FiTruck, FiChevronRight, FiCheck, FiPlus, FiCreditCard, FiLoader, FiPackage } from "react-icons/fi";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
 
@@ -80,11 +80,10 @@ export default function CheckoutPage() {
           if (json.data?.user) localStorage.setItem("vendorspot_user", JSON.stringify(json.data.user));
           setIsAuthed(true);
           toast("Welcome! You can set your password later via email.", "success");
-          // reload addresses now that we have a token
           loadAddresses();
         }
       } else {
-        // Email already exists — redirect to login
+        // Email already has a full account — guest-register would create a duplicate, so redirect to login
         toast(json.message || "Email already registered. Please log in.", "info");
         setTimeout(() => router.push("/login"), 1500);
       }
@@ -190,7 +189,8 @@ export default function CheckoutPage() {
       const res = await fetch(`${API_BASE}/orders/delivery-rates?${params}`, { headers: authHeaders() });
       const json = await res.json();
       if (json.success) {
-        const list: DeliveryRate[] = (json.data?.rates || []).filter(
+        // Strip pickup options — this site only supports home delivery
+      const list: DeliveryRate[] = (json.data?.rates || []).filter(
           (r: DeliveryRate) => r.type !== "store_pickup" && r.type !== "pickup" && r.type !== "self_pickup"
         );
         setRates(list);
@@ -213,6 +213,7 @@ export default function CheckoutPage() {
 
     setPlacingOrder(true);
     try {
+      // Affiliate code is stored by the product page or affiliate landing page; clear it after use
       const pendingAffiliateCode = sessionStorage.getItem("affiliateCode") || undefined;
 
       const body: Record<string, unknown> = {
@@ -241,6 +242,8 @@ export default function CheckoutPage() {
           const authUrl = json.data?.payment?.authorization_url;
           const reference = json.data?.payment?.reference || json.data?.reference;
           const orderId = json.data?.order?._id || json.data?.orderId;
+          // Persist reference + orderId before redirecting so the callback page can verify
+          // the correct order even after the browser does a full reload
           if (reference && orderId) {
             localStorage.setItem("vendorspot_pending_payment", JSON.stringify({ reference, orderId }));
           }
@@ -488,7 +491,7 @@ export default function CheckoutPage() {
                               : "border-gray-200 text-gray-600 hover:border-gray-300"
                           }`}
                         >
-                          {method === "paystack" ? "💳 Pay with Card (Paystack)" : "👛 Pay with Wallet"}
+                          {method === "paystack" ? "Pay with Card (Paystack)" : "Pay with Wallet"}
                         </button>
                       ))}
                     </div>
@@ -567,7 +570,7 @@ export default function CheckoutPage() {
                             {item.product.images?.[0] ? (
                               <img src={item.product.images[0]} alt={item.product.name} className="w-full h-full object-cover" />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center text-base">📦</div>
+                              <div className="w-full h-full flex items-center justify-center"><FiPackage className="w-4 h-4 text-gray-400" /></div>
                             )}
                           </div>
                           <div className="flex-1 min-w-0">

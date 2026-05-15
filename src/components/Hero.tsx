@@ -39,6 +39,7 @@ const categoryIconMap: Record<string, { Icon: IconType; bg: string }> = {
   food:              { Icon: MdOutlineFastfood,        bg: "bg-rose-500"   },
 };
 
+// Substring match so "Digital Products" still hits the "digital" key
 function getCategoryIcon(name: string): { Icon: IconType; bg: string } {
   const key = name.toLowerCase();
   for (const [match, style] of Object.entries(categoryIconMap)) {
@@ -72,6 +73,7 @@ export default function Hero() {
   return (
     <section
       className="relative overflow-hidden bg-primary"
+      // Preserves the 865×1440 design-canvas aspect ratio; 660px floor keeps it usable on very narrow viewports
       style={{ minHeight: `max(660px, ${((865 / 1440) * 100).toFixed(2)}vw)` }}
     >
       {/* Content in normal flow */}

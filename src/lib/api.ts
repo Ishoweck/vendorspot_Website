@@ -2,6 +2,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v
 
 async function fetcher<T>(endpoint: string): Promise<T> {
   const res = await fetch(`${API_BASE}${endpoint}`, {
+    // Tell Next.js to cache this response and revalidate after 60s (ISR pattern)
     next: { revalidate: 60 },
   });
   if (!res.ok) throw new Error(`API error: ${res.status}`);
@@ -33,6 +34,7 @@ export async function getCategoryTree() {
 }
 
 // --- Products ---
+// Both id and _id exist because different endpoints return different shapes
 export interface Product {
   id: string;
   _id?: string;

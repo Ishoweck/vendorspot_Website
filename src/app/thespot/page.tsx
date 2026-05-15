@@ -10,7 +10,7 @@ import {
   FiArrowRight, FiChevronLeft, FiChevronRight,
   FiStar, FiShield, FiUsers, FiClipboard,
   FiTwitter, FiInstagram, FiLinkedin,
-  FiZap, FiEye, FiHeart, FiTrendingUp,
+  FiZap, FiEye, FiHeart, FiTrendingUp, FiUser,
 } from "react-icons/fi";
 import { fadeUp, slideLeft, slideRight, stagger } from "@/lib/motion";
 
@@ -169,7 +169,9 @@ export default function TheSpotPage() {
                     className="bg-white rounded-2xl overflow-hidden shadow-lg"
                   >
                     <div className="flex flex-col sm:flex-row">
-                      <div className="w-full sm:w-1/2 bg-gray-100 flex items-center justify-center text-4xl sm:text-5xl min-h-[160px] sm:min-h-[360px] md:min-h-[420px]">👤</div>
+                      <div className="w-full sm:w-1/2 bg-gray-100 flex items-center justify-center min-h-[160px] sm:min-h-[360px] md:min-h-[420px]">
+                        <FiUser className="w-16 h-16 sm:w-20 sm:h-20 text-gray-400" />
+                      </div>
                       <div className="w-full sm:w-1/2 p-5 sm:p-8 md:p-10 flex flex-col justify-center gap-4">
                         <div className="w-3 h-3 bg-primary rounded-full" />
                         <hr className="border-gray-200" />

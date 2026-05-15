@@ -25,6 +25,7 @@ const testimonials = [
 
 export default function Testimonials() {
   const [current, setCurrent] = useState(0);
+  // dir drives the slide animation: 1 = slide left (forward), -1 = slide right (backward)
   const [dir, setDir] = useState(1);
 
   const go = (next: number) => {

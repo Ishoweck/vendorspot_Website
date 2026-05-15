@@ -19,7 +19,7 @@ const appButtons = [
 
 export default function RefundBanner() {
   return (
-    /* Large white top area so the oval arch sits high — text then has plenty of dark room below it */
+    // White background at the top creates an arch/reveal effect; the dark block covers the bottom 80%
     <section className="relative bg-white overflow-hidden pt-24 sm:pt-32">
       <div
         className="absolute inset-x-0 bottom-0 bg-dark"

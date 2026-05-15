@@ -78,6 +78,7 @@ function StatusTracker({ status }: { status: string }) {
     );
   }
 
+  // in_transit and shipped share the same visual step — the tracker has no separate in_transit node
   const currentIndex = STATUS_STEPS.indexOf(status === "in_transit" ? "shipped" : status);
 
   return (
@@ -150,8 +151,8 @@ export default function OrderPage() {
       .finally(() => setLoading(false));
   }, [orderId]);
 
-  // Resolve a reliable item ID: prefer _id/id string, fall back to "item-{index}"
-  // which the backend also supports via its index-based lookup branch
+  // Backend download endpoint accepts either the Mongo _id or "item-{index}" as a fallback;
+  // older orders may not have _id populated on embedded items
   const resolveItemId = (item: OrderItem, index: number): string =>
     item._id?.toString() || item.id?.toString() || `item-${index}`;
 
@@ -370,7 +371,7 @@ export default function OrderPage() {
                         <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-200 flex-shrink-0">
                           {item.product?.images?.[0]
                             ? <img src={item.product.images[0]} alt={item.product.name} className="w-full h-full object-cover" />
-                            : <div className="w-full h-full flex items-center justify-center text-lg">📦</div>}
+                            : <div className="w-full h-full flex items-center justify-center"><FiPackage className="w-5 h-5 text-gray-400" /></div>}
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold text-dark truncate">{item.product?.name}</p>
@@ -406,7 +407,7 @@ export default function OrderPage() {
                     <div className="w-14 h-14 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
                       {item.product?.images?.[0]
                         ? <img src={item.product.images[0]} alt={item.product.name} className="w-full h-full object-cover" />
-                        : <div className="w-full h-full flex items-center justify-center text-2xl">📦</div>}
+                        : <div className="w-full h-full flex items-center justify-center"><FiPackage className="w-6 h-6 text-gray-400" /></div>}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-dark truncate">{item.product?.name}</p>

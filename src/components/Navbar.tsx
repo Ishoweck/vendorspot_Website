@@ -29,7 +29,9 @@ export default function Navbar() {
   const [moreOpen, setMoreOpen]         = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [user, setUser]                 = useState<StoredUser | null>(null);
+  // Non-hero pages always render the solid navbar; lazy-init avoids a transparent flash before scroll fires
   const [scrolled, setScrolled]         = useState(() => !heroPages.includes(pathname));
+  // Short delays on these timers let the cursor travel between the trigger and dropdown without flicker
   const closeTimer    = useRef<ReturnType<typeof setTimeout> | null>(null);
   const userMenuTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { itemCount } = useCart();
@@ -56,6 +58,7 @@ export default function Navbar() {
     localStorage.removeItem("vendorspot_user");
     setUser(null);
     setUserMenuOpen(false);
+    // Hard-navigate so the cart context and any server state fully resets
     window.location.href = "/";
   };
 

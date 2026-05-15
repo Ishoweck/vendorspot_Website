@@ -72,7 +72,8 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     const id = `${Date.now()}-${Math.random()}`;
     setToasts((prev) => [...prev, { id, message, type, visible: false }]);
 
-    // Trigger enter animation on next tick
+    // Double rAF ensures the element is actually in the DOM and painted before we toggle visible,
+    // which triggers the CSS opacity/translate transition. A single rAF fires too early.
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         setToasts((prev) => prev.map((t) => (t.id === id ? { ...t, visible: true } : t)));
