@@ -80,8 +80,11 @@ function ShopCard({ shop, index }: { shop: VendorProfile; index: number }) {
         <button className="absolute top-3 right-3 w-8 h-8 bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center transition-colors border border-white/30">
           <FiUserPlus className="w-3.5 h-3.5 text-white" />
         </button>
-        {/* avatar */}
-        <div className="absolute -bottom-6 left-4 w-12 h-12 rounded-2xl bg-white shadow-lg ring-2 ring-white overflow-hidden flex items-center justify-center">
+      </div>
+
+      {/* avatar — outside overflow-hidden cover so it's fully visible */}
+      <div className="px-4 -mt-6 relative z-10">
+        <div className="w-12 h-12 rounded-2xl bg-white shadow-lg ring-2 ring-white overflow-hidden flex items-center justify-center">
           {shop.image ? (
             <img src={shop.image} alt={shop.name} className="w-full h-full object-cover" />
           ) : (
@@ -93,7 +96,7 @@ function ShopCard({ shop, index }: { shop: VendorProfile; index: number }) {
       </div>
 
       {/* body */}
-      <div className="px-4 pt-9 pb-4 flex flex-col flex-1">
+      <div className="px-4 pt-2 pb-4 flex flex-col flex-1">
         <div className="flex items-center gap-1.5 mb-0.5">
           <p className="text-sm font-bold text-gray-900 truncate leading-tight">{shop.name}</p>
           {shop.verified && (
