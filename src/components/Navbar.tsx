@@ -28,13 +28,14 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen]     = useState(false);
   const [moreOpen, setMoreOpen]         = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [user, setUser] = useState<StoredUser | null>(() => {
-    if (typeof window === "undefined") return null;
+  const [user, setUser] = useState<StoredUser | null>(null);
+
+  useEffect(() => {
     const raw   = localStorage.getItem("vendorspot_user");
     const token = localStorage.getItem("vendorspot_token");
-    if (raw && token) { try { return JSON.parse(raw); } catch {} }
-    return null;
-  });
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (raw && token) { try { setUser(JSON.parse(raw)); } catch {} }
+  }, []);
   const [hidden, setHidden]     = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const lastScrollY             = useRef(0);
