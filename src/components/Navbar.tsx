@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 import { FiShoppingCart, FiMenu, FiX, FiChevronDown, FiPackage, FiBookOpen, FiMail, FiLogOut, FiUser } from "react-icons/fi";
 import { useCart } from "@/lib/CartContext";
 
 const moreLinks = [
   { label: "My Orders",      href: "/orders",  icon: FiPackage },
-  { label: "Blog & Stories", href: "/thespot", icon: FiBookOpen },
+  { label: "Blog & Stories", href: "/blog",    icon: FiBookOpen },
   { label: "Contact Us",     href: "/contact", icon: FiMail },
 ];
 
@@ -21,37 +22,35 @@ interface StoredUser {
   role?: string;
 }
 
-const heroPages = ['/', '/products', '/shops'];
-
 export default function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen]     = useState(false);
   const [moreOpen, setMoreOpen]         = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [user, setUser]                 = useState<StoredUser | null>(null);
-  // Non-hero pages always render the solid navbar; lazy-init avoids a transparent flash before scroll fires
-  const [scrolled, setScrolled]         = useState(() => !heroPages.includes(pathname));
-  // Short delays on these timers let the cursor travel between the trigger and dropdown without flicker
+  const [user, setUser] = useState<StoredUser | null>(() => {
+    if (typeof window === "undefined") return null;
+    const raw   = localStorage.getItem("vendorspot_user");
+    const token = localStorage.getItem("vendorspot_token");
+    if (raw && token) { try { return JSON.parse(raw); } catch {} }
+    return null;
+  });
+  const [hidden, setHidden]     = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const lastScrollY             = useRef(0);
   const closeTimer    = useRef<ReturnType<typeof setTimeout> | null>(null);
   const userMenuTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { itemCount } = useCart();
 
   useEffect(() => {
-    const raw   = localStorage.getItem("vendorspot_user");
-    const token = localStorage.getItem("vendorspot_token");
-    if (raw && token) { try { setUser(JSON.parse(raw)); } catch {} }
-  }, []);
-
-  useEffect(() => {
-    if (!heroPages.includes(pathname)) {
-      setScrolled(true);
-      return;
-    }
-    const onScroll = () => setScrolled(window.scrollY > 60);
-    onScroll();
+    const onScroll = () => {
+      const y = window.scrollY;
+      setHidden(y > lastScrollY.current && y > 80);
+      setScrolled(y > 60);
+      lastScrollY.current = y;
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [pathname]);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("vendorspot_token");
@@ -67,35 +66,24 @@ export default function Navbar() {
   const openMore      = () => { if (closeTimer.current)    clearTimeout(closeTimer.current);    setMoreOpen(true); };
   const closeMore     = () => { closeTimer.current = setTimeout(() => setMoreOpen(false), 120); };
 
-  const navLinkClass = (href: string) => {
-    const isActive = pathname === href;
-    if (scrolled) {
-      return `px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
-        isActive ? "bg-primary text-white font-semibold" : "text-gray-700 hover:text-dark hover:bg-gray-100"
-      }`;
-    }
-    return `px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
-      isActive ? "bg-white text-primary font-semibold" : "text-white/90 hover:text-white hover:bg-white/15"
+  const navLinkClass = (href: string) =>
+    `px-4 py-1.5 text-sm font-medium rounded-full transition-all duration-300 ease-in-out ${
+      pathname === href
+        ? "text-primary font-semibold bg-primary/8"
+        : "text-gray-500 hover:text-dark hover:bg-gray-100/80"
     }`;
-  };
 
   return (
-    <nav className={`w-full fixed top-0 z-50 transition-all duration-300 ${scrolled ? "bg-white/95 backdrop-blur-sm shadow-sm" : ""}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+    <nav className={`w-full fixed top-0 pt-3 pb-5 z-50 transition-all duration-500 ease-[0.25,0.46,0.45,0.94] ${hidden ? "-translate-y-full" : "translate-y-0"} ${scrolled ? " backdrop-blur-lg shadow-sm" : ""}`}>
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 flex items-center justify-between h-16">
 
         {/* Logo */}
-        <Link href="/" className="flex-shrink-0">
-          <img
-            src="/VLogo.svg"
-            alt="Vendorspot"
-            className={`h-6 w-auto transition-all duration-300 ${scrolled ? "" : "brightness-0 invert"}`}
-          />
+        <Link href="/" className="shrink-0 bg-white rounded-full px-4 py-2 border border-gray-100 shadow-sm">
+          <img src="/VLogo.svg" alt="Vendorspot" className="h-5 w-auto" />
         </Link>
 
         {/* Desktop nav pill */}
-        <div className={`hidden md:flex items-center gap-1 rounded-full px-2 py-1 border transition-all duration-300 ${
-          scrolled ? "border-gray-200 bg-gray-50" : "border-white/20 bg-white/10"
-        }`}>
+        <div className="hidden md:flex items-center gap-1 rounded-full px-2 py-1 border border-gray-100 bg-white shadow-sm">
           <Link href="/thespot"  className={navLinkClass("/thespot")}>TheSpot</Link>
           <Link href="/shops"    className={navLinkClass("/shops")}>Shops</Link>
           <Link href="/products" className={navLinkClass("/products")}>Products</Link>
@@ -103,11 +91,7 @@ export default function Navbar() {
           {/* More dropdown */}
           <div className="relative" onMouseEnter={openMore} onMouseLeave={closeMore}>
             <button
-              className={`flex items-center gap-1 px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
-                scrolled
-                  ? "text-gray-700 hover:text-dark hover:bg-gray-100"
-                  : "text-white/90 hover:text-white hover:bg-white/15"
-              }`}
+              className="flex items-center gap-1 px-4 py-1.5 text-sm font-medium rounded-full text-gray-500 hover:text-dark hover:bg-gray-100/80 transition-all duration-300 ease-in-out"
               onClick={() => setMoreOpen((v) => !v)}
             >
               More
@@ -125,9 +109,9 @@ export default function Navbar() {
                     key={label}
                     href={href}
                     onClick={() => setMoreOpen(false)}
-                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors"
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary/5 hover:text-primary transition-all duration-200 ease-in-out"
                   >
-                    <Icon className="w-4 h-4 flex-shrink-0 text-gray-400" />
+                    <Icon className="w-4 h-4 flex-shrink-0 text-gray-400 group-hover:text-primary" />
                     {label}
                   </Link>
                 ))}
@@ -141,17 +125,13 @@ export default function Navbar() {
           {user ? (
             <div className="relative hidden md:block" onMouseEnter={openUserMenu} onMouseLeave={closeUserMenu}>
               <button
-                className={`flex items-center gap-2 border rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
-                  scrolled
-                    ? "border-gray-300 text-dark hover:bg-gray-50"
-                    : "border-white/30 text-white hover:bg-white/10"
-                }`}
+                className="flex items-center gap-2 bg-white border border-gray-100 shadow-sm rounded-full px-3 py-1.5 text-sm font-medium text-dark hover:bg-gray-50 transition-all duration-500 ease-in-out"
                 onClick={() => setUserMenuOpen((v) => !v)}
               >
                 {user.avatar ? (
                   <img src={user.avatar} alt="" className="w-6 h-6 rounded-full object-cover" />
                 ) : (
-                  <span className={`w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center ${scrolled ? "bg-gray-200 text-dark" : "bg-white/20 text-white"}`}>
+                  <span className="w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center bg-gray-100 text-dark">
                     {user.firstName?.charAt(0) || user.email?.charAt(0) || "U"}
                   </span>
                 )}
@@ -169,13 +149,13 @@ export default function Navbar() {
                     <p className="text-xs font-semibold text-dark truncate">{user.firstName} {user.lastName}</p>
                     <p className="text-xs text-gray-400 truncate">{user.email}</p>
                   </div>
-                  <Link href="/orders" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
+                  <Link href="/orders" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-all duration-500 ease-in-out">
                     <FiPackage className="w-4 h-4 text-gray-400" /> My Orders
                   </Link>
-                  <Link href="/account" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
+                  <Link href="/account" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-all duration-500 ease-in-out">
                     <FiUser className="w-4 h-4 text-gray-400" /> My Account
                   </Link>
-                  <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors">
+                  <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-all duration-500 ease-in-out">
                     <FiLogOut className="w-4 h-4" /> Log Out
                   </button>
                 </div>
@@ -184,28 +164,24 @@ export default function Navbar() {
           ) : (
             <Link
               href="/login"
-              className={`hidden md:flex items-center gap-2 border rounded-full px-5 py-2 text-sm font-medium transition-colors ${
-                scrolled
-                  ? "border-gray-300 text-dark hover:bg-gray-50"
-                  : "border-white/30 text-white hover:bg-white/10"
-              }`}
+              className="hidden md:flex items-center gap-2 bg-white border border-gray-100 shadow-sm rounded-full px-5 py-2 text-sm font-medium text-dark hover:bg-gray-100 hover:shadow-md transition-all duration-300 ease-in-out"
             >
               <FiUser className="w-4 h-4" />
               Log In
             </Link>
           )}
 
-          <Link href="/cart" className="relative p-2 bg-accent rounded-full hover:bg-accent-dark transition-colors">
+          <Link href="/cart" className="relative p-2.5 bg-accent rounded-full hover:bg-accent-dark transition-all duration-500 ease-in-out shadow-sm ring-2 ring-accent/30 hover:ring-accent/60">
             <FiShoppingCart className="w-5 h-5 text-dark" />
             {itemCount > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-dark text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
+              <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 shadow-sm">
                 {itemCount > 99 ? "99+" : itemCount}
               </span>
             )}
           </Link>
 
           <button
-            className={`md:hidden p-2 transition-colors ${scrolled ? "text-dark" : "text-white"}`}
+            className="md:hidden p-2 text-dark transition-all duration-500 ease-in-out"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
             {mobileOpen ? <FiX className="w-6 h-6" /> : <FiMenu className="w-6 h-6" />}
@@ -214,8 +190,15 @@ export default function Navbar() {
       </div>
 
       {/* Mobile menu */}
+      <AnimatePresence>
       {mobileOpen && (
-        <div className="md:hidden border-t border-white/10 bg-primary px-4 py-4 space-y-1">
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="md:hidden border-t border-white/10 bg-primary px-4 py-4 space-y-1"
+        >
           {[
             { label: "TheSpot",  href: "/thespot" },
             { label: "Shops",    href: "/shops" },
@@ -224,7 +207,7 @@ export default function Navbar() {
             <Link
               key={link.label}
               href={link.href}
-              className={`block px-4 py-2.5 text-sm font-medium rounded-xl transition-colors ${
+              className={`block px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-500 ease-in-out ${
                 pathname === link.href ? "bg-white text-primary" : "text-white/90 hover:bg-white/10"
               }`}
               onClick={() => setMobileOpen(false)}
@@ -266,8 +249,9 @@ export default function Navbar() {
               </Link>
             )}
           </div>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </nav>
   );
 }

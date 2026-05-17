@@ -1,67 +1,173 @@
 "use client";
 
+import { Fragment } from "react";
 import { motion } from "framer-motion";
 import { useApi } from "@/lib/useApi";
 import type { VendorProfile } from "@/lib/api";
-import { fadeUp } from "@/lib/motion";
+import { fadeUp, stagger } from "@/lib/motion";
 import Link from "next/link";
+import Image from "next/image";
+import { FiCheckCircle } from "react-icons/fi";
 
 const colors = [
-  "bg-red-400", "bg-orange-400", "bg-purple-400", "bg-pink-400",
-  "bg-teal-400", "bg-blue-400", "bg-yellow-400",
+  "bg-red-400",
+  "bg-orange-400",
+  "bg-purple-400",
+  "bg-pink-400",
+  "bg-teal-400",
+  "bg-blue-400",
+  "bg-yellow-400",
+];
+
+const rankStyles = [
+  { bg: "bg-yellow-400", text: "text-yellow-900" },
+  { bg: "bg-gray-300",   text: "text-gray-800"   },
+  { bg: "bg-orange-400", text: "text-orange-900"  },
 ];
 
 export default function TopSellers() {
-  const { data: vendors, loading } = useApi<VendorProfile[]>("/vendor/top");
+  const { data: vendors, loading, error } = useApi<VendorProfile[]>("/vendor/top");
   const sellers = (vendors || []).slice(0, 7);
 
   return (
-    <section className="my-6 sm:my-8 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center">
+    <section className="py-8 sm:py-20 bg-white">
+      <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="rounded-xl px-4 sm:px-6 py-3 sm:py-4 w-full max-w-xl"
-          style={{ background: "#8744ff" }}
+          className="rounded-3xl overflow-hidden shadow-sm border-2 border-[#65656554]"
         >
-          <h3 className="text-white text-sm font-bold mb-3">Top Sellers</h3>
+          {/* Heading strip */}
+          <div
+            className="flex items-center gap-2.5 px-8 sm:px-10 py-5"
+            style={{ background: "#5b6bf4" }}
+          >
+            <h2 className="text-xl sm:text-2xl font-extrabold text-white">
+              Top Sellers
+            </h2>
+            <span className="w-6 h-6 rounded-full bg-accent flex items-center justify-center shrink-0">
+              <FiCheckCircle className="w-3.5 h-3.5 text-dark" />
+            </span>
+          </div>
 
-          <div className="flex flex-wrap gap-3 sm:gap-4">
-            {loading
-              ? Array.from({ length: 7 }, (_, i) => (
-                  <div key={i} className="flex flex-col items-center gap-1 animate-pulse">
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/20" />
-                    <div className="w-10 h-2 bg-white/20 rounded" />
-                  </div>
-                ))
-              : sellers.map((vendor, i) => (
-                  <motion.div
-                    key={vendor.id}
-                    variants={fadeUp}
-                    className="flex flex-col items-center gap-1"
-                  >
-                    <Link href={`/shops/${vendor.id}`}>
-                      <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-                        {vendor.image ? (
-                          <img
-                            src={vendor.image}
-                            alt={vendor.name}
-                            className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-white/60 shadow object-cover"
-                          />
-                        ) : (
-                          <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full ${colors[i % colors.length]} border border-white/60 flex items-center justify-center text-white text-sm font-bold shadow`}>
-                            {vendor.name?.charAt(0) || "?"}
-                          </div>
+          {/* Vendors — white body */}
+          <div className="bg-white px-8 sm:px-12 py-8 sm:py-10">
+            <motion.div
+              variants={stagger}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-40px" }}
+              className="flex flex-wrap justify-center items-end gap-6 sm:gap-8"
+            >
+              {loading
+                ? Array.from({ length: 7 }, (_, i) => (
+                    <div key={i} className="flex flex-col items-center gap-3 animate-pulse">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gray-200" />
+                      <div className="w-14 h-2.5 bg-gray-200 rounded-full" />
+                    </div>
+                  ))
+                : error
+                ? <p className="text-sm text-red-400 py-4">{error}</p>
+                : sellers.length === 0
+                ? <p className="text-sm text-gray-400 py-4">No top sellers available yet.</p>
+                : sellers.map((vendor, i) => {
+                    const isTop3 = i < 3;
+                    const rank = rankStyles[i];
+
+                    return (
+                      <Fragment key={vendor.id}>
+                        <motion.div
+                          variants={fadeUp}
+                          className="flex flex-col items-center gap-2.5"
+                        >
+                          <Link href={`/shops/${vendor.id}`}>
+                            <motion.div
+                              whileHover={{ scale: 1.1, y: -6 }}
+                              whileTap={{ scale: 0.95 }}
+                              transition={{
+                                type: "spring",
+                                stiffness: 320,
+                                damping: 22,
+                              }}
+                              className="relative"
+                            >
+                              {/* Rank badge — top 3 only */}
+                              {isTop3 && (
+                                <span
+                                  className={`
+                                    absolute -top-1.5 -left-1.5 z-10
+                                    w-5 h-5 rounded-full
+                                    ${rank.bg} ${rank.text}
+                                    flex items-center justify-center
+                                    text-[9px] font-bold
+                                    border-2 border-white shadow-sm
+                                  `}
+                                >
+                                  {i + 1}
+                                </span>
+                              )}
+
+                              {vendor.image ? (
+                                <Image
+                                  src={vendor.image}
+                                  alt={vendor.name}
+                                  width={isTop3 ? 88 : 72}
+                                  height={isTop3 ? 88 : 72}
+                                  className={`
+                                    rounded-full object-cover
+                                    ring-[3px] ring-primary shadow-lg
+                                    transition-shadow duration-200
+                                    hover:shadow-[0_8px_24px_rgba(91,107,244,0.30)]
+                                    ${isTop3
+                                      ? "w-20 h-20 sm:w-[88px] sm:h-[88px]"
+                                      : "w-16 h-16 sm:w-[72px] sm:h-[72px]"}
+                                  `}
+                                />
+                              ) : (
+                                <div
+                                  className={`
+                                    rounded-full ring-[3px] ring-primary shadow-lg
+                                    flex items-center justify-center
+                                    text-white font-bold
+                                    transition-shadow duration-200
+                                    hover:shadow-[0_8px_24px_rgba(91,107,244,0.30)]
+                                    ${colors[i % colors.length]}
+                                    ${isTop3
+                                      ? "w-20 h-20 sm:w-[88px] sm:h-[88px] text-2xl"
+                                      : "w-16 h-16 sm:w-[72px] sm:h-[72px] text-xl"}
+                                  `}
+                                >
+                                  {vendor.name?.charAt(0) || "?"}
+                                </div>
+                              )}
+
+                              {/* Verified badge */}
+                              <span className="absolute -bottom-0.5 -right-0.5 w-5 h-5 sm:w-6 sm:h-6 bg-accent rounded-full flex items-center justify-center ring-2 ring-white shadow-sm">
+                                <FiCheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-dark" />
+                              </span>
+                            </motion.div>
+                          </Link>
+
+                          <span
+                            className={`
+                              text-xs sm:text-sm font-medium text-center truncate
+                              ${isTop3 ? "text-gray-800 w-20 sm:w-[88px]" : "text-gray-600 w-16 sm:w-[72px]"}
+                            `}
+                          >
+                            {vendor.name}
+                          </span>
+                        </motion.div>
+
+                        {/* Divider after rank 3 */}
+                        {i === 2 && (
+                          <div className="hidden sm:block w-px h-16 bg-gray-200 self-center mx-1" />
                         )}
-                      </motion.div>
-                    </Link>
-                    <span className="text-white/80 text-[9px] text-center truncate w-full max-w-[56px]">
-                      {vendor.name?.length > 8 ? vendor.name.slice(0, 7) + "…" : vendor.name}
-                    </span>
-                  </motion.div>
-                ))}
+                      </Fragment>
+                    );
+                  })}
+            </motion.div>
           </div>
         </motion.div>
       </div>

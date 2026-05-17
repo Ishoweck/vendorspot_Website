@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { FiChevronLeft, FiChevronRight, FiStar } from "react-icons/fi";
 import { fadeUp } from "@/lib/motion";
 
 const testimonials = [
@@ -10,22 +10,24 @@ const testimonials = [
     text: "I've used so many e-commerce platforms, but Vendorspot is very safe! They're truly interested in their users' growth and are constantly protecting customers and promoting trusted vendors. They put every measure to ensure both buyers and sellers are very safe.",
     name: "Seyifunmi Alonge",
     role: "Enis Perfumery",
+    color: "bg-violet-100 text-violet-600",
   },
   {
     text: "Vendorspot has transformed how I sell online. The platform is easy to use and the support team is always ready to help. My sales have grown significantly since I joined.",
     name: "Adebayo Johnson",
     role: "Tech Gadgets Store",
+    color: "bg-amber-100 text-amber-600",
   },
   {
     text: "As a buyer, I feel very safe shopping on Vendorspot. The buyer protection is top-notch and the verified vendors give me confidence in every purchase.",
     name: "Chioma Okafor",
     role: "Regular Shopper",
+    color: "bg-rose-100 text-rose-600",
   },
 ];
 
 export default function Testimonials() {
   const [current, setCurrent] = useState(0);
-  // dir drives the slide animation: 1 = slide left (forward), -1 = slide right (backward)
   const [dir, setDir] = useState(1);
 
   const go = (next: number) => {
@@ -33,65 +35,91 @@ export default function Testimonials() {
     setCurrent((next + testimonials.length) % testimonials.length);
   };
 
+  const t = testimonials[current];
+
   return (
-    <section className="py-16 sm:py-[160px] bg-primary">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.h2
+    <section className="py-20 sm:py-32 bg-[#8A38F5] relative overflow-hidden">
+
+      {/* Decorative blobs */}
+      <div className="absolute top-0 left-0 w-96 h-96 rounded-full pointer-events-none"
+        style={{ background: "radial-gradient(circle, rgba(255,255,255,0.07) 0%, transparent 70%)", transform: "translate(-40%, -40%)" }} />
+      <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full pointer-events-none"
+        style={{ background: "radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%)", transform: "translate(35%, 35%)" }} />
+
+      <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-10 relative z-10">
+
+        {/* Header */}
+        <motion.div
           variants={fadeUp}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="text-center text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-8 sm:mb-14"
+          className="text-center mb-12 sm:mb-16"
         >
-          What People Are Saying
-        </motion.h2>
+          <p className="text-white/50 text-xs font-semibold uppercase tracking-widest mb-3">Testimonials</p>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white">
+            What People Are Saying
+          </h2>
+        </motion.div>
 
-        {/* Arrows + card */}
-        <div className="relative px-10 sm:px-16 md:px-20">
-          {/* Prev */}
+        {/* Card + arrows */}
+        <div className="relative flex items-center gap-4">
           <button
             onClick={() => go(current - 1)}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-11 h-11 sm:w-12 sm:h-12 border-2 border-white/40 rounded-full flex items-center justify-center text-white hover:border-white hover:bg-white/10 transition-colors"
-            aria-label="Previous review"
+            className="shrink-0 w-11 h-11 border-2 border-white/30 hover:border-white rounded-full flex items-center justify-center text-white hover:bg-white/10 transition-all duration-200"
+            aria-label="Previous"
           >
-            <FiChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+            <FiChevronLeft className="w-5 h-5" />
           </button>
 
-          {/* Card */}
-          <div className="overflow-hidden">
+          <div className="flex-1 overflow-hidden">
             <AnimatePresence mode="wait" custom={dir}>
               <motion.div
                 key={current}
                 custom={dir}
-                initial={{ opacity: 0, x: dir * 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: dir * -50 }}
-                transition={{ duration: 0.35, ease: "easeOut" }}
-                className="bg-white rounded-2xl px-5 sm:px-8 py-5 sm:py-6 shadow-sm max-w-2xl mx-auto h-[210px] sm:h-[230px] overflow-hidden flex flex-col justify-between"
+                initial={{ opacity: 0, x: dir * 60, scale: 0.88 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: dir * -60, scale: 0.88 }}
+                transition={{ duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
+                className="bg-white rounded-3xl p-8 sm:p-12 shadow-2xl"
               >
-                <p className="text-gray-600 text-xs sm:text-sm leading-relaxed line-clamp-4 sm:line-clamp-5 mb-0">
-                  {testimonials[current].text}
+                {/* Stars */}
+                <div className="flex gap-1 mb-6">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <FiStar key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
+
+                {/* Quote */}
+                <p className="text-gray-700 text-base sm:text-lg leading-relaxed mb-8">
+                  &ldquo;{t.text}&rdquo;
                 </p>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-primary font-bold text-base flex-shrink-0">
-                    {testimonials[current].name.charAt(0)}
+
+                {/* Author */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-13 h-13 rounded-full flex items-center justify-center font-bold text-lg shrink-0 ${t.color}`}>
+                      {t.name.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="font-bold text-dark">{t.name}</p>
+                      <p className="text-gray-400 text-sm">{t.role}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-bold text-sm sm:text-base text-dark">{testimonials[current].name}</p>
-                    <p className="text-sm text-gray-500">{testimonials[current].role}</p>
-                  </div>
+                  <span className="text-gray-200 text-sm font-medium hidden sm:block">
+                    {current + 1} / {testimonials.length}
+                  </span>
                 </div>
               </motion.div>
             </AnimatePresence>
           </div>
 
-          {/* Next */}
           <button
             onClick={() => go(current + 1)}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-11 h-11 sm:w-12 sm:h-12 bg-white rounded-full flex items-center justify-center text-primary hover:bg-gray-100 transition-colors shadow-md"
-            aria-label="Next review"
+            className="shrink-0 w-11 h-11 bg-white rounded-full flex items-center justify-center text-[#8A38F5] hover:bg-white/90 transition-all duration-200 shadow-lg"
+            aria-label="Next"
           >
-            <FiChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+            <FiChevronRight className="w-5 h-5" />
           </button>
         </div>
 
@@ -101,9 +129,7 @@ export default function Testimonials() {
             <button
               key={i}
               onClick={() => go(i)}
-              className={`rounded-full transition-all duration-300 ${
-                i === current ? "bg-white w-6 h-3" : "bg-white/40 w-3 h-3"
-              }`}
+              className={`rounded-full transition-all duration-300 ${i === current ? "bg-white w-7 h-3" : "bg-white/30 w-3 h-3 hover:bg-white/50"}`}
             />
           ))}
         </div>
