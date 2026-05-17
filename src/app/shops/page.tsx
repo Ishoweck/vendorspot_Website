@@ -190,22 +190,22 @@ export default function ShopsPage() {
               className="w-full max-w-2xl mx-auto"
             >
               <div className="flex items-center bg-white rounded-full shadow-2xl shadow-black/15 p-1.5 gap-2">
-                <div className="flex items-center gap-2 flex-1 pl-4 sm:pl-5 min-w-0">
-                  <FiSearch className="w-5 h-5 text-gray-900 shrink-0" />
+                <div className="flex items-center gap-2 flex-1 pl-3 sm:pl-5 min-w-0">
+                  <FiSearch className="w-4 h-4 sm:w-5 sm:h-5 text-gray-900 shrink-0" />
                   <input
                     type="text"
-                    placeholder="Search shops, categories, vendors…"
+                    placeholder="Search shops, vendors…"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="flex-1 py-3 text-sm text-gray-800 placeholder-gray-400 outline-none bg-transparent min-w-0"
+                    className="flex-1 py-2.5 sm:py-3 text-xs sm:text-sm text-gray-800 placeholder-gray-400 outline-none bg-transparent min-w-0"
                   />
                   {search && (
                     <button onClick={clearSearch} className="p-1 text-gray-400 hover:text-gray-700 transition-colors shrink-0">
-                      <FiX className="w-4 h-4" />
+                      <FiX className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </button>
                   )}
                 </div>
-                <button className="bg-gray-900 hover:bg-gray-700 text-white font-bold text-sm px-6 sm:px-8 py-3 rounded-full transition-all duration-300 shrink-0 shadow-sm">
+                <button className="bg-gray-900 hover:bg-gray-700 text-white font-bold text-xs sm:text-sm px-4 sm:px-7 py-2.5 sm:py-3 rounded-full transition-all duration-300 shrink-0 shadow-sm">
                   Search
                 </button>
               </div>

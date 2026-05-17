@@ -47,20 +47,20 @@ export default function Hero() {
           className="max-w-2xl mx-auto px-4 mb-12 sm:mb-16"
         >
           <div className="flex items-center bg-white rounded-full shadow-2xl p-1.5 gap-2">
-            <div className="flex items-center gap-2 flex-1 pl-4 sm:pl-5 min-w-0">
-              <FiSearch className="w-5 h-5 text-primary shrink-0" />
+            <div className="flex items-center gap-2 flex-1 pl-3 sm:pl-5 min-w-0">
+              <FiSearch className="w-4 h-4 sm:w-5 sm:h-5 text-primary shrink-0" />
               <input
                 type="text"
-                placeholder="Search for products, brand, categories or vendors"
+                placeholder="Search products, brands, vendors…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && (window.location.href = `/products${search ? `?q=${encodeURIComponent(search)}` : ""}`)}
-                className="flex-1 py-3 text-sm text-gray-700 placeholder-gray-400 outline-none min-w-0 bg-transparent"
+                className="flex-1 py-2.5 sm:py-3 text-xs sm:text-sm text-gray-700 placeholder-gray-400 outline-none min-w-0 bg-transparent"
               />
             </div>
             <Link
               href={`/products${search ? `?q=${encodeURIComponent(search)}` : ""}`}
-              className="bg-primary hover:bg-primary-dark text-white font-semibold text-sm px-6 sm:px-8 py-3 rounded-full transition-all duration-300 shrink-0 shadow-sm"
+              className="bg-primary hover:bg-primary-dark text-white font-semibold text-xs sm:text-sm px-4 sm:px-7 py-2.5 sm:py-3 rounded-full transition-all duration-300 shrink-0 shadow-sm"
             >
               Search
             </Link>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FAQ from "@/components/FAQ";
@@ -203,9 +204,9 @@ export default function TheSpotPage() {
                     className="bg-white rounded-2xl overflow-hidden shadow-lg"
                   >
                     <div className="flex flex-col sm:flex-row">
-                      <div className="w-full sm:w-1/2 bg-gray-100 flex items-center justify-center h-48 sm:h-80 overflow-hidden shrink-0">
+                      <div className="relative w-full sm:w-1/2 bg-gray-100 h-64 sm:h-80 overflow-hidden shrink-0">
                         {teamMembers[currentMember].image ? (
-                          <img src={teamMembers[currentMember].image} alt={teamMembers[currentMember].name} className="w-full h-full object-cover object-top" />
+                          <Image src={teamMembers[currentMember].image} alt={teamMembers[currentMember].name} fill className="object-cover object-center" />
                         ) : (
                           <FiUser className="w-14 h-14 sm:w-20 sm:h-20 text-gray-300" />
                         )}

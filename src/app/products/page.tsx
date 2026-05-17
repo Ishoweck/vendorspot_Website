@@ -176,27 +176,27 @@ function ProductsPageContent() {
               transition={{ duration: 0.55, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
             >
               <div className={`flex items-center bg-white rounded-full shadow-2xl p-1.5 gap-2 transition-all duration-300 ${focused ? "ring-4 ring-white/30" : ""}`}>
-                <div className="flex items-center gap-2 flex-1 pl-4 sm:pl-5 min-w-0">
-                  <FiSearch className="w-5 h-5 text-primary shrink-0" />
+                <div className="flex items-center gap-2 flex-1 pl-3 sm:pl-5 min-w-0">
+                  <FiSearch className="w-4 h-4 sm:w-5 sm:h-5 text-primary shrink-0" />
                   <input
                     type="text"
-                    placeholder="Search products, brands, categories…"
+                    placeholder="Search products, brands…"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                     onFocus={() => setFocused(true)}
                     onBlur={() => setFocused(false)}
-                    className="flex-1 py-3 text-sm text-gray-700 placeholder-gray-400 outline-none bg-transparent min-w-0"
+                    className="flex-1 py-2.5 sm:py-3 text-xs sm:text-sm text-gray-700 placeholder-gray-400 outline-none bg-transparent min-w-0"
                   />
                   {search && (
                     <button onClick={clearSearch} className="p-1 text-gray-400 hover:text-gray-600 transition-colors shrink-0">
-                      <FiX className="w-4 h-4" />
+                      <FiX className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </button>
                   )}
                 </div>
                 <button
                   onClick={handleSearch}
-                  className="bg-primary hover:bg-primary-dark text-white font-semibold text-sm px-6 sm:px-8 py-3 rounded-full transition-all duration-300 shrink-0 shadow-sm"
+                  className="bg-primary hover:bg-primary-dark text-white font-semibold text-xs sm:text-sm px-4 sm:px-7 py-2.5 sm:py-3 rounded-full transition-all duration-300 shrink-0 shadow-sm"
                 >
                   Search
                 </button>
