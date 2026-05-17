@@ -5,14 +5,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FAQ from "@/components/FAQ";
-import RefundBanner from "@/components/RefundBanner";
 import {
   FiArrowRight, FiChevronLeft, FiChevronRight,
   FiStar, FiShield, FiUsers, FiClipboard,
   FiTwitter, FiInstagram, FiLinkedin,
   FiZap, FiEye, FiHeart, FiTrendingUp, FiUser,
 } from "react-icons/fi";
-import { fadeUp, slideLeft, slideRight, stagger } from "@/lib/motion";
+import { fadeUp, slideLeft, slideRight } from "@/lib/motion";
 
 const coreValues = [
   { title: "Trust",          bg: "bg-blue-500",    description: "Trust is not assumed, it is engineered. Every system, feature, and policy is built to protect users, reduce fraud, and ensure accountability across transactions.", Icon: FiStar },
@@ -26,9 +25,9 @@ const coreValues = [
 ];
 
 const teamMembers = [
-  { name: "Olayinka", role: "All works" },
-  { name: "Team Member", role: "Engineering" },
-  { name: "Team Member", role: "Design" },
+  { name: "Olayinka", role: "CEO / Founder", image: "/yinka.svg" },
+  { name: "Team Member", role: "Engineering", image: null },
+  { name: "Team Member", role: "Design", image: null },
 ];
 
 export default function TheSpotPage() {
@@ -44,76 +43,100 @@ export default function TheSpotPage() {
     <>
       <Navbar />
       <main className="flex-1">
-        {/* Hero — SVG background, heading only */}
+
+        {/* Hero — purple, heading only */}
         <section
-          className="relative"
-          style={{
-            backgroundColor: "rgba(138, 56, 245, 0.2)",
-            minHeight: `max(240px, ${((865 / 1440) * 100).toFixed(2)}vw)`,
-          }}
+          className="pt-30 sm:pt-32 pb-32 sm:pb-44 px-6 sm:px-8 lg:px-10 text-center"
+          style={{ backgroundColor: "rgba(138, 56, 245, 0.12)" }}
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.h1
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              className="pt-24 sm:pt-28 text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-extrabold text-dark leading-tight text-center mb-6 sm:mb-10 lg:mb-12"
-            >
-              Building a Secure and Trusted<br className="hidden sm:block" /> Platform for everyone.
-            </motion.h1>
-          </div>
+          <motion.h1
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-dark leading-tight"
+          >
+            Building a Secure and Trusted<br className="hidden sm:block" /> Platform for everyone.
+          </motion.h1>
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.15 }}
+            className="mt-5 text-gray-500 text-sm sm:text-base max-w-lg mx-auto leading-relaxed"
+          >
+            We built the safest way to buy and sell online in Nigeria — escrow payments, verified vendors, real accountability.
+          </motion.p>
         </section>
 
-        {/* Founder card — pulled up so SVG shaped bottom lands ~halfway through the card */}
-        <div className="relative -mt-[60px] sm:-mt-[20vw] lg:-mt-[30vw] pb-[60px] sm:pb-[100px] lg:pb-[120px]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Founder card — floats across the purple/white boundary */}
+        <section className="pb-16 sm:pb-24 px-6 sm:px-8 lg:px-10">
+          <div className="max-w-7xl mx-auto -mt-24 sm:-mt-32">
             <motion.div
               variants={fadeUp}
               initial="hidden"
-              animate="visible"
-              transition={{ delay: 0.15 }}
-              className="bg-white rounded-3xl border border-purple-200 overflow-hidden shadow-sm"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="rounded-3xl border border-purple-200 overflow-hidden shadow-xl bg-white"
             >
-              <div className="bg-primary text-white text-center font-bold text-base sm:text-lg py-4 px-6">
-                Founder&apos;s Story
+              <div className="bg-primary py-5 px-8 flex items-center gap-4">
+                <div className="flex-1 h-px bg-white/20" />
+                <div className="flex items-center gap-2.5 shrink-0">
+                  <FiUser className="w-4 h-4 text-white/70" />
+                  <h2 className="text-white font-bold text-base sm:text-lg tracking-wide">Founder&apos;s Story</h2>
+                </div>
+                <div className="flex-1 h-px bg-white/20" />
               </div>
-              <div className="p-5 sm:p-8 md:p-10 grid grid-cols-1 md:grid-cols-5 gap-6 sm:gap-8 md:gap-10">
-                <motion.div variants={slideLeft} initial="hidden" whileInView="visible" viewport={{ once: true }} className="md:col-span-3 space-y-4 text-sm sm:text-base text-gray-700 leading-relaxed">
-                  <p>Vendorspot did not begin as a business idea. It began as a response to a problem I experienced repeatedly.</p>
-                  <p>Like many people, I grew tired of the stress that comes with physical markets and turned to online shopping for convenience. Instead, I encountered a different set of challenges. Fake products, no return policies, and in some cases, sellers disappearing after payment.</p>
-                  <p>The experience became more personal when I ordered a pair of sneakers for my younger brother&apos;s graduation. I paid an Instagram vendor two days before the event. On the morning of the ceremony, after being assured the rider was on the way, I was blocked.</p>
-                  <p>The disappointment, embarrassment, and sense of helplessness stayed with me. It was clear that this was not an isolated issue but a systemic one.</p>
-                  <p>In 2021, I set out to address it by building a community of trusted vendors. These were individuals committed to selling honestly and growing their businesses the right way. We focused on verification, visibility, and accountability, ensuring that buyers were connected only with vendors who met defined standards.</p>
-                  <p>As the community expanded, trust grew with it. By 2022, we had supported over 500 vendors, introduced a structured verification system, and actively resolved disputes to maintain fairness and credibility across the network.</p>
-                  <p>However, it became evident that community alone was not enough. Trust needed infrastructure.</p>
-                  <p>In 2023, we evolved Vendorspot into a full marketplace. We introduced escrow payments, strengthened vendor verification, and built tools designed to support sustainable growth. The goal was simple: to remove uncertainty from online transactions and create a system that works for both buyers and sellers.</p>
-                  <p className="font-bold text-dark">Today, Vendorspot represents more than a platform. It is a deliberate effort to fix a broken experience and to build a safer, more reliable environment for commerce.</p>
+              <div className="grid grid-cols-1 md:grid-cols-5 items-start">
+                <motion.div
+                  variants={slideLeft}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  className="md:col-span-3 space-y-4 text-sm text-gray-600 leading-relaxed p-7 sm:p-10"
+                >
+                  <p>We didn&apos;t start Vendorspot as a business idea, it started out of frustration.</p>
+                  <p>I was tired of the stress of physical markets, so I turned to online shopping. But instead of convenience, I kept running into disappointment, from fake products, no return policies, or worse, sellers disappearing after payment.</p>
+                  <p>Then came the moment that changed everything.</p>
+                  <p>My younger brother was graduating, and I promised him a gift. Two days before the ceremony, I paid an Instagram vendor for a pair of sneakers. On the morning of the big day, after being told the rider was on the way, I was blocked.</p>
+                  <p>That feeling, helplessness, embarrassment, and disappointment, stayed with me.</p>
+                  <p>In January 2021, I decided to do something about it. I started building a community of trusted vendors, people who wanted to sell honestly and grow. We educated them, promoted their businesses, and protected buyers by connecting them only with verified sellers who upheld our standards.</p>
+                  <p>As the community grew, trust followed. In 2022, we introduced a verification system that gave vendors credibility and helped over 500 businesses sell with confidence. We also stepped in to resolve disputes, ensuring fairness and accountability on both sides.</p>
+                  <p>Beyond trust, we supported real growth, helping vendors access grants, funding, and business registration opportunities that changed lives.</p>
+                  <p>But we knew community alone wasn&apos;t enough. In 2023, we took it further and built Vendorspot into a full marketplace, a platform designed to eliminate fear from online transactions. With escrow payments, verified vendors, and integrated tools, we created a system where sellers can grow without stress, and buyers can shop with complete confidence.</p>
+                  <p className="font-semibold text-dark">Vendorspot is more than a platform.<br />It&apos;s a response to a broken system, and a commitment to fixing it.</p>
                 </motion.div>
-                <motion.div variants={slideRight} initial="hidden" whileInView="visible" viewport={{ once: true }} className="md:col-span-2 flex flex-col items-center justify-start">
-                  <div className="w-full max-w-[200px] sm:max-w-[260px] mx-auto">
-                    <div className="w-full aspect-[3/4] rounded-2xl overflow-hidden">
-                      <img src="/yinka.svg" alt="Olayinka Olasunkanmi" className="w-full h-full object-cover" />
+                <motion.div
+                  variants={slideRight}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  className="md:col-span-2 flex flex-col items-center justify-center py-8 px-6 sm:px-10"
+                >
+                  <div className="w-full max-w-70">
+                    <div className="w-full h-96 sm:h-105 rounded-2xl overflow-hidden">
+                      <img src="/yinka.svg" alt="Olayinka Olasunkanmi" className="w-full h-full object-cover object-top" />
                     </div>
-                    <div className="text-center mt-4">
-                      <h3 className="text-base sm:text-lg font-bold text-dark">Olayinka Olasunkanmi</h3>
-                      <p className="text-gray-500 text-sm">CEO / Founder</p>
+                    <div className="mt-3 text-center">
+                      <p className="font-bold text-dark text-sm sm:text-base">Olayinka Olasunkanmi</p>
+                      <p className="text-gray-400 text-sm mt-0.5">CEO / Founder</p>
                     </div>
                   </div>
                 </motion.div>
               </div>
             </motion.div>
           </div>
-        </div>
+        </section>
 
         {/* Core Values marquee */}
-        <section className="py-[100px] sm:py-[120px] bg-white overflow-hidden">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 sm:mb-12">
+
+        <section className="py-16 sm:py-12 mb-[153px] overflow-hidden">
+          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 mb-12">
             <motion.h2
               variants={fadeUp}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="text-3xl sm:text-4xl md:text-5xl font-bold text-dark text-center"
+              className="text-3xl sm:text-4xl md:text-5xl font-bold text-dark text-center pb-7"
             >
               Core Values
             </motion.h2>
@@ -121,13 +144,18 @@ export default function TheSpotPage() {
           <div className="overflow-hidden">
             <div className="animate-marquee gap-4" style={{ width: "max-content" }}>
               {[...coreValues, ...coreValues].map(({ title, bg, description, Icon }, i) => (
-                <div key={`${title}-${i}`} className={`${bg} rounded-2xl p-5 sm:p-6 flex flex-col justify-between flex-shrink-0 w-[180px] sm:w-[220px] md:w-[240px] mx-2 h-[220px] sm:h-[240px]`}>
+                <div
+                  key={`${title}-${i}`}
+                  className={`${bg} rounded-2xl p-5 sm:p-6 flex flex-col justify-between shrink-0 w-52 sm:w-60 mx-2 h-56 sm:h-64`}
+                >
                   <div>
-                    <span className="inline-block bg-white/20 text-white text-sm font-bold px-3 py-1 rounded-full mb-3">{title}</span>
+                    <span className="inline-block bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full mb-3">{title}</span>
                     <p className="text-white text-xs leading-relaxed line-clamp-5">{description}</p>
                   </div>
                   <div className="flex justify-end mt-4">
-                    <Icon className="w-7 h-7 text-white/70" />
+                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 10, repeat: Infinity, ease: "linear" }}>
+                      <Icon className="w-6 h-6 text-white/60" />
+                    </motion.div>
                   </div>
                 </div>
               ))}
@@ -136,8 +164,8 @@ export default function TheSpotPage() {
         </section>
 
         {/* Our People */}
-        <section className="py-[100px] sm:py-[120px] bg-primary">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="py-20 sm:py-28 bg-primary">
+          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
             <motion.h2
               variants={fadeUp}
               initial="hidden"
@@ -147,16 +175,13 @@ export default function TheSpotPage() {
             >
               Our People
             </motion.h2>
-
             <div className="relative flex items-center max-w-3xl mx-auto">
-              {/* Prev — outlined */}
               <button
                 onClick={() => go(currentMember - 1)}
-                className="flex-shrink-0 w-11 h-11 border-2 border-white/50 hover:border-white rounded-full flex items-center justify-center text-white transition-colors"
+                className="shrink-0 w-11 h-11 border-2 border-white/50 hover:border-white rounded-full flex items-center justify-center text-white transition-colors"
               >
                 <FiChevronLeft className="w-5 h-5" />
               </button>
-
               <div className="flex-1 mx-4 overflow-hidden">
                 <AnimatePresence mode="wait" custom={dir}>
                   <motion.div
@@ -169,18 +194,22 @@ export default function TheSpotPage() {
                     className="bg-white rounded-2xl overflow-hidden shadow-lg"
                   >
                     <div className="flex flex-col sm:flex-row">
-                      <div className="w-full sm:w-1/2 bg-gray-100 flex items-center justify-center min-h-[160px] sm:min-h-[360px] md:min-h-[420px]">
-                        <FiUser className="w-16 h-16 sm:w-20 sm:h-20 text-gray-400" />
+                      <div className="w-full sm:w-1/2 bg-gray-100 flex items-center justify-center h-52 sm:h-80 overflow-hidden shrink-0">
+                        {teamMembers[currentMember].image ? (
+                          <img src={teamMembers[currentMember].image} alt={teamMembers[currentMember].name} className="w-full h-full object-cover object-top" />
+                        ) : (
+                          <FiUser className="w-16 h-16 sm:w-20 sm:h-20 text-gray-300" />
+                        )}
                       </div>
-                      <div className="w-full sm:w-1/2 p-5 sm:p-8 md:p-10 flex flex-col justify-center gap-4">
+                      <div className="w-full sm:w-1/2 p-6 sm:p-10 flex flex-col justify-center gap-4">
                         <div className="w-3 h-3 bg-primary rounded-full" />
-                        <hr className="border-gray-200" />
+                        <hr className="border-gray-100" />
                         <div>
                           <h3 className="text-lg sm:text-xl font-bold text-dark">{teamMembers[currentMember].name}</h3>
-                          <p className="text-gray-500 text-sm mt-1">{teamMembers[currentMember].role}</p>
+                          <p className="text-gray-400 text-sm mt-1">{teamMembers[currentMember].role}</p>
                         </div>
-                        <hr className="border-gray-200" />
-                        <div className="flex items-center gap-3 text-gray-400">
+                        <hr className="border-gray-100" />
+                        <div className="flex items-center gap-3 text-gray-300">
                           <FiTwitter className="w-4 h-4 hover:text-dark cursor-pointer transition-colors" />
                           <FiInstagram className="w-4 h-4 hover:text-dark cursor-pointer transition-colors" />
                           <FiLinkedin className="w-4 h-4 hover:text-dark cursor-pointer transition-colors" />
@@ -190,11 +219,9 @@ export default function TheSpotPage() {
                   </motion.div>
                 </AnimatePresence>
               </div>
-
-              {/* Next — filled */}
               <button
                 onClick={() => go(currentMember + 1)}
-                className="flex-shrink-0 w-11 h-11 bg-white rounded-full flex items-center justify-center text-primary hover:bg-gray-100 transition-colors shadow-md"
+                className="shrink-0 w-11 h-11 bg-white rounded-full flex items-center justify-center text-primary hover:bg-gray-100 transition-colors shadow-md"
               >
                 <FiChevronRight className="w-5 h-5" />
               </button>
@@ -203,27 +230,45 @@ export default function TheSpotPage() {
         </section>
 
         {/* Join banner */}
-        <section className="pt-[100px] sm:pt-[120px] pb-[20px] bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="py-16 sm:py-20 bg-white px-6 sm:px-8 lg:px-10">
+          <div className="max-w-7xl mx-auto">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
               viewport={{ once: true }}
-              className="bg-primary rounded-2xl px-5 sm:px-8 md:px-12 py-6 sm:py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 sm:gap-6"
+              className="relative rounded-3xl px-8 sm:px-12 md:px-16 py-14 sm:py-16 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8 overflow-hidden"
+              style={{ backgroundColor: "#8A38F5" }}
             >
-              <h3 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">Join us.</h3>
-              <a href="#" className="flex items-center gap-2 sm:gap-3 text-white text-sm sm:text-base md:text-lg font-semibold hover:opacity-80 transition-opacity flex-shrink-0">
-                Apply for a role here
-                <span className="w-9 h-9 bg-accent rounded-full flex items-center justify-center flex-shrink-0">
-                  <FiArrowRight className="w-4 h-4 text-dark" />
+              {/* Decorative blobs */}
+              <div className="absolute top-0 right-0 w-72 h-72 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%)", transform: "translate(30%,-35%)" }} />
+              <div className="absolute bottom-0 left-1/2 w-48 h-48 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(255,255,255,0.07) 0%, transparent 70%)", transform: "translate(-50%, 40%)" }} />
+
+              <div className="relative z-10">
+                <p className="text-white/50 text-xs font-semibold uppercase tracking-widest mb-3">We&apos;re hiring</p>
+                <h3 className="text-white text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
+                  Join us.<br />
+                  <span className="text-white/70">Build with us.</span>
+                </h3>
+              </div>
+
+              <a
+                href="#"
+                className="relative z-10 flex items-center gap-3 bg-white font-bold text-sm sm:text-base px-7 py-3.5 rounded-full hover:bg-white/90 transition-all shrink-0 shadow-lg"
+                style={{ color: "#8A38F5" }}
+              >
+                Apply for a role
+                <span className="w-7 h-7 rounded-full flex items-center justify-center" style={{ backgroundColor: "#8A38F5" }}>
+                  <FiArrowRight className="w-3.5 h-3.5 text-white" />
                 </span>
               </a>
             </motion.div>
           </div>
         </section>
 
-        <div className="bg-white pt-10 sm:pt-16"><FAQ /></div>
-        <RefundBanner />
+        <div className="bg-white px-0">
+          <FAQ />
+        </div>
       </main>
       <Footer />
     </>

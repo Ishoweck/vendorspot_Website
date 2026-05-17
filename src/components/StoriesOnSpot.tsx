@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { FiArrowRight } from "react-icons/fi";
 import { fadeUp, stagger } from "@/lib/motion";
 import Link from "next/link";
+import Image from "next/image";
 
 const stories = [
   {
@@ -28,7 +29,7 @@ const stories = [
 
 export default function StoriesOnSpot() {
   return (
-    <section className="pt-[100px] sm:pt-[120px] pb-[60px] bg-white">
+    <section className="pt-25 sm:pt-30 pb-15 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8 sm:mb-12 md:mb-14">
           <motion.h2
@@ -40,7 +41,7 @@ export default function StoriesOnSpot() {
           >
             Stories on Spot
           </motion.h2>
-          <Link href="/thespot" className="text-sm font-medium text-gray-500 hover:text-primary transition-colors whitespace-nowrap">
+          <Link href="/blog" className="text-sm font-medium text-gray-500 hover:text-primary transition-colors whitespace-nowrap">
             View All
           </Link>
         </div>
@@ -59,8 +60,8 @@ export default function StoriesOnSpot() {
               whileHover={{ y: -4, boxShadow: "0 12px 32px rgba(0,0,0,0.09)" }}
               className="rounded-2xl overflow-hidden bg-white border border-gray-100 shadow-sm transition-shadow"
             >
-              <div className={`${story.bgColor} h-44 sm:h-48 flex items-center justify-center p-4`}>
-                <img src={story.image} alt={story.title} className="h-full w-auto object-contain" />
+              <div className={`${story.bgColor} h-44 sm:h-48 flex items-center justify-center p-4 relative`}>
+                <Image src={story.image} alt={story.title} fill className="object-contain p-4" />
               </div>
               <div className="p-6">
                 <h3 className="text-sm sm:text-base font-bold text-dark mb-3 leading-snug">{story.title}</h3>

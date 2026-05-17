@@ -2,83 +2,81 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiChevronDown } from "react-icons/fi";
-import { fadeUp, stagger } from "@/lib/motion";
+import { fadeUp } from "@/lib/motion";
 
 const faqs = [
-  { question: "What is Vendorspot?", answer: "Vendorspot is a secure marketplace where people can buy and sell physical and digital products, manage their stores, and enjoy seamless delivery services." },
-  { question: "How do I start selling on Vendorspot?", answer: "Simply create an account, set up your store, list your products, and start receiving orders. It only takes a few minutes to get started." },
-  { question: "How are deliveries handled?", answer: "We partner with reliable logistics providers to ensure your orders are delivered safely and on time across Nigeria." },
-  { question: "Is it safe to buy on Vendorspot?", answer: "Yes! We offer buyer protection, verified vendors, and secure payments. Your money stays safe until your order is delivered successfully." },
+  { question: "What is Vendorspot?",                              answer: "Vendorspot is a secure marketplace where people can buy and sell physical and digital products, manage their stores, and enjoy seamless delivery services." },
+  { question: "How do I start selling on Vendorspot?",           answer: "Simply create an account, set up your store, list your products, and start receiving orders. It only takes a few minutes to get started." },
+  { question: "How are deliveries handled?",                     answer: "We partner with reliable logistics providers to ensure your orders are delivered safely and on time across Nigeria." },
+  { question: "Is it safe to buy on Vendorspot?",                answer: "Yes! We offer buyer protection, verified vendors, and secure payments. Your money stays safe until your order is delivered successfully." },
   { question: "Can I earn on Vendorspot without selling my own products?", answer: "Absolutely! You can resell products from other vendors and earn commissions on every successful sale." },
-  { question: "How long does delivery take?", answer: "Delivery times vary depending on your location and the vendor. Most orders are delivered within 2–7 business days." },
+  { question: "How long does delivery take?",                    answer: "Delivery times vary depending on your location and the vendor. Most orders are delivered within 2–7 business days." },
+  { question: "How do I track my order?",                        answer: "Once your order is confirmed, you'll receive a tracking link via email and in-app notifications so you can follow your delivery in real time." },
 ];
 
 export default function FAQ() {
-  // null means all collapsed; initialising to 0 opens the first item on load
-  const [active, setActive] = useState<number | null>(0);
+  const [active, setActive] = useState(0);
 
   return (
-    <section className="pt-[60px] pb-[100px] sm:pb-[120px] bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="pt-16 pb-24 sm:pb-32 bg-white">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
+
         <motion.h2
           variants={fadeUp}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="text-3xl sm:text-4xl md:text-5xl font-bold text-dark mb-12"
+          className="text-3xl sm:text-4xl md:text-5xl font-bold text-dark mb-10 sm:mb-12"
         >
           Frequently asked questions
         </motion.h2>
 
         <motion.div
-          variants={stagger}
+          variants={fadeUp}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
-          className="space-y-3"
+          viewport={{ once: true }}
+          className="flex gap-0 border border-gray-200 rounded-3xl overflow-hidden shadow-sm"
         >
-          {faqs.map((faq, i) => (
-            <motion.div
-              key={i}
-              variants={fadeUp}
-              className="border border-gray-200 rounded-2xl overflow-hidden"
-            >
+          {/* Left — question list */}
+          <div className="w-1/2 overflow-y-auto max-h-105 divide-y divide-gray-100 scrollbar-thin">
+            {faqs.map((faq, i) => (
               <button
-                onClick={() => setActive(active === i ? null : i)}
-                className={`w-full flex items-center justify-between text-left px-6 py-5 text-sm sm:text-base font-medium transition-colors gap-4 ${
-                  active === i ? "bg-dark text-white" : "bg-white text-gray-700 hover:bg-gray-50"
+                key={i}
+                onClick={() => setActive(i)}
+                className={`w-full text-left px-6 py-5 text-sm sm:text-base transition-all duration-200 ${
+                  active === i
+                    ? "bg-gray-50 font-semibold text-dark"
+                    : "bg-white font-medium text-gray-600 hover:bg-gray-50 hover:text-dark"
                 }`}
               >
-                <span>{faq.question}</span>
-                <motion.div
-                  animate={{ rotate: active === i ? 180 : 0 }}
-                  transition={{ duration: 0.25 }}
-                  className="flex-shrink-0"
-                >
-                  <FiChevronDown className="w-5 h-5" />
-                </motion.div>
+                {faq.question}
               </button>
+            ))}
+          </div>
 
-              <AnimatePresence initial={false}>
-                {active === i && (
-                  <motion.div
-                    key="answer"
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.28, ease: "easeInOut" }}
-                    className="overflow-hidden"
-                  >
-                    <p className="px-6 py-5 text-sm sm:text-base text-gray-600 leading-relaxed bg-gray-50 border-t border-gray-100">
-                      {faq.answer}
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          ))}
+          {/* Divider */}
+          <div className="w-px bg-gray-200 shrink-0" />
+
+          {/* Right — answer panel */}
+          <div className="w-1/2 bg-dark p-8 sm:p-10 flex flex-col justify-center min-h-70">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={active}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.22, ease: "easeOut" }}
+              >
+                <p className="text-sm font-bold text-white mb-3">Reply:</p>
+                <p className="text-sm sm:text-base text-white/75 leading-relaxed">
+                  {faqs[active].answer}
+                </p>
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </motion.div>
+
       </div>
     </section>
   );

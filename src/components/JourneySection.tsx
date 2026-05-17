@@ -27,7 +27,7 @@ const journeyCards = [
 
 export default function JourneySection() {
   return (
-    <section className="py-[100px] sm:py-[120px] bg-white">
+    <section className="py-25 sm:py-30 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.h2
           variants={fadeUp}
@@ -56,10 +56,10 @@ export default function JourneySection() {
               <div className={`${card.bgColor} h-48 sm:h-52 flex items-center justify-center p-6`}>
                 <img src={card.image} alt={card.title} className="h-full w-auto object-contain" />
               </div>
-              <div className="p-6 sm:p-7">
-                <h3 className="text-lg sm:text-xl font-bold text-dark mb-3">{card.title}</h3>
-                <p className="text-sm text-gray-600 leading-relaxed mb-5">{card.description}</p>
-                <a href="#" className="inline-flex items-center gap-1.5 text-sm font-bold text-dark hover:text-primary transition-colors group">
+              <div className="p-6 sm:p-7 flex flex-col flex-1">
+                <h3 className="text-lg sm:text-xl font-bold text-dark mb-3 min-h-14 sm:min-h-15">{card.title}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed mb-6 flex-1">{card.description}</p>
+                <a href="#" className="inline-flex items-center gap-1.5 text-sm font-bold text-dark hover:text-primary transition-colors group mt-auto">
                   Join Now
                   <FiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </a>

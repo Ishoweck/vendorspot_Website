@@ -2,65 +2,138 @@
 
 import { motion } from "framer-motion";
 import { slideLeft, slideRight } from "@/lib/motion";
+import { FiShield, FiCheckCircle, FiLock } from "react-icons/fi";
 
 const phones = [
-  { src: "/icons/phone-1.svg", alt: "App screenshot 1" },
-  { src: "/icons/phone-2.svg", alt: "App screenshot 2" },
-  { src: "/icons/phone-3.svg", alt: "App screenshot 3" },
-  { src: "/icons/phone-4.svg", alt: "App screenshot 4" },
+  { src: "/icons/phone-1.svg",  label: "Search & Discover",  icon: "search"   },
+  { src: "/icons/phone-2.svg",  label: "View Product",       icon: "eye"      },
+  { src: "/icons/phone-3.svg",  label: "Add to Cart",        icon: "cart"     },
+  { src: "/icons/phone-4.svg",  label: "Checkout",           icon: "card"     },
+  { src: "/icons/phone-5.png",  label: "Secure Payment",     icon: "lock"     },
+  { src: "/icons/phone-6.png",  label: "Order Confirmed",    icon: "check"    },
+  { src: "/icons/phone-7.png",  label: "Track Delivery",     icon: "truck"    },
+  { src: "/icons/phone-8.png",  label: "Track Orders",       icon: "map-pin"  },
+  { src: "/icons/phone-9.png",  label: "Order Details",      icon: "file"     },
+  { src: "/icons/phone-10.png", label: "Confirm & Release",  icon: "release"  },
 ];
 
+const trustPills = [
+  { icon: <FiShield className="w-3.5 h-3.5 text-accent" />, label: "Escrow payments"  },
+  { icon: <FiCheckCircle  className="w-3.5 h-3.5 text-accent" />, label: "Verified vendors" },
+  { icon: <FiLock         className="w-3.5 h-3.5 text-accent" />, label: "Secure checkout"  },
+];
+
+const track = [...phones, ...phones];
+
 export default function SafeBuyingSection() {
-  // Locks the aspect ratio to the original design canvas (948×1440) while clamping to a minimum
-  const h = `max(800px, ${((948 / 1440) * 100).toFixed(2)}vw)`;
   return (
-    <section
-      className="relative overflow-hidden py-24 sm:py-[120px] bg-primary"
-      style={{ minHeight: h }}
-    >
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Text row */}
-        <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-5 sm:gap-6 mb-6 sm:mb-14 md:mb-18">
-          <motion.h2
-            variants={slideLeft}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold text-white md:whitespace-nowrap leading-none"
-          >
-            Shop with confidence
-          </motion.h2>
+    <section className="bg-primary overflow-hidden py-14 sm:py-22 pb-0">
+      {/* ── Text row ── */}
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-8 md:gap-16 mb-14 sm:mb-18">
+
+          {/* Left: headline + trust pills */}
+          <div className="md:max-w-lg">
+            <motion.span
+              variants={slideLeft}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="inline-block text-[11px] font-semibold tracking-[0.14em] uppercase text-white/45 mb-4"
+            >
+              Buyer Protection
+            </motion.span>
+
+            <motion.h2
+              variants={slideLeft}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="text-4xl sm:text-5xl md:text-[3.25rem] font-extrabold text-white leading-[1.12] mb-7"
+            >
+              Simple ways to buy safely &amp;{" "}
+              <span className="text-accent">have your money protected</span>
+            </motion.h2>
+
+            {/* Trust pills */}
+            <motion.div
+              variants={slideLeft}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="flex flex-wrap gap-2.5"
+            >
+              {trustPills.map((pill) => (
+                <div
+                  key={pill.label}
+                  className="flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-3.5 py-1.5 text-xs font-medium text-white/80"
+                >
+                  {pill.icon}
+                  {pill.label}
+                </div>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Right: description */}
           <motion.p
             variants={slideRight}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="text-white/80 text-base sm:text-lg max-w-sm leading-relaxed"
+            className="text-white/65 text-base sm:text-lg leading-relaxed md:max-w-xs md:pt-3 shrink-0"
           >
-            Your payment is secured and only released when your order is successfully delivered.
+            Shop confidently with secure payments, verified vendors, and buyer
+            protection. Your money stays safe until your order is delivered
+            successfully.
           </motion.p>
         </div>
+      </div>
 
-        {/* Phone mockups */}
-        <div className="flex justify-center items-end gap-3 sm:gap-5 md:gap-8">
-          {phones.map((phone, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 60 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.65, delay: i * 0.14, ease: [0.25, 0.46, 0.45, 0.94] }}
-              // Center two phones are larger and always visible; outer two are smaller and hidden on mobile
-              className={`relative ${
-                i === 1 || i === 2
-                  ? "w-36 sm:w-44 md:w-56 z-10"
-                  : "w-28 sm:w-36 md:w-44 hidden sm:block opacity-80"
-              }`}
-              style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.25))" }}
-            >
-              <img src={phone.src} alt={phone.alt} className="w-full h-auto" style={{ imageRendering: "auto" }} />
-            </motion.div>
-          ))}
+      {/* ── Marquee — full bleed, flush to bottom ── */}
+      <div className="relative w-full">
+        {/* Fade edges */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-20 sm:w-32 z-10 bg-gradient-to-r from-primary to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-20 sm:w-32 z-10 bg-gradient-to-l from-primary to-transparent" />
+
+        <div
+          className="flex gap-3 sm:gap-4 animate-marquee hover:[animation-play-state:paused]"
+          style={{ width: "max-content" }}
+        >
+          {track.map((phone, i) => {
+            const step = (i % phones.length) + 1;
+            return (
+              <motion.div
+                key={i}
+                whileHover={{ scale: 1.1, y: -10 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="shrink-0 w-[160px] sm:w-[190px] bg-white/[0.07] hover:bg-white/[0.13] border border-white/[0.13] hover:border-white/30 rounded-2xl pt-4 pb-3 px-3 flex flex-col items-center gap-2 cursor-default"
+              >
+                {/* Phone image with step badge overlaid */}
+                <div
+                  className="relative w-full"
+                  style={{ filter: "drop-shadow(0 16px 32px rgba(0,0,0,0.35))" }}
+                >
+                  <img
+                    src={phone.src}
+                    alt={phone.label}
+                    className="w-full h-auto object-contain"
+                    loading="lazy"
+                    decoding="async"
+                    draggable={false}
+                  />
+                  <span className="absolute top-0 left-0 w-6 h-6 rounded-full bg-white/20 border border-white/30 backdrop-blur-sm flex items-center justify-center text-[10px] font-bold text-white">
+                    {step}
+                  </span>
+                </div>
+
+                {/* Label below image */}
+                <span className="text-[11px] font-medium text-white/70 text-center leading-tight">
+                  {phone.label}
+                </span>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
