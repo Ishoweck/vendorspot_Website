@@ -44,21 +44,23 @@ function SectionHeader({ title, icon, titleColor = "text-dark", badge }: {
   title: string; icon?: string; titleColor?: string; badge?: string;
 }) {
   return (
-    <div className="flex items-center justify-between mb-6 sm:mb-8 px-4">
+    <div className="flex items-start justify-between gap-3 mb-5 sm:mb-8 px-4">
       <motion.div
         variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
-        className="flex items-center gap-2.5"
+        className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-2.5 min-w-0"
       >
-        {icon && <span className="text-xl">{icon}</span>}
-        <h2 className={`text-xl sm:text-2xl font-bold ${titleColor}`}>{title}</h2>
+        <div className="flex items-center gap-2">
+          {icon && <span className="text-lg sm:text-xl">{icon}</span>}
+          <h2 className={`text-lg sm:text-xl lg:text-2xl font-bold ${titleColor} leading-tight`}>{title}</h2>
+        </div>
         {badge && (
-          <span className="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-2.5 py-1 rounded-full">
+          <span className="text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary px-2.5 py-1 rounded-full self-start">
             {badge}
           </span>
         )}
       </motion.div>
-      <a href="#" className="flex items-center gap-1 text-sm font-medium text-gray-400 hover:text-primary transition-colors group">
-        View All <FiArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+      <a href="#" className="flex items-center gap-1 text-xs sm:text-sm font-medium text-gray-400 hover:text-primary transition-colors group shrink-0 whitespace-nowrap mt-0.5">
+        View All <FiArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 group-hover:translate-x-0.5 transition-transform" />
       </a>
     </div>
   );
@@ -144,7 +146,7 @@ function ProductsPageContent() {
       <main className="flex-1">
 
         {/* Hero */}
-        <section className="relative overflow-hidden pt-28 sm:pt-36 pb-20 sm:pb-28 px-6 text-center"
+        <section className="relative overflow-hidden pt-24 sm:pt-32 pb-12 sm:pb-20 px-6 text-center"
           style={{ backgroundColor: "#8A38F5" }}>
           {/* Decorative blobs */}
           <div className="absolute top-0 right-0 w-96 h-96 pointer-events-none"
@@ -156,14 +158,14 @@ function ProductsPageContent() {
             <motion.p
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="text-white/60 text-xs font-semibold uppercase tracking-widest mb-4"
+              className="text-white/60 text-xs font-semibold uppercase tracking-widest mb-3 sm:mb-4"
             >
               Thousands of verified products
             </motion.p>
             <motion.h1
               initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-tight mb-8"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-5 sm:mb-8"
             >
               Find your<br className="hidden sm:block" /> favourite item
             </motion.h1>
@@ -300,7 +302,7 @@ function ProductsPageContent() {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }} transition={{ duration: 0.5 }}
-                  className="max-w-7xl mx-auto relative overflow-hidden rounded-3xl bg-dark px-8 sm:px-12 py-10 sm:py-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
+                  className="max-w-7xl mx-auto relative overflow-hidden rounded-3xl bg-dark px-5 sm:px-8 md:px-12 py-8 sm:py-10 md:py-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
                 >
                   <div className="absolute inset-0 pointer-events-none"
                     style={{ background: "radial-gradient(ellipse at 80% 50%, rgba(138,56,245,0.25) 0%, transparent 60%)" }} />
@@ -309,7 +311,7 @@ function ProductsPageContent() {
                     <h3 className="text-white text-2xl sm:text-3xl md:text-4xl font-extrabold mb-2 leading-tight">
                       Digital Products
                     </h3>
-                    <p className="text-white/50 text-sm mb-6">E-books, courses, software keys &amp; more — delivered instantly.</p>
+                    <p className="text-white/50 text-sm mb-4 sm:mb-6">E-books, courses, software keys &amp; more — delivered instantly.</p>
                     <a href="#" className="inline-flex items-center gap-2 bg-accent hover:bg-accent-dark text-dark text-sm font-bold rounded-xl px-5 py-2.5 transition-colors">
                       Browse Digital <FiArrowRight className="w-4 h-4" />
                     </a>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { FiHeart, FiShoppingCart, FiStar, FiCheck, FiPackage } from "react-icons/fi";
@@ -77,29 +78,31 @@ export default function ProductCard(props: ProductCardProps) {
             <FiHeart className={`w-3.5 h-3.5 transition-colors ${liked ? "text-primary fill-primary" : "text-gray-400"}`} />
           </button>
           {productImage ? (
-            <img
+            <Image
               src={productImage}
               alt={name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
             />
           ) : (
             <FiPackage className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300" />
           )}
         </div>
 
-        <div className="p-3">
+        <div className="p-2.5 sm:p-3">
           {rating > 0 && (
             <div className="flex items-center gap-1 mb-1">
               <FiStar className="w-3 h-3 text-accent fill-accent" />
-              <span className="text-xs text-gray-500">{rating.toFixed(1)} ({reviews})</span>
+              <span className="text-[10px] sm:text-xs text-gray-500">{rating.toFixed(1)} ({reviews})</span>
             </div>
           )}
-          <p className="text-xs sm:text-sm font-medium text-dark truncate mb-2 leading-tight">{name}</p>
-          <div className="flex items-center justify-between gap-2">
+          <p className="text-xs sm:text-sm font-medium text-dark truncate mb-1.5 sm:mb-2 leading-tight">{name}</p>
+          <div className="flex items-center justify-between gap-1.5 sm:gap-2">
             <div className="min-w-0">
-              <span className="text-sm font-bold text-dark">₦{price.toLocaleString()}</span>
+              <span className="text-xs sm:text-sm font-bold text-dark">₦{price.toLocaleString()}</span>
               {oldPrice > 0 && oldPrice > price && (
-                <span className="text-[10px] text-gray-400 line-through ml-1 block sm:inline">
+                <span className="text-[10px] text-gray-400 line-through ml-1 hidden sm:inline">
                   ₦{oldPrice.toLocaleString()}
                 </span>
               )}
@@ -107,11 +110,11 @@ export default function ProductCard(props: ProductCardProps) {
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={handleAddToCart}
-              className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
+              className={`w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
                 added ? "bg-green-500" : "bg-primary hover:bg-primary-dark"
               }`}
             >
-              {added ? <FiCheck className="w-3.5 h-3.5 text-white" /> : <FiShoppingCart className="w-3.5 h-3.5 text-white" />}
+              {added ? <FiCheck className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white" /> : <FiShoppingCart className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white" />}
             </motion.button>
           </div>
         </div>

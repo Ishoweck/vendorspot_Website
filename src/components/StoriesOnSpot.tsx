@@ -29,7 +29,7 @@ const stories = [
 
 export default function StoriesOnSpot() {
   return (
-    <section className="pt-25 sm:pt-30 pb-15 bg-white">
+    <section className="pt-14 sm:pt-20 md:pt-28 pb-10 sm:pb-14 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8 sm:mb-12 md:mb-14">
           <motion.h2

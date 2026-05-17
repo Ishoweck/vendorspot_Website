@@ -38,7 +38,7 @@ export default function Testimonials() {
   const t = testimonials[current];
 
   return (
-    <section className="py-20 sm:py-32 bg-[#8A38F5] relative overflow-hidden">
+    <section className="py-14 sm:py-20 md:py-32 bg-[#8A38F5] relative overflow-hidden">
 
       {/* Decorative blobs */}
       <div className="absolute top-0 left-0 w-96 h-96 rounded-full pointer-events-none"
@@ -46,7 +46,7 @@ export default function Testimonials() {
       <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full pointer-events-none"
         style={{ background: "radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%)", transform: "translate(35%, 35%)" }} />
 
-      <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-10 relative z-10">
+      <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 relative z-10">
 
         {/* Header */}
         <motion.div
@@ -54,7 +54,7 @@ export default function Testimonials() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="text-center mb-12 sm:mb-16"
+          className="text-center mb-8 sm:mb-12 md:mb-16"
         >
           <p className="text-white/50 text-xs font-semibold uppercase tracking-widest mb-3">Testimonials</p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white">
@@ -63,65 +63,72 @@ export default function Testimonials() {
         </motion.div>
 
         {/* Card + arrows */}
-        <div className="relative flex items-center gap-4">
+        <motion.div
+          className="relative overflow-hidden cursor-grab active:cursor-grabbing"
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.15}
+          onDragEnd={(_, info) => {
+            if (info.offset.x < -50) go(current + 1);
+            else if (info.offset.x > 50) go(current - 1);
+          }}
+        >
+          <AnimatePresence mode="wait" custom={dir}>
+            <motion.div
+              key={current}
+              custom={dir}
+              initial={{ opacity: 0, x: dir * 60, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: dir * -60, scale: 0.95 }}
+              transition={{ duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="bg-white rounded-3xl px-6 py-7 sm:px-16 sm:py-10 md:px-20 md:py-12 shadow-2xl flex flex-col min-h-72 sm:min-h-80 md:min-h-72"
+            >
+              {/* Stars */}
+              <div className="flex gap-1 mb-5">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <FiStar key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                ))}
+              </div>
+
+              {/* Quote */}
+              <p className="text-gray-700 text-sm sm:text-base md:text-lg leading-relaxed mb-6 sm:mb-8 flex-1">
+                &ldquo;{t.text}&rdquo;
+              </p>
+
+              {/* Author */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className={`w-11 h-11 sm:w-13 sm:h-13 rounded-full flex items-center justify-center font-bold text-base sm:text-lg shrink-0 ${t.color}`}>
+                    {t.name.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="font-bold text-dark text-sm sm:text-base">{t.name}</p>
+                    <p className="text-gray-400 text-xs sm:text-sm">{t.role}</p>
+                  </div>
+                </div>
+                <span className="text-gray-200 text-sm font-medium hidden sm:block">
+                  {current + 1} / {testimonials.length}
+                </span>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Arrows — hidden on mobile, overlaid on desktop */}
           <button
             onClick={() => go(current - 1)}
-            className="shrink-0 w-11 h-11 border-2 border-white/30 hover:border-white rounded-full flex items-center justify-center text-white hover:bg-white/10 transition-all duration-200"
+            className="hidden sm:flex absolute left-5 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-11 sm:h-11 border-2 border-white/30 hover:border-white rounded-full items-center justify-center text-white hover:bg-white/10 transition-all duration-200 z-10"
             aria-label="Previous"
           >
             <FiChevronLeft className="w-5 h-5" />
           </button>
-
-          <div className="flex-1 overflow-hidden">
-            <AnimatePresence mode="wait" custom={dir}>
-              <motion.div
-                key={current}
-                custom={dir}
-                initial={{ opacity: 0, x: dir * 60, scale: 0.88 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: dir * -60, scale: 0.88 }}
-                transition={{ duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
-                className="bg-white rounded-3xl p-8 sm:p-12 shadow-2xl"
-              >
-                {/* Stars */}
-                <div className="flex gap-1 mb-6">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <FiStar key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                  ))}
-                </div>
-
-                {/* Quote */}
-                <p className="text-gray-700 text-base sm:text-lg leading-relaxed mb-8">
-                  &ldquo;{t.text}&rdquo;
-                </p>
-
-                {/* Author */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className={`w-13 h-13 rounded-full flex items-center justify-center font-bold text-lg shrink-0 ${t.color}`}>
-                      {t.name.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="font-bold text-dark">{t.name}</p>
-                      <p className="text-gray-400 text-sm">{t.role}</p>
-                    </div>
-                  </div>
-                  <span className="text-gray-200 text-sm font-medium hidden sm:block">
-                    {current + 1} / {testimonials.length}
-                  </span>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
           <button
             onClick={() => go(current + 1)}
-            className="shrink-0 w-11 h-11 bg-white rounded-full flex items-center justify-center text-[#8A38F5] hover:bg-white/90 transition-all duration-200 shadow-lg"
+            className="hidden sm:flex absolute right-5 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-11 sm:h-11 bg-white rounded-full items-center justify-center text-[#8A38F5] hover:bg-white/90 transition-all duration-200 shadow-lg z-10"
             aria-label="Next"
           >
             <FiChevronRight className="w-5 h-5" />
           </button>
-        </div>
+        </motion.div>
 
         {/* Dots */}
         <div className="flex justify-center gap-2 mt-8">

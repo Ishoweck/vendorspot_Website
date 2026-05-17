@@ -117,7 +117,7 @@ export default function Footer() {
 
       {/* Socials + copyright */}
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 pb-10 border-t border-white/10 pt-8">
-        <div className="flex flex-wrap justify-center gap-3 mb-8">
+        <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8">
           {socials.map((s) => (
             <motion.a
               key={s.name}
@@ -127,10 +127,10 @@ export default function Footer() {
               whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.07)" }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="flex items-center gap-2 border border-white/15 rounded-full px-4 sm:px-5 py-2 sm:py-2.5 text-white/70 hover:text-white hover:border-white/30 transition-colors duration-200"
+              className="flex items-center gap-2 border border-white/15 rounded-full px-3 sm:px-5 py-2 sm:py-2.5 text-white/70 hover:text-white hover:border-white/30 transition-colors duration-200"
             >
               <s.Icon className="w-4 h-4 shrink-0" style={{ color: s.color }} />
-              <span className="text-xs sm:text-sm">{s.name}</span>
+              <span className="text-xs sm:text-sm hidden sm:inline">{s.name}</span>
             </motion.a>
           ))}
         </div>

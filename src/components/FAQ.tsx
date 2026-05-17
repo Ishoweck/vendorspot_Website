@@ -26,7 +26,7 @@ export default function FAQ() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="text-3xl sm:text-4xl md:text-5xl font-bold text-dark mb-10 sm:mb-12"
+          className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-dark mb-8 sm:mb-10 md:mb-12"
         >
           Frequently asked questions
         </motion.h2>
@@ -36,15 +36,15 @@ export default function FAQ() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="flex gap-0 border border-gray-200 rounded-3xl overflow-hidden shadow-sm"
+          className="flex flex-col md:flex-row gap-0 border border-gray-200 rounded-3xl overflow-hidden shadow-sm"
         >
           {/* Left — question list */}
-          <div className="w-1/2 overflow-y-auto max-h-105 divide-y divide-gray-100 scrollbar-thin">
+          <div className="w-full md:w-1/2 overflow-y-auto md:max-h-105 divide-y divide-gray-100 scrollbar-thin">
             {faqs.map((faq, i) => (
               <button
                 key={i}
                 onClick={() => setActive(i)}
-                className={`w-full text-left px-6 py-5 text-sm sm:text-base transition-all duration-200 ${
+                className={`w-full text-left px-5 sm:px-6 py-4 sm:py-5 text-sm transition-all duration-200 ${
                   active === i
                     ? "bg-gray-50 font-semibold text-dark"
                     : "bg-white font-medium text-gray-600 hover:bg-gray-50 hover:text-dark"
@@ -56,10 +56,11 @@ export default function FAQ() {
           </div>
 
           {/* Divider */}
-          <div className="w-px bg-gray-200 shrink-0" />
+          <div className="hidden md:block w-px bg-gray-200 shrink-0" />
+          <div className="md:hidden h-px bg-gray-200 shrink-0" />
 
           {/* Right — answer panel */}
-          <div className="w-1/2 bg-dark p-8 sm:p-10 flex flex-col justify-center min-h-70">
+          <div className="w-full md:w-1/2 bg-dark p-6 sm:p-8 md:p-10 flex flex-col justify-center min-h-40 md:min-h-70">
             <AnimatePresence mode="wait">
               <motion.div
                 key={active}

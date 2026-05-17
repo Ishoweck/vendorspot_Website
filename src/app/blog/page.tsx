@@ -126,7 +126,7 @@ export default function BlogPage() {
           >
             <Link href={`/blog/${featured.slug}`} className="group block">
               <div className="rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-shadow duration-300 grid grid-cols-1 md:grid-cols-2">
-                <div className={`${featured.color} min-h-52 sm:min-h-72 flex items-center justify-center relative overflow-hidden`}>
+                <div className={`${featured.color} min-h-40 sm:min-h-52 md:min-h-72 flex items-center justify-center relative overflow-hidden`}>
                   <div
                     className="absolute inset-0 opacity-20"
                     style={{ backgroundImage: "radial-gradient(circle at 30% 50%, white 0%, transparent 60%)" }}
