@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import RefundBanner from "@/components/RefundBanner";
 import { useCart } from "@/lib/CartContext";
 import { FiMinus, FiPlus, FiTag, FiLock, FiShoppingBag, FiArrowRight, FiTrash2, FiPackage } from "react-icons/fi";
 import { fadeUp, stagger } from "@/lib/motion";
@@ -219,7 +218,6 @@ export default function CartPage() {
           </AnimatePresence>
         </div>
       </main>
-      <RefundBanner />
       <Footer />
     </>
   );

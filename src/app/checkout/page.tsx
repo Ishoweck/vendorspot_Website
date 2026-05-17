@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import RefundBanner from "@/components/RefundBanner";
 import { useCart } from "@/lib/CartContext";
 import { useToast } from "@/components/Toast";
 import { FiMapPin, FiTag, FiTruck, FiChevronRight, FiCheck, FiPlus, FiCreditCard, FiLoader, FiPackage } from "react-icons/fi";
@@ -588,7 +587,6 @@ export default function CheckoutPage() {
           )}
         </div>
       </main>
-      <RefundBanner />
       <Footer />
     </>
   );

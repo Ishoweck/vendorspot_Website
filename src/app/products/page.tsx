@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
-import RefundBanner from "@/components/RefundBanner";
 import { FiSearch, FiArrowRight, FiX, FiZap, FiTrendingUp, FiSmartphone, FiShoppingBag, FiMonitor, FiHome } from "react-icons/fi";
 import { useApi } from "@/lib/useApi";
 import type { Product } from "@/lib/api";
@@ -324,7 +323,6 @@ function ProductsPageContent() {
               <ProductSection title="Digital Products" products={digital} loading={loadingDigital} fallback={fallbackProducts} />
               <ProductSection title="Trending Now" icon="🔥" products={trending} loading={loadingTrend} fallback={fallbackProducts} />
 
-              <RefundBanner />
             </motion.div>
           )}
         </AnimatePresence>

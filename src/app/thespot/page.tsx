@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FAQ from "@/components/FAQ";
-import RefundBanner from "@/components/RefundBanner";
 import {
   FiArrowRight, FiChevronLeft, FiChevronRight,
   FiStar, FiShield, FiUsers, FiClipboard,
@@ -270,7 +269,6 @@ export default function TheSpotPage() {
         <div className="bg-white px-0">
           <FAQ />
         </div>
-        <RefundBanner />
       </main>
       <Footer />
     </>

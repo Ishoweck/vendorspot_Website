@@ -7,6 +7,7 @@ import { FiInstagram } from "react-icons/fi";
 import { useState } from "react";
 import { fadeUp, stagger } from "@/lib/motion";
 import Link from "next/link";
+import RefundBanner from "@/components/RefundBanner";
 
 const footerLinks: Record<string, { label: string; href: string }[]> = {
   "About Us": [
@@ -39,10 +40,12 @@ export default function Footer() {
   const [email, setEmail] = useState("");
 
   return (
+    <>
+    <RefundBanner />
     <footer className="bg-dark text-white">
 
       {/* Newsletter */}
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 pt-10 pb-8">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 pt-6 pb-6">
         <motion.div
           variants={fadeUp}
           initial="hidden"
@@ -78,7 +81,7 @@ export default function Footer() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 py-10 grid grid-cols-2 sm:grid-cols-4 gap-8 sm:gap-10"
+        className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 py-8 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-10"
       >
         {/* Logo + tagline */}
         <motion.div variants={fadeUp} className="col-span-2 sm:col-span-1">
@@ -137,5 +140,6 @@ export default function Footer() {
       </div>
 
     </footer>
+    </>
   );
 }

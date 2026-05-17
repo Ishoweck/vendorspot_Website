@@ -19,7 +19,7 @@ const appButtons = [
 
 export default function RefundBanner() {
   return (
-    <section className="bg-dark text-center px-6 pt-20 sm:pt-28 pb-16 sm:pb-20">
+    <section className="bg-dark text-center px-6 pt-12 sm:pt-16 pb-10 sm:pb-12">
 
       <motion.h2
         variants={fadeUp}
@@ -48,7 +48,7 @@ export default function RefundBanner() {
         whileInView="visible"
         viewport={{ once: true }}
         transition={{ delay: 0.14 }}
-        className="text-white/50 text-sm sm:text-base mb-10"
+        className="text-white/50 text-sm sm:text-base mb-6"
       >
         If you don&apos;t get what you paid for
       </motion.p>
