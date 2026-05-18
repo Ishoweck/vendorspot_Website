@@ -1,6 +1,7 @@
 "use client";
 
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,7 +10,7 @@ import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import { FiSearch, FiArrowRight, FiX, FiZap, FiTrendingUp, FiSmartphone, FiShoppingBag, FiMonitor, FiHome } from "react-icons/fi";
 import { useApi } from "@/lib/useApi";
-import type { Product } from "@/lib/api";
+import type { Product, Category } from "@/lib/api";
 import { fadeUp, stagger } from "@/lib/motion";
 
 const quickCategories = [
@@ -118,10 +119,43 @@ function ProductsPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const urlQuery = searchParams.get("q") || "";
+  const categorySlug = searchParams.get("category") || "";
   const [search, setSearch] = useState(urlQuery);
   const [focused, setFocused] = useState(false);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [dropdownRect, setDropdownRect] = useState<DOMRect | null>(null);
+  const searchWrapperRef = useRef<HTMLDivElement>(null);
+  const suggestDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => { setSearch(urlQuery); }, [urlQuery]);
+
+  useEffect(() => {
+    if (suggestDebounce.current) clearTimeout(suggestDebounce.current);
+    if (!search.trim() || search.trim().length < 2) { setSuggestions([]); return; }
+    suggestDebounce.current = setTimeout(async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/search/suggestions?q=${encodeURIComponent(search.trim())}`);
+        const json = await res.json();
+        const list = json.data?.suggestions;
+        setSuggestions(Array.isArray(list) ? list.map((s: { name: string }) => s.name).slice(0, 6) : []);
+      } catch { setSuggestions([]); }
+    }, 280);
+    return () => { if (suggestDebounce.current) clearTimeout(suggestDebounce.current); };
+  }, [search]);
+
+  useEffect(() => {
+    if (showSuggestions && suggestions.length > 0 && searchWrapperRef.current) {
+      setDropdownRect(searchWrapperRef.current.getBoundingClientRect());
+    }
+  }, [showSuggestions, suggestions]);
+
+  const { data: allCategories } = useApi<Category[]>(categorySlug ? "/categories" : null);
+  const resolvedCategory = allCategories?.find(c => c.slug === categorySlug);
+  const categoryId = resolvedCategory?._id ?? null;
+  const { data: categoryProducts, loading: loadingCategory } = useApi<Product[]>(
+    categoryId ? `/products/category/${categoryId}?limit=20` : null
+  );
 
   const handleSearch = () => {
     const q = search.trim();
@@ -133,13 +167,14 @@ function ProductsPageContent() {
     router.push("/products");
   };
 
+  const isFiltered = !!(urlQuery || categorySlug);
   const searchEndpoint  = urlQuery ? `/products/search?q=${encodeURIComponent(urlQuery)}&limit=20` : null;
   const { data: searchResults, loading: searchLoading } = useApi<Product[]>(searchEndpoint);
-  const { data: newArrivals,   loading: loadingNew     } = useApi<Product[]>(urlQuery ? null : "/products/new-arrivals?limit=10");
-  const { data: recommended,   loading: loadingRec     } = useApi<Product[]>(urlQuery ? null : "/products/recommended?limit=5");
-  const { data: flashSales,    loading: loadingFlash   } = useApi<Product[]>(urlQuery ? null : "/products/flash-sales?limit=5");
-  const { data: trending,      loading: loadingTrend   } = useApi<Product[]>(urlQuery ? null : "/products/trending?limit=5");
-  const { data: digital,       loading: loadingDigital } = useApi<Product[]>(urlQuery ? null : "/products?productType=digital&limit=5");
+  const { data: newArrivals,   loading: loadingNew     } = useApi<Product[]>(isFiltered ? null : "/products/new-arrivals?limit=10");
+  const { data: recommended,   loading: loadingRec     } = useApi<Product[]>(isFiltered ? null : "/products/recommended?limit=5");
+  const { data: flashSales,    loading: loadingFlash   } = useApi<Product[]>(isFiltered ? null : "/products/flash-sales?limit=5");
+  const { data: trending,      loading: loadingTrend   } = useApi<Product[]>(isFiltered ? null : "/products/trending?limit=5");
+  const { data: digital,       loading: loadingDigital } = useApi<Product[]>(isFiltered ? null : "/products?productType=digital&limit=5");
 
   return (
     <>
@@ -173,8 +208,10 @@ function ProductsPageContent() {
 
             {/* Search bar */}
             <motion.div
+              ref={searchWrapperRef}
               initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="relative"
             >
               <div className={`flex items-center bg-white rounded-full shadow-2xl p-1.5 gap-2 transition-all duration-300 ${focused ? "ring-4 ring-white/30" : ""}`}>
                 <div className="flex items-center gap-2 flex-1 pl-3 sm:pl-5 min-w-0">
@@ -183,10 +220,10 @@ function ProductsPageContent() {
                     type="text"
                     placeholder="Search products, brands…"
                     value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                    onFocus={() => setFocused(true)}
-                    onBlur={() => setFocused(false)}
+                    onChange={(e) => { setSearch(e.target.value); setShowSuggestions(true); }}
+                    onKeyDown={(e) => { if (e.key === "Enter") { setShowSuggestions(false); handleSearch(); } }}
+                    onFocus={() => { setFocused(true); setShowSuggestions(true); }}
+                    onBlur={() => { setFocused(false); setTimeout(() => setShowSuggestions(false), 150); }}
                     className="flex-1 py-2.5 sm:py-3 text-xs sm:text-sm text-gray-700 placeholder-gray-400 outline-none bg-transparent min-w-0"
                   />
                   {search && (
@@ -202,6 +239,32 @@ function ProductsPageContent() {
                   Search
                 </button>
               </div>
+
+              {/* Suggestions dropdown — rendered as portal to escape overflow:hidden */}
+              {showSuggestions && suggestions.length > 0 && dropdownRect && createPortal(
+                <div
+                  style={{
+                    position: "fixed",
+                    top: dropdownRect.bottom + 8,
+                    left: dropdownRect.left,
+                    width: dropdownRect.width,
+                    zIndex: 9999,
+                  }}
+                  className="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden text-left"
+                >
+                  {suggestions.map((s) => (
+                    <button
+                      key={s}
+                      onMouseDown={() => { setSearch(s); setShowSuggestions(false); router.push(`/products?q=${encodeURIComponent(s)}`); }}
+                      className="w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      <FiSearch className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                      {s}
+                    </button>
+                  ))}
+                </div>,
+                document.body
+              )}
             </motion.div>
 
             {/* Quick category pills */}
@@ -279,6 +342,69 @@ function ProductsPageContent() {
                       className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"
                     >
                       {searchResults.map((product) => (
+                        <motion.div key={product.id || product._id} variants={fadeUp}>
+                          <ProductCard {...product} />
+                        </motion.div>
+                      ))}
+                    </motion.div>
+                  )}
+                </div>
+              </section>
+            </motion.div>
+          ) : categorySlug ? (
+            <motion.div
+              key="category-results"
+              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -16 }} transition={{ duration: 0.35 }}
+            >
+              <section className="py-10 px-4">
+                <div className="max-w-7xl mx-auto">
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h2 className="text-xl sm:text-2xl font-bold text-dark capitalize">
+                        {resolvedCategory?.name ?? categorySlug}
+                      </h2>
+                      {!loadingCategory && categoryProducts && (
+                        <p className="text-sm text-gray-400 mt-1">
+                          {categoryProducts.length} product{categoryProducts.length !== 1 ? "s" : ""} found
+                        </p>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => router.push("/products")}
+                      className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-primary transition-colors"
+                    >
+                      <FiX className="w-4 h-4" /> Clear
+                    </button>
+                  </div>
+
+                  {loadingCategory || (!categoryId && categorySlug) ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+                      {Array.from({ length: 10 }, (_, i) => <ProductSkeleton key={i} />)}
+                    </div>
+                  ) : !categoryProducts || categoryProducts.length === 0 ? (
+                    <motion.div
+                      initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                      className="flex flex-col items-center justify-center py-24 text-center"
+                    >
+                      <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mx-auto mb-5">
+                        <FiSearch className="w-7 h-7 text-gray-300" />
+                      </div>
+                      <p className="text-lg font-bold text-dark mb-2">No products in this category</p>
+                      <p className="text-sm text-gray-400 mb-6 max-w-xs">Check back later or browse all products</p>
+                      <button
+                        onClick={() => router.push("/products")}
+                        className="bg-primary text-white text-sm font-semibold px-6 py-2.5 rounded-full hover:bg-primary-dark transition-colors"
+                      >
+                        Browse All Products
+                      </button>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      variants={stagger} initial="hidden" animate="visible"
+                      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"
+                    >
+                      {categoryProducts.map((product) => (
                         <motion.div key={product.id || product._id} variants={fadeUp}>
                           <ProductCard {...product} />
                         </motion.div>

@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import { FiArrowRight } from "react-icons/fi";
 import { fadeUp, stagger } from "@/lib/motion";
+import Link from "next/link";
+import { useState, useEffect } from "react";
 
 const journeyCards = [
   {
@@ -26,6 +28,14 @@ const journeyCards = [
 ];
 
 export default function JourneySection() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setIsLoggedIn(!!localStorage.getItem("vendorspot_token"));
+  }, []);
+
+  if (isLoggedIn) return null;
+
   return (
     <section className="py-25 sm:py-30 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -47,24 +57,25 @@ export default function JourneySection() {
           className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6"
         >
           {journeyCards.map((card) => (
-            <motion.div
-              key={card.title}
-              variants={fadeUp}
-              whileHover={{ y: -4, boxShadow: "0 12px 32px rgba(0,0,0,0.09)" }}
-              className="rounded-2xl overflow-hidden bg-white border border-gray-100 shadow-sm transition-shadow"
-            >
-              <div className={`${card.bgColor} h-48 sm:h-52 flex items-center justify-center p-6`}>
-                <img src={card.image} alt={card.title} className="h-full w-auto object-contain" />
-              </div>
-              <div className="p-6 sm:p-7 flex flex-col flex-1">
-                <h3 className="text-lg sm:text-xl font-bold text-dark mb-3 min-h-14 sm:min-h-15">{card.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed mb-6 flex-1">{card.description}</p>
-                <a href="#" className="inline-flex items-center gap-1.5 text-sm font-bold text-dark hover:text-primary transition-colors group mt-auto">
-                  Join Now
-                  <FiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </a>
-              </div>
-            </motion.div>
+            <Link key={card.title} href="/signup">
+              <motion.div
+                variants={fadeUp}
+                whileHover={{ y: -4, boxShadow: "0 12px 32px rgba(0,0,0,0.09)" }}
+                className="rounded-2xl overflow-hidden bg-white border border-gray-100 shadow-sm transition-shadow h-full"
+              >
+                <div className={`${card.bgColor} h-48 sm:h-52 flex items-center justify-center p-6`}>
+                  <img src={card.image} alt={card.title} className="h-full w-auto object-contain" />
+                </div>
+                <div className="p-6 sm:p-7 flex flex-col flex-1">
+                  <h3 className="text-lg sm:text-xl font-bold text-dark mb-3 min-h-14 sm:min-h-15">{card.title}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed mb-6 flex-1">{card.description}</p>
+                  <span className="inline-flex items-center gap-1.5 text-sm font-bold text-dark hover:text-primary transition-colors group mt-auto">
+                    Join Now
+                    <FiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </div>
+              </motion.div>
+            </Link>
           ))}
         </motion.div>
       </div>

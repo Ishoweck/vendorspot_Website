@@ -12,6 +12,7 @@ import {
 } from "react-icons/fi";
 import { useApi } from "@/lib/useApi";
 import type { VendorProfile } from "@/lib/api";
+import { useToast } from "@/components/Toast";
 
 /* ─── palette ─── */
 const COVER_GRADIENTS = [
@@ -58,6 +59,49 @@ function ShopSkeleton() {
 function ShopCard({ shop, index }: { shop: VendorProfile; index: number }) {
   const grad = COVER_GRADIENTS[index % COVER_GRADIENTS.length];
   const avatarBg = AVATAR_BG[index % AVATAR_BG.length];
+  const { toast } = useToast();
+  const [following, setFollowing] = useState(shop.isFollowing ?? false);
+  const [copied, setCopied] = useState(false);
+
+  const handleFollow = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    const token = typeof window !== "undefined" ? localStorage.getItem("vendorspot_token") : null;
+    if (!token) {
+      toast("Please log in to follow shops", "info");
+      return;
+    }
+    const nowFollowing = !following;
+    setFollowing(nowFollowing);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/vendor/${shop.id}/follow`, {
+        method: nowFollowing ? "POST" : "DELETE",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      });
+      const json = await res.json();
+      if (json.success) {
+        toast(nowFollowing ? `Now following ${shop.name}` : `Unfollowed ${shop.name}`, nowFollowing ? "success" : "info");
+      } else {
+        setFollowing(!nowFollowing);
+        toast("Something went wrong. Please try again.", "error");
+      }
+    } catch {
+      setFollowing(!nowFollowing);
+      toast("Something went wrong. Please try again.", "error");
+    }
+  };
+
+  const handleShare = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const url = `${window.location.origin}/shops/${shop.id}`;
+    if (navigator.share) {
+      navigator.share({ title: shop.name, url });
+    } else {
+      navigator.clipboard.writeText(url).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      });
+    }
+  };
 
   return (
     <motion.div
@@ -76,8 +120,19 @@ function ShopCard({ shop, index }: { shop: VendorProfile; index: number }) {
               style={{ backgroundImage: "radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.5) 0%, transparent 70%)" }} />
           </div>
         )}
-        <button className="absolute top-2 right-2 w-7 h-7 sm:w-8 sm:h-8 bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center transition-colors border border-white/30">
-          <FiUserPlus className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white" />
+        <button
+          onClick={handleFollow}
+          className={`absolute top-2 right-2 w-7 h-7 sm:w-8 sm:h-8 backdrop-blur-md rounded-full flex items-center justify-center transition-all border ${
+            following
+              ? "bg-white/90 border-white text-primary"
+              : "bg-white/20 hover:bg-white/40 border-white/30 text-white"
+          }`}
+          title={following ? "Unfollow" : "Follow"}
+        >
+          {following
+            ? <FiCheck className="w-3 h-3 sm:w-3.5 sm:h-3.5" strokeWidth={3} />
+            : <FiUserPlus className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+          }
         </button>
       </div>
 
@@ -116,8 +171,11 @@ function ShopCard({ shop, index }: { shop: VendorProfile; index: number }) {
 
         {/* actions */}
         <div className="flex gap-1.5 sm:gap-2 mt-2 sm:mt-4">
-          <button className="hidden sm:flex flex-1 items-center justify-center gap-1.5 border border-gray-200 rounded-2xl py-2.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all">
-            <FiShare2 className="w-3.5 h-3.5" /> Share
+          <button
+            onClick={handleShare}
+            className="hidden sm:flex flex-1 items-center justify-center gap-1.5 border border-gray-200 rounded-2xl py-2.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all"
+          >
+            {copied ? <><FiCheck className="w-3.5 h-3.5 text-emerald-500" /> Copied!</> : <><FiShare2 className="w-3.5 h-3.5" /> Share</>}
           </button>
           <Link
             href={`/shops/${shop.id}`}
@@ -171,9 +229,7 @@ export default function ShopsPage() {
               transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
               className="flex flex-col items-center gap-3 sm:gap-4"
             >
-              <span className="inline-flex items-center gap-1.5 text-xs font-bold bg-black/10 text-gray-800 px-3.5 py-1.5 rounded-full tracking-wide uppercase">
-                <FiStar className="w-3 h-3" /> Verified Vendors
-              </span>
+              
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-gray-900 leading-[0.95] tracking-tight">
                 Discover<br />Amazing Shops
               </h1>

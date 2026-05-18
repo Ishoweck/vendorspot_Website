@@ -1,28 +1,115 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiChevronLeft, FiChevronRight, FiStar } from "react-icons/fi";
 import { fadeUp } from "@/lib/motion";
 
 const testimonials = [
   {
-    text: "I've used so many e-commerce platforms, but Vendorspot is very safe! They're truly interested in their users' growth and are constantly protecting customers and promoting trusted vendors. They put every measure to ensure both buyers and sellers are very safe.",
-    name: "Seyifunmi Alonge",
-    role: "Enis Perfumery",
+    text: "Setting up my store on Vendorspot was easier than I expected. I uploaded my products, shared my store link, and started getting inquiries almost immediately. Their customer support also guided me when I got confused.",
+    name: "Aisha Bello",
+    role: "Vendor",
+    stars: 5,
     color: "bg-violet-100 text-violet-600",
   },
   {
-    text: "Vendorspot has transformed how I sell online. The platform is easy to use and the support team is always ready to help. My sales have grown significantly since I joined.",
-    name: "Adebayo Johnson",
-    role: "Tech Gadgets Store",
+    text: "As a customer, what I like most is the confidence that my payment is protected. I ordered sneakers and got regular updates till delivery. It felt safer than buying directly from Instagram.",
+    name: "Daniel Okeke",
+    role: "Buyer",
+    stars: 5,
     color: "bg-amber-100 text-amber-600",
   },
   {
-    text: "As a buyer, I feel very safe shopping on Vendorspot. The buyer protection is top-notch and the verified vendors give me confidence in every purchase.",
-    name: "Chioma Okafor",
-    role: "Regular Shopper",
+    text: "The payout process was smooth and transparent. I was worried at first because many platforms delay vendor payments, but Vendorspot handled mine professionally.",
+    name: "Mariam Yusuf",
+    role: "Vendor",
+    stars: 4,
     color: "bg-rose-100 text-rose-600",
+  },
+  {
+    text: "I run a small fashion business and Vendorspot reduced the stress of managing customers manually on WhatsApp. Everything feels more organized now.",
+    name: "Tolu Adeyemi",
+    role: "Fashion Vendor",
+    stars: 5,
+    color: "bg-pink-100 text-pink-600",
+  },
+  {
+    text: "One thing I appreciate is their dispute resolution. I had an issue with an order, and the support team responded quickly and handled it fairly for both sides.",
+    name: "Grace Nwankwo",
+    role: "Buyer",
+    stars: 5,
+    color: "bg-green-100 text-green-600",
+  },
+  {
+    text: "The platform interface is clean and easy to understand. Uploading products, editing prices, and checking orders has been straightforward for me.",
+    name: "Emeka Samuel",
+    role: "Vendor",
+    stars: 4,
+    color: "bg-blue-100 text-blue-600",
+  },
+  {
+    text: "I love that I can focus on selling without worrying too much about delivery coordination. The logistics process feels more structured than what I was used to before.",
+    name: "Favour James",
+    role: "Vendor",
+    stars: 5,
+    color: "bg-orange-100 text-orange-600",
+  },
+  {
+    text: "The support team followed up with me personally after I created my store. That level of attention made me feel like Vendorspot genuinely wants vendors to succeed.",
+    name: "Khadijat Lawal",
+    role: "Vendor",
+    stars: 4,
+    color: "bg-teal-100 text-teal-600",
+  },
+  {
+    text: "As a buyer, I like seeing proper product descriptions and store details before paying. It makes shopping feel more trustworthy.",
+    name: "Victor Eze",
+    role: "Buyer",
+    stars: 5,
+    color: "bg-indigo-100 text-indigo-600",
+  },
+  {
+    text: "I mistakenly uploaded my products wrongly at first, but the Vendorspot team explained what to fix instead of just rejecting everything. That was very helpful.",
+    name: "Esther Oladipo",
+    role: "Vendor",
+    stars: 5,
+    color: "bg-yellow-100 text-yellow-600",
+  },
+  {
+    text: "The flash sales feature helped me push discounted products faster. I actually got more engagement after using it.",
+    name: "Ridwan Akinola",
+    role: "Vendor",
+    stars: 4,
+    color: "bg-cyan-100 text-cyan-600",
+  },
+  {
+    text: "I've sold through Instagram for years, but Vendorspot gives my business a more professional appearance. Customers now take my brand more seriously.",
+    name: "Jennifer Peters",
+    role: "Fashion Vendor",
+    stars: 5,
+    color: "bg-emerald-100 text-emerald-600",
+  },
+  {
+    text: "The refund process for my customer was handled professionally. Communication was clear and the situation didn't escalate unnecessarily.",
+    name: "Ifeanyi Obi",
+    role: "Vendor",
+    stars: 4,
+    color: "bg-red-100 text-red-600",
+  },
+  {
+    text: "What stood out to me was the ease of creating a store. I'm not very tech-savvy, but I was able to set up my products with little stress.",
+    name: "Halimat Sodiq",
+    role: "Vendor",
+    stars: 5,
+    color: "bg-purple-100 text-purple-600",
+  },
+  {
+    text: "Vendorspot feels like a platform built with small business owners in mind. From customer support to product management and delivery updates, the experience has been encouraging so far.",
+    name: "Samuel Adekunle",
+    role: "Small Business Owner",
+    stars: 5,
+    color: "bg-lime-100 text-lime-600",
   },
 ];
 
@@ -34,6 +121,14 @@ export default function Testimonials() {
     setDir(next > current ? 1 : -1);
     setCurrent((next + testimonials.length) % testimonials.length);
   };
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setDir(1);
+      setCurrent((prev) => (prev + 1) % testimonials.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
 
   const t = testimonials[current];
 
@@ -86,7 +181,7 @@ export default function Testimonials() {
               {/* Stars */}
               <div className="flex gap-1 mb-5">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <FiStar key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  <FiStar key={i} className={`w-4 h-4 ${i < t.stars ? "fill-amber-400 text-amber-400" : "fill-gray-200 text-gray-200"}`} />
                 ))}
               </div>
 
@@ -116,14 +211,14 @@ export default function Testimonials() {
           {/* Arrows — hidden on mobile, overlaid on desktop */}
           <button
             onClick={() => go(current - 1)}
-            className="hidden sm:flex absolute left-5 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-11 sm:h-11 border-2 border-white/30 hover:border-white rounded-full items-center justify-center text-white hover:bg-white/10 transition-all duration-200 z-10"
+            className="flex absolute left-5 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-11 sm:h-11 border-2 border-white/30 hover:border-white rounded-full items-center justify-center text-white hover:bg-white/10 transition-all duration-200 z-10"
             aria-label="Previous"
           >
             <FiChevronLeft className="w-5 h-5" />
           </button>
           <button
             onClick={() => go(current + 1)}
-            className="hidden sm:flex absolute right-5 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-11 sm:h-11 bg-white rounded-full items-center justify-center text-[#8A38F5] hover:bg-white/90 transition-all duration-200 shadow-lg z-10"
+            className="flex absolute right-5 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-11 sm:h-11 bg-white rounded-full items-center justify-center text-[#8A38F5] hover:bg-white/90 transition-all duration-200 shadow-lg z-10"
             aria-label="Next"
           >
             <FiChevronRight className="w-5 h-5" />
