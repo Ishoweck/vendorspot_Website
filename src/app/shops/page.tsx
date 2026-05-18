@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
+import Image from "next/image";
 import {
   FiSearch, FiMapPin, FiShare2, FiShoppingCart,
   FiUserPlus, FiX, FiCheck, FiShoppingBag, FiStar, FiArrowRight,
@@ -31,8 +32,8 @@ const AVATAR_BG = [
   "bg-amber-500","bg-pink-600","bg-indigo-500","bg-orange-500",
 ];
 
-/* seller bubble arc */
-const ARC_Y = [0, 20, 36, 46, 52, 52, 46, 36, 20, 0];
+/* seller bubble arc — 6 items, U-shape */
+const ARC_Y = [0, 28, 48, 48, 28, 0];
 
 /* ─── skeleton ─── */
 function ShopSkeleton() {
@@ -63,11 +64,10 @@ function ShopCard({ shop, index }: { shop: VendorProfile; index: number }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: Math.min(index, 8) * 0.055, ease: "easeOut" }}
-      className="group bg-white rounded-3xl overflow-hidden border border-gray-100 hover:border-gray-200 hover:shadow-2xl hover:shadow-black/8 transition-all duration-300 flex flex-col"
-      style={{ minHeight: 300 }}
+      className="group bg-white rounded-2xl sm:rounded-3xl overflow-hidden border border-gray-100 hover:border-gray-200 hover:shadow-xl hover:shadow-black/8 transition-all duration-300 flex flex-col"
     >
       {/* cover */}
-      <div className="relative h-32 flex-shrink-0 overflow-hidden">
+      <div className="relative h-20 sm:h-32 flex-shrink-0 overflow-hidden">
         {shop.coverImage ? (
           <img src={shop.coverImage} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         ) : (
@@ -76,52 +76,55 @@ function ShopCard({ shop, index }: { shop: VendorProfile; index: number }) {
               style={{ backgroundImage: "radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.5) 0%, transparent 70%)" }} />
           </div>
         )}
-        {/* follow btn */}
-        <button className="absolute top-3 right-3 w-8 h-8 bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center transition-colors border border-white/30">
-          <FiUserPlus className="w-3.5 h-3.5 text-white" />
+        <button className="absolute top-2 right-2 w-7 h-7 sm:w-8 sm:h-8 bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center transition-colors border border-white/30">
+          <FiUserPlus className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white" />
         </button>
       </div>
 
-      {/* avatar — outside overflow-hidden cover so it's fully visible */}
-      <div className="px-4 -mt-6 relative z-10">
-        <div className="w-12 h-12 rounded-2xl bg-white shadow-lg ring-2 ring-white overflow-hidden flex items-center justify-center">
+      {/* avatar */}
+      <div className="px-3 sm:px-4 -mt-4 sm:-mt-6 relative z-10">
+        <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white shadow-md ring-2 ring-white overflow-hidden flex items-center justify-center">
           {shop.image ? (
             <img src={shop.image} alt={shop.name} className="w-full h-full object-cover" />
           ) : (
             <div className={`w-full h-full ${avatarBg} flex items-center justify-center`}>
-              <span className="text-base font-black text-white">{shop.name?.charAt(0) || "?"}</span>
+              <span className="text-xs sm:text-base font-black text-white">{shop.name?.charAt(0) || "?"}</span>
             </div>
           )}
         </div>
       </div>
 
       {/* body */}
-      <div className="px-4 pt-2 pb-4 flex flex-col flex-1">
-        <div className="flex items-center gap-1.5 mb-0.5">
-          <p className="text-sm font-bold text-gray-900 truncate leading-tight">{shop.name}</p>
+      <div className="px-3 sm:px-4 pt-1.5 sm:pt-2 pb-3 sm:pb-4 flex flex-col flex-1">
+        <div className="flex items-center gap-1 mb-0.5">
+          <p className="text-xs sm:text-sm font-bold text-gray-900 truncate leading-tight">{shop.name}</p>
           {shop.verified && (
-            <span className="flex-shrink-0 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center">
-              <FiCheck className="w-2.5 h-2.5 text-white" strokeWidth={3} />
+            <span className="flex-shrink-0 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-emerald-500 rounded-full flex items-center justify-center">
+              <FiCheck className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-white" strokeWidth={3} />
             </span>
           )}
         </div>
-        <div className="flex items-center gap-1 text-xs text-gray-400 mb-2">
+
+        <div className="hidden sm:flex items-center gap-1 text-xs text-gray-400 mb-2">
           <FiMapPin className="w-3 h-3 flex-shrink-0" />
           <span className="truncate">{shop.location || "Lagos, Nigeria"}</span>
         </div>
-        <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 flex-1">
+
+        <p className="hidden sm:block text-xs text-gray-500 leading-relaxed line-clamp-2 flex-1">
           {shop.description || "Visit this shop to explore their products and collections."}
         </p>
+
         {/* actions */}
-        <div className="flex gap-2 mt-4">
-          <button className="flex-1 flex items-center justify-center gap-1.5 border border-gray-200 rounded-2xl py-2.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all">
+        <div className="flex gap-1.5 sm:gap-2 mt-2 sm:mt-4">
+          <button className="hidden sm:flex flex-1 items-center justify-center gap-1.5 border border-gray-200 rounded-2xl py-2.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all">
             <FiShare2 className="w-3.5 h-3.5" /> Share
           </button>
           <Link
             href={`/shops/${shop.id}`}
-            className="flex-1 flex items-center justify-center gap-1.5 bg-gray-900 hover:bg-gray-700 rounded-2xl py-2.5 text-xs font-semibold text-white transition-all"
+            className="flex-1 flex items-center justify-center gap-1.5 bg-gray-900 hover:bg-gray-700 rounded-xl sm:rounded-2xl py-2 sm:py-2.5 text-xs font-semibold text-white transition-all"
           >
-            <FiShoppingCart className="w-3.5 h-3.5" /> Shop
+            <FiShoppingCart className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+            <span>Shop</span>
           </Link>
         </div>
       </div>
@@ -153,7 +156,7 @@ export default function ShopsPage() {
       <main className="flex-1 bg-[#F7F6F3]">
 
         {/* ── Hero ── */}
-        <section className="relative bg-[#FFD600] overflow-hidden" style={{ minHeight: "clamp(380px, 42vw, 560px)" }}>
+        <section className="relative bg-[#FFD600] overflow-hidden">
           {/* decorative blobs */}
           <div className="absolute top-8 right-16 w-56 h-56 rounded-full bg-yellow-400/50 blur-3xl pointer-events-none" />
           <div className="absolute bottom-0 left-8 w-40 h-40 rounded-full bg-amber-300/40 blur-2xl pointer-events-none" />
@@ -161,17 +164,17 @@ export default function ShopsPage() {
           <div className="absolute inset-0 pointer-events-none"
             style={{ backgroundImage: "radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
 
-          <div className="relative z-10 flex flex-col items-center justify-center h-full pt-32 sm:pt-36 pb-14 sm:pb-20 px-4 text-center gap-6">
+          <div className="relative z-10 flex flex-col items-center pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 text-center gap-5 sm:gap-6">
             <motion.div
               initial={{ opacity: 0, scale: 0.92, y: 16 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-              className="flex flex-col items-center gap-4"
+              className="flex flex-col items-center gap-3 sm:gap-4"
             >
               <span className="inline-flex items-center gap-1.5 text-xs font-bold bg-black/10 text-gray-800 px-3.5 py-1.5 rounded-full tracking-wide uppercase">
                 <FiStar className="w-3 h-3" /> Verified Vendors
               </span>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-gray-900 leading-[0.95] tracking-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-gray-900 leading-[0.95] tracking-tight">
                 Discover<br />Amazing Shops
               </h1>
               <p className="text-gray-700/75 text-sm sm:text-base max-w-xs sm:max-w-sm mx-auto leading-relaxed">
@@ -184,25 +187,25 @@ export default function ShopsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-              className="w-full max-w-2xl mx-auto px-4"
+              className="w-full max-w-2xl mx-auto"
             >
               <div className="flex items-center bg-white rounded-full shadow-2xl shadow-black/15 p-1.5 gap-2">
-                <div className="flex items-center gap-2 flex-1 pl-4 sm:pl-5 min-w-0">
-                  <FiSearch className="w-5 h-5 text-gray-900 shrink-0" />
+                <div className="flex items-center gap-2 flex-1 pl-3 sm:pl-5 min-w-0">
+                  <FiSearch className="w-4 h-4 sm:w-5 sm:h-5 text-gray-900 shrink-0" />
                   <input
                     type="text"
-                    placeholder="Search shops, categories, vendors…"
+                    placeholder="Search shops, vendors…"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="flex-1 py-3 text-sm text-gray-800 placeholder-gray-400 outline-none bg-transparent min-w-0"
+                    className="flex-1 py-2.5 sm:py-3 text-xs sm:text-sm text-gray-800 placeholder-gray-400 outline-none bg-transparent min-w-0"
                   />
                   {search && (
                     <button onClick={clearSearch} className="p-1 text-gray-400 hover:text-gray-700 transition-colors shrink-0">
-                      <FiX className="w-4 h-4" />
+                      <FiX className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </button>
                   )}
                 </div>
-                <button className="bg-gray-900 hover:bg-gray-700 text-white font-bold text-sm px-6 sm:px-8 py-3 rounded-full transition-all duration-300 shrink-0 shadow-sm">
+                <button className="bg-gray-900 hover:bg-gray-700 text-white font-bold text-xs sm:text-sm px-4 sm:px-7 py-2.5 sm:py-3 rounded-full transition-all duration-300 shrink-0 shadow-sm">
                   Search
                 </button>
               </div>
@@ -238,93 +241,74 @@ export default function ShopsPage() {
           </a>
         </div>
 
-        {/* arc row */}
-        <div className="overflow-x-auto scrollbar-hide">
-          <div className="flex flex-nowrap gap-5 sm:gap-8 px-2 pb-10 min-w-max mx-auto"
-            style={{ alignItems: "flex-start" }}
-          >
-            {loading
-              ? Array.from({ length: 7 }, (_, i) => (
-                  <div
-                    key={i}
-                    className="flex flex-col items-center gap-3 shrink-0 animate-pulse"
-                    style={{ marginTop: `${ARC_Y[i] ?? 0}px` }}
-                  >
-                    <div className="w-[72px] h-[72px] rounded-2xl bg-gray-100" />
-                    <div className="w-10 h-2 bg-gray-100 rounded-full" />
-                  </div>
-                ))
-              : (vendors || []).slice(0, 10).map((vendor, i) => (
-                  <motion.div
-                    key={vendor.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: i * 0.055 }}
-                    style={{ marginTop: `${ARC_Y[i] ?? 0}px` }}
-                    className="flex flex-col items-center gap-3 shrink-0"
-                  >
-                    <Link href={`/shops/${vendor.id}`} className="group flex flex-col items-center gap-3">
+        {/* arc row — mirrors landing page category icons */}
+        <div className="flex justify-center items-start gap-5 sm:gap-10 md:gap-14 px-6 pb-14">
+          {loading
+            ? Array.from({ length: 6 }, (_, i) => (
+                <div
+                  key={i}
+                  className="flex flex-col items-center gap-2.5 shrink-0 animate-pulse"
+                  style={{ transform: `translateY(${ARC_Y[i] ?? 0}px)` }}
+                >
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gray-100" />
+                  <div className="w-12 h-2.5 bg-gray-100 rounded-full" />
+                </div>
+              ))
+            : (vendors || []).slice(0, 6).map((vendor, i) => (
+                <motion.div
+                  key={vendor.id}
+                  initial={{ opacity: 0, y: (ARC_Y[i] ?? 0) + 16 }}
+                  animate={{ opacity: 1, y: ARC_Y[i] ?? 0 }}
+                  transition={{ duration: 0.45, delay: 0.1 + i * 0.07 }}
+                  className="flex flex-col items-center gap-2.5 shrink-0"
+                >
+                  <Link href={`/shops/${vendor.id}`} className="group flex flex-col items-center gap-2.5">
+                    <motion.div
+                      whileHover={{ scale: 1.12, y: -8 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ type: "spring", stiffness: 320, damping: 22 }}
+                      className="relative"
+                    >
+                      {i === 0 && (
+                        <div className="absolute inset-0 rounded-full bg-amber-300/40 blur-md scale-110 -z-10" />
+                      )}
 
-                      {/* avatar */}
-                      <motion.div
-                        className="relative"
-                        whileHover={{ y: -6, scale: 1.07 }}
-                        whileTap={{ scale: 0.95 }}
-                        transition={{ type: "spring", stiffness: 340, damping: 22 }}
-                      >
-                        {/* glow for #1 */}
-                        {i === 0 && (
-                          <div className="absolute inset-0 rounded-2xl bg-amber-300/30 blur-md scale-110 -z-10" />
-                        )}
-
-                        <div
-                          className={`
-                            w-[72px] h-[72px] sm:w-20 sm:h-20 rounded-2xl overflow-hidden
-                            border-2 border-white
-                            shadow-[0_2px_12px_rgba(0,0,0,0.10)]
-                            group-hover:shadow-[0_8px_28px_rgba(0,0,0,0.14)]
-                            ring-1 ring-gray-200/80 group-hover:ring-gray-300
-                            transition-all duration-300
-                            ${AVATAR_BG[i % AVATAR_BG.length]}
-                            flex items-center justify-center
-                          `}
-                        >
-                          {vendor.image ? (
-                            <img
-                              src={vendor.image}
-                              alt={vendor.name}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <span className="text-xl font-black text-white select-none">
-                              {vendor.name?.charAt(0) || "?"}
-                            </span>
-                          )}
-                        </div>
-
-                        {/* crown for #1 */}
-                        {i === 0 && (
-                          <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 text-base leading-none select-none">
-                            👑
+                      <div className={`
+                        w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden
+                        border-2 border-white flex items-center justify-center
+                        shadow-md group-hover:shadow-xl group-hover:shadow-black/10
+                        ring-2 ring-transparent group-hover:ring-gray-200
+                        transition-all duration-300
+                        ${AVATAR_BG[i % AVATAR_BG.length]}
+                      `}>
+                        {vendor.image ? (
+                          <Image src={vendor.image} alt={vendor.name} width={80} height={80} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-xl sm:text-2xl font-black text-white select-none">
+                            {vendor.name?.charAt(0) || "?"}
                           </span>
                         )}
+                      </div>
 
-                        {/* verified badge */}
-                        {vendor.verified && (
-                          <span className="absolute -bottom-1.5 -right-1.5 w-5 h-5 bg-emerald-500 rounded-full border-2 border-white flex items-center justify-center shadow-sm">
-                            <FiCheck className="w-2.5 h-2.5 text-white" strokeWidth={3} />
-                          </span>
-                        )}
-                      </motion.div>
+                      {i === 0 && (
+                        <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-base leading-none select-none">
+                          👑
+                        </span>
+                      )}
 
-                      {/* name */}
-                      <span className="text-[11px] font-medium text-gray-500 group-hover:text-gray-900 text-center max-w-[76px] truncate leading-tight transition-colors duration-200">
-                        {vendor.name?.length > 12 ? vendor.name.slice(0, 11) + "…" : vendor.name}
-                      </span>
-                    </Link>
-                  </motion.div>
-                ))}
-          </div>
+                      {vendor.verified && (
+                        <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-2 border-white flex items-center justify-center shadow-sm">
+                          <FiCheck className="w-2.5 h-2.5 text-white" strokeWidth={3} />
+                        </span>
+                      )}
+                    </motion.div>
+
+                    <span className="text-xs font-semibold text-gray-500 group-hover:text-gray-900 text-center w-16 sm:w-20 truncate leading-tight transition-colors duration-200">
+                      {vendor.name}
+                    </span>
+                  </Link>
+                </motion.div>
+              ))}
         </div>
 
       </div>

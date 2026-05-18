@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FAQ from "@/components/FAQ";
@@ -46,7 +47,7 @@ export default function TheSpotPage() {
 
         {/* Hero — purple, heading only */}
         <section
-          className="pt-30 sm:pt-32 pb-32 sm:pb-44 px-6 sm:px-8 lg:px-10 text-center"
+          className="pt-28 sm:pt-32 pb-20 sm:pb-44 px-6 sm:px-8 lg:px-10 text-center"
           style={{ backgroundColor: "rgba(138, 56, 245, 0.12)" }}
         >
           <motion.h1
@@ -69,8 +70,8 @@ export default function TheSpotPage() {
         </section>
 
         {/* Founder card — floats across the purple/white boundary */}
-        <section className="pb-16 sm:pb-24 px-6 sm:px-8 lg:px-10">
-          <div className="max-w-7xl mx-auto -mt-24 sm:-mt-32">
+        <section className="pb-10 sm:pb-24 px-6 sm:px-8 lg:px-10">
+          <div className="max-w-7xl mx-auto -mt-14 sm:-mt-32">
             <motion.div
               variants={fadeUp}
               initial="hidden"
@@ -110,7 +111,7 @@ export default function TheSpotPage() {
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true }}
-                  className="md:col-span-2 flex flex-col items-center justify-center py-8 px-6 sm:px-10"
+                  className="md:col-span-2 flex flex-col items-center justify-center py-6 px-6 sm:px-10"
                 >
                   <div className="w-full max-w-70">
                     <div className="w-full h-96 sm:h-105 rounded-2xl overflow-hidden">
@@ -129,7 +130,7 @@ export default function TheSpotPage() {
 
         {/* Core Values marquee */}
 
-        <section className="py-16 sm:py-12 mb-[153px] overflow-hidden">
+        <section className="py-10 sm:py-12 mb-12 sm:mb-16 overflow-hidden">
           <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 mb-12">
             <motion.h2
               variants={fadeUp}
@@ -164,7 +165,7 @@ export default function TheSpotPage() {
         </section>
 
         {/* Our People */}
-        <section className="py-20 sm:py-28 bg-primary">
+        <section className="py-14 sm:py-28 bg-primary">
           <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
             <motion.h2
               variants={fadeUp}
@@ -175,14 +176,23 @@ export default function TheSpotPage() {
             >
               Our People
             </motion.h2>
-            <div className="relative flex items-center max-w-3xl mx-auto">
+            <motion.div
+              className="relative flex items-center max-w-3xl mx-auto cursor-grab active:cursor-grabbing"
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.15}
+              onDragEnd={(_, info) => {
+                if (info.offset.x < -50) go(currentMember + 1);
+                else if (info.offset.x > 50) go(currentMember - 1);
+              }}
+            >
               <button
                 onClick={() => go(currentMember - 1)}
-                className="shrink-0 w-11 h-11 border-2 border-white/50 hover:border-white rounded-full flex items-center justify-center text-white transition-colors"
+                className="hidden sm:flex shrink-0 w-11 h-11 border-2 border-white/50 hover:border-white rounded-full items-center justify-center text-white transition-colors"
               >
                 <FiChevronLeft className="w-5 h-5" />
               </button>
-              <div className="flex-1 mx-4 overflow-hidden">
+              <div className="flex-1 sm:mx-4 overflow-hidden">
                 <AnimatePresence mode="wait" custom={dir}>
                   <motion.div
                     key={currentMember}
@@ -194,18 +204,18 @@ export default function TheSpotPage() {
                     className="bg-white rounded-2xl overflow-hidden shadow-lg"
                   >
                     <div className="flex flex-col sm:flex-row">
-                      <div className="w-full sm:w-1/2 bg-gray-100 flex items-center justify-center h-52 sm:h-80 overflow-hidden shrink-0">
+                      <div className="relative w-full sm:w-1/2 bg-gray-100 h-64 sm:h-80 overflow-hidden shrink-0">
                         {teamMembers[currentMember].image ? (
-                          <img src={teamMembers[currentMember].image} alt={teamMembers[currentMember].name} className="w-full h-full object-cover object-top" />
+                          <Image src={teamMembers[currentMember].image} alt={teamMembers[currentMember].name} fill className="object-cover object-center" />
                         ) : (
-                          <FiUser className="w-16 h-16 sm:w-20 sm:h-20 text-gray-300" />
+                          <FiUser className="w-14 h-14 sm:w-20 sm:h-20 text-gray-300" />
                         )}
                       </div>
-                      <div className="w-full sm:w-1/2 p-6 sm:p-10 flex flex-col justify-center gap-4">
+                      <div className="w-full sm:w-1/2 p-5 sm:p-10 flex flex-col justify-center gap-3 sm:gap-4">
                         <div className="w-3 h-3 bg-primary rounded-full" />
                         <hr className="border-gray-100" />
                         <div>
-                          <h3 className="text-lg sm:text-xl font-bold text-dark">{teamMembers[currentMember].name}</h3>
+                          <h3 className="text-base sm:text-xl font-bold text-dark">{teamMembers[currentMember].name}</h3>
                           <p className="text-gray-400 text-sm mt-1">{teamMembers[currentMember].role}</p>
                         </div>
                         <hr className="border-gray-100" />
@@ -221,16 +231,16 @@ export default function TheSpotPage() {
               </div>
               <button
                 onClick={() => go(currentMember + 1)}
-                className="shrink-0 w-11 h-11 bg-white rounded-full flex items-center justify-center text-primary hover:bg-gray-100 transition-colors shadow-md"
+                className="hidden sm:flex shrink-0 w-11 h-11 bg-white rounded-full items-center justify-center text-primary hover:bg-gray-100 transition-colors shadow-md"
               >
                 <FiChevronRight className="w-5 h-5" />
               </button>
-            </div>
+            </motion.div>
           </div>
         </section>
 
         {/* Join banner */}
-        <section className="py-16 sm:py-20 bg-white px-6 sm:px-8 lg:px-10">
+        <section className="py-10 sm:py-20 bg-white px-6 sm:px-8 lg:px-10">
           <div className="max-w-7xl mx-auto">
             <motion.div
               variants={fadeUp}

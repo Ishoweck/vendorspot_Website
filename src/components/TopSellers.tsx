@@ -53,13 +53,13 @@ export default function TopSellers() {
           </div>
 
           {/* Vendors — white body */}
-          <div className="bg-white px-8 sm:px-12 py-8 sm:py-10">
+          <div className="bg-white py-8 sm:py-10 overflow-x-auto scrollbar-hide">
             <motion.div
               variants={stagger}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-40px" }}
-              className="flex flex-wrap justify-center items-end gap-6 sm:gap-8"
+              className="flex flex-nowrap justify-center items-end gap-6 sm:gap-8 min-w-max mx-auto px-8 sm:px-12"
             >
               {loading
                 ? Array.from({ length: 7 }, (_, i) => (
@@ -113,16 +113,16 @@ export default function TopSellers() {
                                 <Image
                                   src={vendor.image}
                                   alt={vendor.name}
-                                  width={isTop3 ? 88 : 72}
-                                  height={isTop3 ? 88 : 72}
+                                  width={isTop3 ? 72 : 60}
+                                  height={isTop3 ? 72 : 60}
                                   className={`
                                     rounded-full object-cover
                                     ring-[3px] ring-primary shadow-lg
                                     transition-shadow duration-200
                                     hover:shadow-[0_8px_24px_rgba(91,107,244,0.30)]
                                     ${isTop3
-                                      ? "w-20 h-20 sm:w-[88px] sm:h-[88px]"
-                                      : "w-16 h-16 sm:w-[72px] sm:h-[72px]"}
+                                      ? "w-16 h-16 sm:w-18 sm:h-18"
+                                      : "w-14 h-14 sm:w-15 sm:h-15"}
                                   `}
                                 />
                               ) : (
@@ -135,8 +135,8 @@ export default function TopSellers() {
                                     hover:shadow-[0_8px_24px_rgba(91,107,244,0.30)]
                                     ${colors[i % colors.length]}
                                     ${isTop3
-                                      ? "w-20 h-20 sm:w-[88px] sm:h-[88px] text-2xl"
-                                      : "w-16 h-16 sm:w-[72px] sm:h-[72px] text-xl"}
+                                      ? "w-16 h-16 sm:w-18 sm:h-18 text-xl"
+                                      : "w-14 h-14 sm:w-15 sm:h-15 text-lg"}
                                   `}
                                 >
                                   {vendor.name?.charAt(0) || "?"}
@@ -153,7 +153,7 @@ export default function TopSellers() {
                           <span
                             className={`
                               text-xs sm:text-sm font-medium text-center truncate
-                              ${isTop3 ? "text-gray-800 w-20 sm:w-[88px]" : "text-gray-600 w-16 sm:w-[72px]"}
+                              ${isTop3 ? "text-gray-800 w-16 sm:w-18" : "text-gray-600 w-14 sm:w-15"}
                             `}
                           >
                             {vendor.name}

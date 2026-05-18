@@ -47,20 +47,20 @@ export default function Hero() {
           className="max-w-2xl mx-auto px-4 mb-12 sm:mb-16"
         >
           <div className="flex items-center bg-white rounded-full shadow-2xl p-1.5 gap-2">
-            <div className="flex items-center gap-2 flex-1 pl-4 sm:pl-5 min-w-0">
-              <FiSearch className="w-5 h-5 text-primary shrink-0" />
+            <div className="flex items-center gap-2 flex-1 pl-3 sm:pl-5 min-w-0">
+              <FiSearch className="w-4 h-4 sm:w-5 sm:h-5 text-primary shrink-0" />
               <input
                 type="text"
-                placeholder="Search for products, brand, categories or vendors"
+                placeholder="Search products, brands, vendors…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && (window.location.href = `/products${search ? `?q=${encodeURIComponent(search)}` : ""}`)}
-                className="flex-1 py-3 text-sm text-gray-700 placeholder-gray-400 outline-none min-w-0 bg-transparent"
+                className="flex-1 py-2.5 sm:py-3 text-xs sm:text-sm text-gray-700 placeholder-gray-400 outline-none min-w-0 bg-transparent"
               />
             </div>
             <Link
               href={`/products${search ? `?q=${encodeURIComponent(search)}` : ""}`}
-              className="bg-primary hover:bg-primary-dark text-white font-semibold text-sm px-6 sm:px-8 py-3 rounded-full transition-all duration-300 shrink-0 shadow-sm"
+              className="bg-primary hover:bg-primary-dark text-white font-semibold text-xs sm:text-sm px-4 sm:px-7 py-2.5 sm:py-3 rounded-full transition-all duration-300 shrink-0 shadow-sm"
             >
               Search
             </Link>
@@ -72,7 +72,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="flex md:justify-center items-start gap-8 sm:gap-12 md:gap-16 px-8 overflow-x-auto scrollbar-hide md:overflow-visible pb-24 md:pb-20"
+          className="flex flex-wrap justify-center items-start gap-6 md:gap-8 lg:gap-14 px-6 sm:px-8 pb-16 sm:pb-20 md:pb-20"
         >
           {categories.map((cat, i) => (
             <motion.div
@@ -114,7 +114,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="flex flex-row flex-wrap justify-center gap-3 sm:gap-4 px-6 pt-8 sm:pt-10 pb-14 sm:pb-20"
+          className="flex flex-col sm:flex-row justify-center items-stretch gap-3 sm:gap-4 px-6 pt-8 sm:pt-10 pb-14 sm:pb-20 max-w-md sm:max-w-none mx-auto w-full"
         >
           {[
             {
@@ -131,10 +131,10 @@ export default function Hero() {
               href="#"
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
-              className="flex items-center gap-3 bg-white/10 hover:bg-white/20 border border-white/25 text-white rounded-2xl px-5 sm:px-7 py-3.5 transition-all duration-300 shadow-sm backdrop-blur-sm whitespace-nowrap"
+              className="flex items-center justify-center gap-3 bg-white/10 hover:bg-white/20 border border-white/25 text-white rounded-2xl px-6 py-3.5 transition-all duration-300 shadow-sm backdrop-blur-sm flex-1 sm:flex-none sm:min-w-52.5"
             >
               <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current shrink-0"><path d={path} /></svg>
-              <span className="text-sm font-semibold">{label}</span>
+              <span className="text-sm font-semibold whitespace-nowrap">{label}</span>
             </motion.a>
           ))}
         </motion.div>

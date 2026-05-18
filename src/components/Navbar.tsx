@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
@@ -27,13 +28,14 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen]     = useState(false);
   const [moreOpen, setMoreOpen]         = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [user, setUser] = useState<StoredUser | null>(() => {
-    if (typeof window === "undefined") return null;
+  const [user, setUser] = useState<StoredUser | null>(null);
+
+  useEffect(() => {
     const raw   = localStorage.getItem("vendorspot_user");
     const token = localStorage.getItem("vendorspot_token");
-    if (raw && token) { try { return JSON.parse(raw); } catch {} }
-    return null;
-  });
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (raw && token) { try { setUser(JSON.parse(raw)); } catch {} }
+  }, []);
   const [hidden, setHidden]     = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const lastScrollY             = useRef(0);
@@ -74,12 +76,12 @@ export default function Navbar() {
     }`;
 
   return (
-    <nav className={`w-full fixed top-0 pt-3 pb-5 z-50 transition-all duration-500 ease-[0.25,0.46,0.45,0.94] ${hidden ? "-translate-y-full" : "translate-y-0"} ${scrolled ? " backdrop-blur-lg shadow-sm" : ""}`}>
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 flex items-center justify-between h-16">
+    <nav className={`w-full fixed top-0 pt-2 pb-2 sm:pt-3 sm:pb-5 z-50 transition-all duration-500 ease-[0.25,0.46,0.45,0.94] ${hidden ? "-translate-y-full" : "translate-y-0"} ${scrolled ? " backdrop-blur-lg shadow-sm" : ""}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-10 flex items-center justify-between h-12 sm:h-16">
 
         {/* Logo */}
-        <Link href="/" className="shrink-0 bg-white rounded-full px-4 py-2 border border-gray-100 shadow-sm">
-          <img src="/VLogo.svg" alt="Vendorspot" className="h-5 w-auto" />
+        <Link href="/" className="shrink-0 bg-white rounded-full px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-100 shadow-sm">
+          <Image src="/VLogo.svg" alt="Vendorspot" width={120} height={20} className="h-4 sm:h-5 w-auto" />
         </Link>
 
         {/* Desktop nav pill */}
