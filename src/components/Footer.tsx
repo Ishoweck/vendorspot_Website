@@ -92,7 +92,7 @@ export default function Footer() {
             style={{ filter: "brightness(0) invert(1)" }}
           />
           <p className="text-sm text-white/40 leading-relaxed max-w-52">
-            Nigeria&apos;s trusted marketplace for buyers and sellers.
+            Africa&apos;s trusted marketplace for safe shopping, secure payment, and reliable delivery experience.
           </p>
         </motion.div>
 

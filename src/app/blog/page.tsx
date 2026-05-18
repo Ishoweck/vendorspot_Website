@@ -8,76 +8,9 @@ import Link from "next/link";
 import { FiArrowRight, FiClock, FiUser } from "react-icons/fi";
 import { fadeUp } from "@/lib/motion";
 
-const categories = ["All", "Tips & Guides", "Vendor Stories", "Updates", "Safety"];
+import { posts } from "@/lib/blogPosts";
 
-const posts = [
-  {
-    slug: "how-escrow-protects-you",
-    category: "Safety",
-    title: "How Escrow Payments Protect Every Buyer on Vendorspot",
-    excerpt: "Your money never goes directly to a vendor until you confirm your order is exactly what you paid for. Here's exactly how escrow works on our platform.",
-    author: "Olayinka Olasunkanmi",
-    date: "May 10, 2026",
-    readTime: "4 min read",
-    featured: true,
-    color: "bg-violet-500",
-  },
-  {
-    slug: "grow-your-shop",
-    category: "Vendor Stories",
-    title: "From Side Hustle to 500+ Orders: How Enis Perfumery Grew on Vendorspot",
-    excerpt: "Seyifunmi started selling fragrances from her bedroom. Two years later, she's one of our top verified vendors. This is her story.",
-    author: "Vendorspot Team",
-    date: "May 3, 2026",
-    readTime: "6 min read",
-    featured: false,
-    color: "bg-rose-400",
-  },
-  {
-    slug: "tips-for-safe-buying",
-    category: "Tips & Guides",
-    title: "5 Things to Always Check Before You Buy from Any Online Store",
-    excerpt: "Online shopping fraud is real. These five checks take less than two minutes and could save you from losing money to fake vendors.",
-    author: "Vendorspot Team",
-    date: "Apr 28, 2026",
-    readTime: "3 min read",
-    featured: false,
-    color: "bg-amber-400",
-  },
-  {
-    slug: "vendor-verification-explained",
-    category: "Updates",
-    title: "What Our Vendor Verification Process Actually Looks Like",
-    excerpt: "We don't just tick a box. Every verified badge on Vendorspot represents a real business that has passed our multi-step review process.",
-    author: "Olayinka Olasunkanmi",
-    date: "Apr 18, 2026",
-    readTime: "5 min read",
-    featured: false,
-    color: "bg-teal-500",
-  },
-  {
-    slug: "sell-better-photos",
-    category: "Tips & Guides",
-    title: "Better Product Photos = More Sales. Here's How to Take Them With Your Phone",
-    excerpt: "You don't need a DSLR or a studio. With the right setup and these simple tips, your product photos will stand out in any marketplace.",
-    author: "Vendorspot Team",
-    date: "Apr 10, 2026",
-    readTime: "5 min read",
-    featured: false,
-    color: "bg-blue-500",
-  },
-  {
-    slug: "refund-policy-guide",
-    category: "Safety",
-    title: "Understanding the 100% Refund Guarantee — and When It Applies",
-    excerpt: "Our refund guarantee isn't just marketing. Here's a plain-English breakdown of what it covers, how to claim it, and what to do if a vendor disputes.",
-    author: "Vendorspot Team",
-    date: "Apr 2, 2026",
-    readTime: "4 min read",
-    featured: false,
-    color: "bg-emerald-500",
-  },
-];
+const categories = ["All", "Tips & Guides", "Vendor Stories", "Updates", "Safety"];
 
 export default function BlogPage() {
   const [activeCategory, setActiveCategory] = useState("All");
