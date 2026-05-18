@@ -2,6 +2,7 @@
 
 import { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -312,9 +313,9 @@ function ProductsPageContent() {
                       Digital Products
                     </h3>
                     <p className="text-white/50 text-sm mb-4 sm:mb-6">E-books, courses, software keys &amp; more — delivered instantly.</p>
-                    <a href="#" className="inline-flex items-center gap-2 bg-accent hover:bg-accent-dark text-dark text-sm font-bold rounded-xl px-5 py-2.5 transition-colors">
+                    <Link href="/products/digital" className="inline-flex items-center gap-2 bg-accent hover:bg-accent-dark text-dark text-sm font-bold rounded-xl px-5 py-2.5 transition-colors">
                       Browse Digital <FiArrowRight className="w-4 h-4" />
-                    </a>
+                    </Link>
                   </div>
                   <div className="relative z-10 hidden sm:flex items-center justify-center bg-white/5 border border-white/10 rounded-2xl w-24 h-24 shrink-0">
                     <span className="text-4xl text-white/80 font-mono font-bold select-none">&lt;/&gt;</span>

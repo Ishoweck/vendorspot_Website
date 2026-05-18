@@ -3,15 +3,17 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FAQ from "@/components/FAQ";
 import {
   FiArrowRight, FiChevronLeft, FiChevronRight,
   FiStar, FiShield, FiUsers, FiClipboard,
-  FiTwitter, FiInstagram, FiLinkedin,
+  FiInstagram, FiLinkedin,
   FiZap, FiEye, FiHeart, FiTrendingUp, FiUser,
 } from "react-icons/fi";
+import { FaXTwitter } from "react-icons/fa6";
 import { fadeUp, slideLeft, slideRight } from "@/lib/motion";
 
 const coreValues = [
@@ -26,9 +28,11 @@ const coreValues = [
 ];
 
 const teamMembers = [
-  { name: "Olayinka", role: "CEO / Founder", image: "/yinka.svg" },
-  { name: "Team Member", role: "Engineering", image: null },
-  { name: "Team Member", role: "Design", image: null },
+  { name: "Olayinka",    role: "All Works",          image: "/yinka.svg" },
+  { name: "Team Member", role: "Engineer",            image: null },
+  { name: "Team Member", role: "Operations",          image: null },
+  { name: "Team Member", role: "Human Resources",     image: null },
+  { name: "Team Member", role: "Growth",              image: null },
 ];
 
 export default function TheSpotPage() {
@@ -220,7 +224,7 @@ export default function TheSpotPage() {
                         </div>
                         <hr className="border-gray-100" />
                         <div className="flex items-center gap-3 text-gray-300">
-                          <FiTwitter className="w-4 h-4 hover:text-dark cursor-pointer transition-colors" />
+                          <FaXTwitter className="w-4 h-4 hover:text-dark cursor-pointer transition-colors" />
                           <FiInstagram className="w-4 h-4 hover:text-dark cursor-pointer transition-colors" />
                           <FiLinkedin className="w-4 h-4 hover:text-dark cursor-pointer transition-colors" />
                         </div>
@@ -262,8 +266,8 @@ export default function TheSpotPage() {
                 </h3>
               </div>
 
-              <a
-                href="#"
+              <Link
+                href="/careers"
                 className="relative z-10 flex items-center gap-3 bg-white font-bold text-sm sm:text-base px-7 py-3.5 rounded-full hover:bg-white/90 transition-all shrink-0 shadow-lg"
                 style={{ color: "#8A38F5" }}
               >
@@ -271,7 +275,7 @@ export default function TheSpotPage() {
                 <span className="w-7 h-7 rounded-full flex items-center justify-center" style={{ backgroundColor: "#8A38F5" }}>
                   <FiArrowRight className="w-3.5 h-3.5 text-white" />
                 </span>
-              </a>
+              </Link>
             </motion.div>
           </div>
         </section>
