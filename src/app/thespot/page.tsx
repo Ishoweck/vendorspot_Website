@@ -30,6 +30,14 @@ const coreValues = [
 const teamMembers = [
 
    {
+    name: "Olayinka",
+    role: "All Roles",
+    image: "/team/yinka.PNG",
+    twitter: "https://x.com/ishow_leck",
+    instagram: "https://www.instagram.com/ishowleck",
+    linkedin: "https://www.linkedin.com/in/olasunkanmi-olayinka-habeeb",
+  },
+   {
     name: "David",
     role: "Lead Engineer",
     image: "/team/david.jpeg",
@@ -44,6 +52,15 @@ const teamMembers = [
     twitter: "https://x.com/9ja_UntitledDev",
     instagram: "https://www.instagram.com/_untitleddev?igsh=cHdxeW9tbXgxcmdt",
     linkedin: "https://www.linkedin.com/in/ahmed940",
+  },
+
+   {
+    name: "Itunu",
+    role: "Human Resources",
+    image: "/team/itunu.jpeg",
+    twitter: "",
+    instagram: "",
+    linkedin: "https://www.linkedin.com/in/akinlabiitunu/",
   },
   {
     name: "Praise",
@@ -64,14 +81,7 @@ const teamMembers = [
     linkedin: "https://www.linkedin.com/in/moyosore-adetunji-ab70a427b?utm_source=share_via&utm_content=profile&utm_medium=member_android",
   },
 
-  {
-    name: "",
-    role: "Growth",
-    image: null,
-    twitter: "",
-    instagram: "",
-    linkedin: "",
-  },
+ 
 ];
 
 export default function TheSpotPage() {
