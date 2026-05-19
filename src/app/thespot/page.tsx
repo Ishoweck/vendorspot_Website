@@ -40,7 +40,7 @@ const teamMembers = [
     name: "David",
     role: "Lead Engineer",
     image: "/team/david.jpeg",
-    twitter: "https://x.com/streakk_",
+    twitter: "https://x.com/sttreak_",
     instagram: "",
     linkedin: "",
   },
