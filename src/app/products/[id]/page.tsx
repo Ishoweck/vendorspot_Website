@@ -87,6 +87,7 @@ export default function ProductDetailPage() {
   const [activeImage, setActiveImage] = useState(0);
   const [saved, setSaved] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [variantError, setVariantError] = useState("");
@@ -113,6 +114,22 @@ export default function ProductDetailPage() {
     await addToCart(product.id, { _id: product.id, name: product.name, price: product.price, images: product.images || [] }, 1, variant);
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 1500);
+  };
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    const title = product?.name ?? "Check out this product";
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, text: `${title} on Vendorspot`, url });
+      } catch {}
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        setShareCopied(true);
+        setTimeout(() => setShareCopied(false), 2000);
+      } catch {}
+    }
   };
 
   // Ask a question state
@@ -663,8 +680,16 @@ export default function ProductDetailPage() {
                       </div>
                     )}
                     <div className="flex gap-2">
-                      <button className="flex-1 flex items-center justify-center gap-1.5 border border-gray-200 rounded-lg py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                        <FiShare2 className="w-3.5 h-3.5" /> Share
+                      <button
+                        onClick={handleShare}
+                        className={`flex-1 flex items-center justify-center gap-1.5 border rounded-lg py-2 text-xs font-medium transition-colors ${
+                          shareCopied
+                            ? "border-green-300 text-green-600 bg-green-50"
+                            : "border-gray-200 text-gray-700 hover:bg-gray-50"
+                        }`}
+                      >
+                        {shareCopied ? <FiCheck className="w-3.5 h-3.5" /> : <FiShare2 className="w-3.5 h-3.5" />}
+                        {shareCopied ? "Copied!" : "Share"}
                       </button>
                       <Link href={`/shops/${product.vendor?.id}`} className="flex-1 flex items-center justify-center gap-1.5 bg-dark rounded-lg py-2 text-xs font-medium text-white hover:bg-gray-800 transition-colors">
                         <FiShoppingCart className="w-3.5 h-3.5" /> Visit
