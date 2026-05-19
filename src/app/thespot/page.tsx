@@ -37,10 +37,10 @@ const teamMembers = [
     linkedin: "https://www.linkedin.com/in/praise-ajao-229639380?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
   },
   {
-    name: "Kayode",
-    role: "Engineer",
+    name: "David",
+    role: "Lead Engineer",
     image: "/team/david.jpeg",
-    twitter: "",
+    twitter: "https://x.com/streakk_",
     instagram: "",
     linkedin: "",
   },
