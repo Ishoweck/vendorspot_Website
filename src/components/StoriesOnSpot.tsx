@@ -12,24 +12,27 @@ const stories = [
     description: "A simple guide to setting up your store, getting your first customers, and growing your business step by step on Vendorspot.",
     bgColor: "bg-orange-100",
     image: "/icons/story-1.svg",
+    slug: "grow-your-shop",
   },
   {
     title: "5 Proven Ways to Increase Your Sales Online",
     description: "Practical strategies you can apply immediately to get more buyers, boost visibility, and turn visitors into paying customers.",
     bgColor: "bg-blue-100",
     image: "/icons/story-2.svg",
+    slug: "sell-better-photos",
   },
   {
     title: "Why Smart Buyers Choose Secure Marketplaces",
     description: "Discover how secure platforms protect your money, reduce risks, and make online shopping safer and more reliable for everyone.",
     bgColor: "bg-green-100",
     image: "/icons/story-3.svg",
+    slug: "how-escrow-protects-you",
   },
 ];
 
 export default function StoriesOnSpot() {
   return (
-    <section className="pt-14 sm:pt-20 md:pt-28 pb-10 sm:pb-14 bg-white">
+    <section className="py-14 sm:py-20 md:py-28 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8 sm:mb-12 md:mb-14">
           <motion.h2
@@ -54,24 +57,25 @@ export default function StoriesOnSpot() {
           className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6"
         >
           {stories.map((story) => (
-            <motion.div
-              key={story.title}
-              variants={fadeUp}
-              whileHover={{ y: -4, boxShadow: "0 12px 32px rgba(0,0,0,0.09)" }}
-              className="rounded-2xl overflow-hidden bg-white border border-gray-100 shadow-sm transition-shadow"
-            >
-              <div className={`${story.bgColor} h-44 sm:h-48 flex items-center justify-center p-4 relative`}>
-                <Image src={story.image} alt={story.title} fill className="object-contain p-4" />
-              </div>
-              <div className="p-6">
-                <h3 className="text-sm sm:text-base font-bold text-dark mb-3 leading-snug">{story.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed mb-5 line-clamp-3">{story.description}</p>
-                <a href="#" className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline group">
-                  Read More
-                  <FiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </a>
-              </div>
-            </motion.div>
+            <Link key={story.title} href={`/blog/${story.slug}`}>
+              <motion.div
+                variants={fadeUp}
+                whileHover={{ y: -4, boxShadow: "0 12px 32px rgba(0,0,0,0.09)" }}
+                className="rounded-2xl overflow-hidden bg-white border border-gray-100 shadow-sm transition-shadow h-full"
+              >
+                <div className={`${story.bgColor} h-44 sm:h-48 flex items-center justify-center p-4 relative`}>
+                  <Image src={story.image} alt={story.title} fill className="object-contain p-4" />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-sm sm:text-base font-bold text-dark mb-3 leading-snug">{story.title}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed mb-5 line-clamp-3">{story.description}</p>
+                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary group">
+                    Read More
+                    <FiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </div>
+              </motion.div>
+            </Link>
           ))}
         </motion.div>
       </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { slideLeft, slideRight } from "@/lib/motion";
 import { FiShield, FiCheckCircle, FiLock } from "react-icons/fi";
@@ -29,18 +29,41 @@ export default function SafeBuyingSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [dragLeft, setDragLeft] = useState(0);
+  const [isDesktop, setIsDesktop] = useState(false);
+  const x = useMotionValue(0);
+  const pausedRef = useRef(false);
+  const posRef = useRef(0);
 
   useEffect(() => {
     const update = () => {
       if (containerRef.current && trackRef.current) {
         const gap = window.innerWidth >= 640 ? 20 : 16;
         setDragLeft(-(Math.max(0, trackRef.current.scrollWidth - containerRef.current.offsetWidth + gap)));
+        setIsDesktop(window.innerWidth >= 1024);
       }
     };
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
   }, []);
+
+  useEffect(() => {
+    if (!isDesktop || dragLeft >= 0) return;
+    posRef.current = 0;
+    x.set(0);
+
+    let rafId: number;
+    const tick = () => {
+      if (!pausedRef.current) {
+        posRef.current -= 1.2;
+        if (posRef.current <= dragLeft) posRef.current = 0;
+        x.set(posRef.current);
+      }
+      rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
+  }, [isDesktop, dragLeft, x]);
 
   return (
     <section className="bg-primary overflow-hidden py-14 sm:py-22 pb-10">
@@ -113,12 +136,14 @@ export default function SafeBuyingSection() {
 
         <motion.div
           ref={trackRef}
-          drag="x"
+          drag={isDesktop ? false : "x"}
           dragConstraints={{ right: 0, left: dragLeft }}
           dragElastic={0.04}
           dragTransition={{ bounceStiffness: 280, bounceDamping: 28 }}
-          className="flex gap-4 sm:gap-5 px-8 sm:px-12 pb-2 cursor-grab active:cursor-grabbing select-none"
-          style={{ width: "max-content" }}
+          onMouseEnter={() => { pausedRef.current = true; }}
+          onMouseLeave={() => { pausedRef.current = false; }}
+          className={`flex gap-4 sm:gap-5 px-8 sm:px-12 pb-2 select-none ${isDesktop ? "cursor-default" : "cursor-grab active:cursor-grabbing"}`}
+          style={{ width: "max-content", x }}
         >
           {phones.map((phone, i) => (
             <div

@@ -1,4 +1,7 @@
+"use client";
+
 import dynamic from "next/dynamic";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Footer from "@/components/Footer";
@@ -105,16 +108,23 @@ const FAQ = dynamic(() => import("@/components/FAQ"), {
 
 // ── Page ────────────────────────────────────────────────────────────────
 export default function Home() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setIsLoggedIn(!!localStorage.getItem("vendorspot_token"));
+  }, []);
+
   return (
     <>
       <Navbar />
       <main className="flex-1">
         <Hero />
         <JourneySection />
+        {isLoggedIn && <StoriesOnSpot />}
         <SafeBuyingSection />
         <TopSellers />
         <Testimonials />
-        <StoriesOnSpot />
+        {!isLoggedIn && <StoriesOnSpot />}
         <FAQ />
       </main>
       <Footer />

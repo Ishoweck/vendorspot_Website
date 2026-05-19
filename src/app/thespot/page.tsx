@@ -28,11 +28,46 @@ const coreValues = [
 ];
 
 const teamMembers = [
-  { name: "Olayinka",    role: "All Works",          image: "/yinka.svg" },
-  { name: "Team Member", role: "Engineer",            image: null },
-  { name: "Team Member", role: "Operations",          image: null },
-  { name: "Team Member", role: "Human Resources",     image: null },
-  { name: "Team Member", role: "Growth",              image: null },
+  {
+    name: "Praise",
+    role: "Human Resources",
+    image: "/team/praise.jpeg",
+    twitter: "https://x.com/praisegraceva?s=21",
+    instagram: "https://www.instagram.com/_starpraise_?igsh=MW91d216ZnVmNWtoaA%3D%3D&utm_source=qr",
+    linkedin: "https://www.linkedin.com/in/praise-ajao-229639380?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
+  },
+  {
+    name: "Kayode",
+    role: "Engineer",
+    image: "/team/david.jpeg",
+    twitter: "",
+    instagram: "",
+    linkedin: "",
+  },
+  {
+    name: "Moyosore",
+    role: "Operations",
+    image: "/team/mo.jpeg",
+    twitter: "https://x.com/Moyolistic_moyo",
+    instagram: "https://www.instagram.com/mo_dedamola?utm_source=qr&igsh=cWVybmRtaTFpbXYy",
+    linkedin: "https://www.linkedin.com/in/moyosore-adetunji-ab70a427b?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+  },
+  {
+    name: "Ahmed",
+    role: "Engineer",
+    image: "/team/ahmed4.jpeg",
+    twitter: "https://x.com/9ja_UntitledDev",
+    instagram: "https://www.instagram.com/_untitleddev?igsh=cHdxeW9tbXgxcmdt",
+    linkedin: "https://www.linkedin.com/in/ahmed940",
+  },
+  {
+    name: "",
+    role: "Growth",
+    image: null,
+    twitter: "",
+    instagram: "",
+    linkedin: "",
+  },
 ];
 
 export default function TheSpotPage() {
@@ -119,11 +154,22 @@ export default function TheSpotPage() {
                 >
                   <div className="w-full max-w-70">
                     <div className="w-full h-96 sm:h-105 rounded-2xl overflow-hidden">
-                      <img src="/yinka.svg" alt="Olayinka Olasunkanmi" className="w-full h-full object-cover object-top" />
+                      <img src="/team/ceo.png" alt="Olayinka Olasunkanmi" className="w-full h-full object-cover object-top" />
                     </div>
                     <div className="mt-3 text-center">
                       <p className="font-bold text-dark text-sm sm:text-base">Olayinka Olasunkanmi</p>
                       <p className="text-gray-400 text-sm mt-0.5">CEO / Founder</p>
+                      <div className="flex items-center justify-center gap-4 mt-3 text-gray-400">
+                        <a href="https://x.com/ishow_leck?s=21" target="_blank" rel="noopener noreferrer" className="hover:text-dark transition-colors">
+                          <FaXTwitter className="w-4 h-4" />
+                        </a>
+                        <a href="https://www.instagram.com/ishowleck?igsh=ZmEyNGlrcnNmdGJh&utm_source=qr" target="_blank" rel="noopener noreferrer" className="hover:text-dark transition-colors">
+                          <FiInstagram className="w-4 h-4" />
+                        </a>
+                        <a href="https://www.linkedin.com/in/olasunkanmi-olayinka-habeeb?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noopener noreferrer" className="hover:text-dark transition-colors">
+                          <FiLinkedin className="w-4 h-4" />
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
@@ -158,9 +204,9 @@ export default function TheSpotPage() {
                     <p className="text-white text-xs leading-relaxed line-clamp-5">{description}</p>
                   </div>
                   <div className="flex justify-end mt-4">
-                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 10, repeat: Infinity, ease: "linear" }}>
+                    <div>
                       <Icon className="w-6 h-6 text-white/60" />
-                    </motion.div>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -208,7 +254,7 @@ export default function TheSpotPage() {
                     className="bg-white rounded-2xl overflow-hidden shadow-lg"
                   >
                     <div className="flex flex-col sm:flex-row">
-                      <div className="relative w-full sm:w-1/2 bg-gray-100 h-64 sm:h-80 overflow-hidden shrink-0">
+                      <div className="relative w-full sm:w-1/2 bg-gray-100 h-64 sm:h-80 overflow-hidden shrink-0 flex items-center justify-center">
                         {teamMembers[currentMember].image ? (
                           <Image src={teamMembers[currentMember].image} alt={teamMembers[currentMember].name} fill className="object-cover object-center" />
                         ) : (
@@ -219,14 +265,20 @@ export default function TheSpotPage() {
                         <div className="w-3 h-3 bg-primary rounded-full" />
                         <hr className="border-gray-100" />
                         <div>
-                          <h3 className="text-base sm:text-xl font-bold text-dark">{teamMembers[currentMember].name}</h3>
+                          <h3 className="text-base sm:text-xl font-bold text-dark">{teamMembers[currentMember].name || "—"}</h3>
                           <p className="text-gray-400 text-sm mt-1">{teamMembers[currentMember].role}</p>
                         </div>
                         <hr className="border-gray-100" />
                         <div className="flex items-center gap-3 text-gray-300">
-                          <FaXTwitter className="w-4 h-4 hover:text-dark cursor-pointer transition-colors" />
-                          <FiInstagram className="w-4 h-4 hover:text-dark cursor-pointer transition-colors" />
-                          <FiLinkedin className="w-4 h-4 hover:text-dark cursor-pointer transition-colors" />
+                          {teamMembers[currentMember].twitter ? (
+                            <a href={teamMembers[currentMember].twitter} target="_blank" rel="noopener noreferrer"><FaXTwitter className="w-4 h-4 hover:text-dark transition-colors" /></a>
+                          ) : <FaXTwitter className="w-4 h-4 opacity-30" />}
+                          {teamMembers[currentMember].instagram ? (
+                            <a href={teamMembers[currentMember].instagram} target="_blank" rel="noopener noreferrer"><FiInstagram className="w-4 h-4 hover:text-dark transition-colors" /></a>
+                          ) : <FiInstagram className="w-4 h-4 opacity-30" />}
+                          {teamMembers[currentMember].linkedin ? (
+                            <a href={teamMembers[currentMember].linkedin} target="_blank" rel="noopener noreferrer"><FiLinkedin className="w-4 h-4 hover:text-dark transition-colors" /></a>
+                          ) : <FiLinkedin className="w-4 h-4 opacity-30" />}
                         </div>
                       </div>
                     </div>
