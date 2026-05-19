@@ -19,12 +19,25 @@ import { FaXTwitter } from "react-icons/fa6";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
 
+const COLOR_HEX: Record<string, string> = {
+  red: "#E53E3E", blue: "#3182CE", green: "#38A169", black: "#1A202C",
+  white: "#FFFFFF", yellow: "#ECC94B", orange: "#ED8936", purple: "#805AD5",
+  pink: "#ED64A6", brown: "#A0522D", gray: "#718096", grey: "#718096",
+  navy: "#1A365D", maroon: "#702459", gold: "#D69E2E", silver: "#A0AEC0",
+  beige: "#F5F5DC", cream: "#FFFDD0", khaki: "#C3B091", teal: "#319795",
+};
+
+function colorHex(name: string) {
+  return COLOR_HEX[name.toLowerCase()] ?? "#CBD5E0";
+}
+
 interface ProductDetail {
   id: string; name: string; slug: string; description: string;
   shortDescription: string; price: number; originalPrice: number;
   discount: number; images: string[]; thumbnail: string; category: string;
   stock: number; inStock: boolean; rating: number; reviews: number;
   tags: string[]; keyFeatures: string[]; specifications: Record<string, string>;
+  sizes?: string[]; colors?: string[];
   vendor: { id: string; name: string; image: string; verified: boolean; isPremium: boolean };
 }
 interface VendorDetail {
@@ -74,11 +87,30 @@ export default function ProductDetailPage() {
   const [activeImage, setActiveImage] = useState(0);
   const [saved, setSaved] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [variantError, setVariantError] = useState("");
   const { addToCart } = useCart();
+
+  // Reset variant selections when navigating to a different product
+  useEffect(() => {
+    setSelectedSize(null);
+    setSelectedColor(null);
+    setVariantError("");
+  }, [id]);
 
   const handleAddToCart = async () => {
     if (!product) return;
-    await addToCart(product.id, { _id: product.id, name: product.name, price: product.price, images: product.images || [] }, 1);
+    const hasSizes = product.sizes && product.sizes.length > 0;
+    const hasColors = product.colors && product.colors.length > 0;
+    if (hasSizes && !selectedSize) { setVariantError("Please select a size"); return; }
+    if (hasColors && !selectedColor) { setVariantError("Please select a color"); return; }
+    setVariantError("");
+    const variantParts: string[] = [];
+    if (selectedSize) variantParts.push(`Size: ${selectedSize}`);
+    if (selectedColor) variantParts.push(`Color: ${selectedColor}`);
+    const variant = variantParts.length > 0 ? variantParts.join(", ") : undefined;
+    await addToCart(product.id, { _id: product.id, name: product.name, price: product.price, images: product.images || [] }, 1, variant);
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 1500);
   };
@@ -374,6 +406,57 @@ export default function ProductDetailPage() {
                         <StarRating rating={product.rating} />
                         <span className="text-xs text-gray-500">({product.reviews} reviews)</span>
                       </div>
+                    )}
+
+                    {/* Size selector */}
+                    {product.sizes && product.sizes.length > 0 && (
+                      <div className="mb-3">
+                        <p className="text-xs font-semibold text-dark mb-2">
+                          Size <span className="text-gray-400 font-normal">{selectedSize ? `— ${selectedSize}` : ""}</span>
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {product.sizes.map((size) => (
+                            <button
+                              key={size}
+                              onClick={() => { setSelectedSize(size); setVariantError(""); }}
+                              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                                selectedSize === size
+                                  ? "bg-primary border-primary text-white"
+                                  : "border-gray-200 text-gray-600 hover:border-primary hover:text-primary"
+                              }`}
+                            >
+                              {size}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Color selector */}
+                    {product.colors && product.colors.length > 0 && (
+                      <div className="mb-3">
+                        <p className="text-xs font-semibold text-dark mb-2">
+                          Color <span className="text-gray-400 font-normal">{selectedColor ? `— ${selectedColor}` : ""}</span>
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {product.colors.map((color) => (
+                            <button
+                              key={color}
+                              onClick={() => { setSelectedColor(color); setVariantError(""); }}
+                              title={color}
+                              className={`w-7 h-7 rounded-full border-2 transition-all ${
+                                selectedColor === color ? "border-primary scale-110" : "border-gray-200 hover:border-gray-400"
+                              }`}
+                              style={{ backgroundColor: colorHex(color) }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Variant validation error */}
+                    {variantError && (
+                      <p className="text-xs text-red-500 mb-2">{variantError}</p>
                     )}
 
                     <button
