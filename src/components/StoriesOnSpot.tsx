@@ -1,34 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FiArrowRight } from "react-icons/fi";
+import { FiArrowRight, FiClock } from "react-icons/fi";
 import { fadeUp, stagger } from "@/lib/motion";
 import Link from "next/link";
-import Image from "next/image";
+import { posts } from "@/lib/blogPosts";
 
-const stories = [
-  {
-    title: "How to Start Selling Online in Nigeria Without Stress",
-    description: "A simple guide to setting up your store, getting your first customers, and growing your business step by step on Vendorspot.",
-    bgColor: "bg-orange-100",
-    image: "/icons/story-1.svg",
-    slug: "grow-your-shop",
-  },
-  {
-    title: "5 Proven Ways to Increase Your Sales Online",
-    description: "Practical strategies you can apply immediately to get more buyers, boost visibility, and turn visitors into paying customers.",
-    bgColor: "bg-blue-100",
-    image: "/icons/story-2.svg",
-    slug: "sell-better-photos",
-  },
-  {
-    title: "Why Smart Buyers Choose Secure Marketplaces",
-    description: "Discover how secure platforms protect your money, reduce risks, and make online shopping safer and more reliable for everyone.",
-    bgColor: "bg-green-100",
-    image: "/icons/story-3.svg",
-    slug: "how-escrow-protects-you",
-  },
-];
+const stories = posts.slice(0, 3);
 
 export default function StoriesOnSpot() {
   return (
@@ -56,23 +34,36 @@ export default function StoriesOnSpot() {
           viewport={{ once: true, margin: "-60px" }}
           className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6"
         >
-          {stories.map((story) => (
-            <Link key={story.title} href={`/blog/${story.slug}`}>
+          {stories.map((post) => (
+            <Link key={post.slug} href={`/blog/${post.slug}`}>
               <motion.div
                 variants={fadeUp}
                 whileHover={{ y: -4, boxShadow: "0 12px 32px rgba(0,0,0,0.09)" }}
-                className="rounded-2xl overflow-hidden bg-white border border-gray-100 shadow-sm transition-shadow h-full"
+                className="rounded-2xl overflow-hidden bg-white border border-gray-100 shadow-sm transition-shadow h-full flex flex-col"
               >
-                <div className={`${story.bgColor} h-44 sm:h-48 flex items-center justify-center p-4 relative`}>
-                  <Image src={story.image} alt={story.title} fill className="object-contain p-4" />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-sm sm:text-base font-bold text-dark mb-3 leading-snug">{story.title}</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed mb-5 line-clamp-3">{story.description}</p>
-                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary group">
-                    Read More
-                    <FiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                {/* Coloured header */}
+                <div className={`${post.color} h-36 sm:h-40 flex items-end justify-between px-5 pb-4 relative overflow-hidden`}>
+                  <span className="absolute top-4 right-4 text-6xl font-black text-white/10 select-none leading-none">VS</span>
+                  <span className="inline-block bg-white/20 text-white text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">
+                    {post.category}
                   </span>
+                  <span className="flex items-center gap-1 text-white/80 text-[11px]">
+                    <FiClock className="w-3 h-3" />
+                    {post.readTime}
+                  </span>
+                </div>
+
+                {/* Content */}
+                <div className="p-5 flex flex-col flex-1">
+                  <h3 className="text-sm sm:text-base font-bold text-dark mb-2 leading-snug line-clamp-2">{post.title}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed mb-4 line-clamp-3 flex-1">{post.excerpt}</p>
+                  <div className="flex items-center justify-between mt-auto">
+                    <span className="text-[11px] text-gray-400">{post.date}</span>
+                    <span className="inline-flex items-center gap-1 text-sm font-semibold text-primary group">
+                      Read More
+                      <FiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </div>
                 </div>
               </motion.div>
             </Link>

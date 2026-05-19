@@ -28,15 +28,8 @@ const coreValues = [
 ];
 
 const teamMembers = [
-  {
-    name: "Praise",
-    role: "Human Resources",
-    image: "/team/praise.jpeg",
-    twitter: "https://x.com/praisegraceva",
-    instagram: "https://www.instagram.com/_starpraise_?igsh=MW91d216ZnVmNWtoaA%3D%3D&utm_source=qr",
-    linkedin: "https://www.linkedin.com/in/praise-ajao-229639380?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
-  },
-  {
+
+   {
     name: "David",
     role: "Lead Engineer",
     image: "/team/david.jpeg",
@@ -44,6 +37,24 @@ const teamMembers = [
     instagram: "",
     linkedin: "",
   },
+    {
+    name: "Ahmed",
+    role: "Engineer",
+    image: "/team/ahmed4.jpeg",
+    twitter: "https://x.com/9ja_UntitledDev",
+    instagram: "https://www.instagram.com/_untitleddev?igsh=cHdxeW9tbXgxcmdt",
+    linkedin: "https://www.linkedin.com/in/ahmed940",
+  },
+  {
+    name: "Praise",
+    role: "Operations",
+    image: "/team/praise.jpeg",
+    twitter: "https://x.com/praisegraceva",
+    instagram: "https://www.instagram.com/_starpraise_?igsh=MW91d216ZnVmNWtoaA%3D%3D&utm_source=qr",
+    linkedin: "https://www.linkedin.com/in/praise-ajao-229639380?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
+  },
+ 
+  
   {
     name: "Moyosore",
     role: "Operations",
@@ -52,14 +63,7 @@ const teamMembers = [
     instagram: "https://www.instagram.com/mo_dedamola?utm_source=qr&igsh=cWVybmRtaTFpbXYy",
     linkedin: "https://www.linkedin.com/in/moyosore-adetunji-ab70a427b?utm_source=share_via&utm_content=profile&utm_medium=member_android",
   },
-  {
-    name: "Ahmed",
-    role: "Engineer",
-    image: "/team/ahmed4.jpeg",
-    twitter: "https://x.com/9ja_UntitledDev",
-    instagram: "https://www.instagram.com/_untitleddev?igsh=cHdxeW9tbXgxcmdt",
-    linkedin: "https://www.linkedin.com/in/ahmed940",
-  },
+
   {
     name: "",
     role: "Growth",

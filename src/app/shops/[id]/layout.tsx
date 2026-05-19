@@ -7,24 +7,29 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { id } = await params;
   try {
-    const res = await fetch(`${API_BASE}/vendor/${id}`, { next: { revalidate: 3600 } });
+    const res = await fetch(`${API_BASE}/vendor/public/${id}`, { next: { revalidate: 3600 } });
     const data = await res.json();
-    const shop = data?.data ?? data;
-    const image = shop?.image ?? shop?.coverImage ?? "";
+    const shop = data?.data?.vendor ?? data?.data ?? data;
+
+    const name = shop?.businessName ?? "Shop";
+    const description = shop?.businessDescription
+      ?? `Shop from ${name} on Vendorspot. Verified vendor. Secure escrow payments. 100% refund guarantee.`;
+    // Banner is landscape — ideal for OG. Fall back to logo.
+    const image = shop?.businessBanner ?? shop?.businessLogo ?? "";
 
     return {
-      title: `${shop?.name ?? "Shop"} — Vendorspot`,
-      description: shop?.description ?? `Shop from ${shop?.name} on Vendorspot. Verified vendor. Secure escrow payments. 100% refund guarantee.`,
+      title: `${name} — Vendorspot`,
+      description,
       openGraph: {
-        title: `${shop?.name ?? "Shop"} — Vendorspot`,
+        title: `${name} — Vendorspot`,
         description: `Verified vendor on Vendorspot · Secure escrow payments · 100% refund guarantee.`,
-        images: image ? [{ url: image, width: 1200, height: 630 }] : [],
+        images: image ? [{ url: image, width: 1200, height: 630, alt: name }] : [],
         type: "website",
         siteName: "Vendorspot",
       },
       twitter: {
         card: "summary_large_image",
-        title: `${shop?.name ?? "Shop"} — Vendorspot`,
+        title: `${name} — Vendorspot`,
         description: `Verified shop on Vendorspot. Shop safely with escrow.`,
         images: image ? [image] : [],
       },

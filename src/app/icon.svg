@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- White pill background -->
+  <rect width="32" height="32" rx="8" fill="white"/>
+  <!-- Brand red V -->
+  <text
+    x="16"
+    y="23"
+    text-anchor="middle"
+    font-family="Arial Black, Arial, sans-serif"
+    font-weight="900"
+    font-size="22"
+    fill="#d7004b"
+  >V</text>
+  <!-- Pink dot on the V leg (matching the logo style) -->
+  <circle cx="21.5" cy="22" r="2" fill="#d7004b"/>
+</svg>

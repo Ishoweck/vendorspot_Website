@@ -11,7 +11,7 @@ const roles = [
   {
     id: "social-media-manager",
     title: "Social Media Manager",
-    type: "Full-time",
+    type: "Volunteer",
     location: "Remote / Lagos",
     department: "Marketing",
     color: "bg-violet-500",
@@ -37,7 +37,7 @@ const roles = [
   {
     id: "ads-manager",
     title: "Ads Manager",
-    type: "Full-time",
+    type: "Volunteer",
     location: "Remote / Lagos",
     department: "Growth",
     color: "bg-rose-500",
@@ -64,10 +64,10 @@ const roles = [
 
 const perks = [
   "Remote-first culture",
-  "Competitive pay",
-  "Growth opportunities",
+  "Volunteer opportunity",
+  "Growth & learning",
   "Collaborative team",
-  "Equity potential",
+  "Build real experience",
   "Real impact on Nigerian commerce",
 ];
 
@@ -205,7 +205,7 @@ export default function CareersPage() {
           <div className="relative z-10 max-w-2xl mx-auto">
             <motion.p variants={fadeUp} initial="hidden" animate="visible"
               className="text-white/60 text-xs font-semibold uppercase tracking-widest mb-3">
-              We&apos;re hiring
+              Volunteer Roles
             </motion.p>
             <motion.h1 variants={fadeUp} initial="hidden" animate="visible" transition={{ delay: 0.08 }}
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-4">
@@ -213,7 +213,7 @@ export default function CareersPage() {
             </motion.h1>
             <motion.p variants={fadeUp} initial="hidden" animate="visible" transition={{ delay: 0.15 }}
               className="text-white/60 text-sm sm:text-base max-w-md mx-auto leading-relaxed">
-              Join a small, driven team on a mission to make online trade safe and trustworthy across Africa.
+              Join a small, driven team on a mission to make online trade safe and trustworthy across Africa. These are voluntary roles — no pay for now, but a real chance to shape something from the ground up.
             </motion.p>
           </div>
         </section>
@@ -233,9 +233,17 @@ export default function CareersPage() {
         <section className="py-14 sm:py-20 px-6 sm:px-8 lg:px-10">
           <div className="max-w-4xl mx-auto">
             <motion.h2 variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
-              className="text-2xl sm:text-3xl font-extrabold text-dark mb-10">
+              className="text-2xl sm:text-3xl font-extrabold text-dark mb-4">
               Open Positions
             </motion.h2>
+
+            <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
+              className="mb-10 bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4 flex items-start gap-3">
+              <span className="text-amber-500 text-lg shrink-0">📌</span>
+              <p className="text-sm text-amber-800 leading-relaxed">
+                <strong>These are voluntary, unpaid roles.</strong> We&apos;re early-stage and building momentum — once we hit our traction goals, paid positions and other benefits will follow. Right now, it&apos;s about passion, skill, and being part of something from day one.
+              </p>
+            </motion.div>
 
             <div className="space-y-6">
               {roles.map((role, i) => (

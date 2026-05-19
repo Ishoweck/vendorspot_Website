@@ -13,6 +13,18 @@ export const metadata: Metadata = {
   title: "Vendorspot - Buy & Sell Anything",
   description:
     "Create your store in minutes, list products easily, and start receiving orders instantly.",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/VLogo.svg",
+  },
+  openGraph: {
+    title: "Vendorspot - Buy & Sell Anything",
+    description: "Create your store in minutes, list products easily, and start receiving orders instantly.",
+    siteName: "Vendorspot",
+    images: [{ url: "/VLogo.svg" }],
+    type: "website",
+  },
 };
 
 export default function RootLayout({
