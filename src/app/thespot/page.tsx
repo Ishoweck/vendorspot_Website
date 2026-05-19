@@ -32,7 +32,7 @@ const teamMembers = [
     name: "Praise",
     role: "Human Resources",
     image: "/team/praise.jpeg",
-    twitter: "https://x.com/praisegraceva?s=21",
+    twitter: "https://x.com/praisegraceva",
     instagram: "https://www.instagram.com/_starpraise_?igsh=MW91d216ZnVmNWtoaA%3D%3D&utm_source=qr",
     linkedin: "https://www.linkedin.com/in/praise-ajao-229639380?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
   },
