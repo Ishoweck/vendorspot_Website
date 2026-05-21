@@ -168,22 +168,12 @@ export default function TheSpotPage() {
                 >
                   <div className="w-full max-w-70">
                     <div className="w-full h-96 sm:h-105 rounded-2xl overflow-hidden">
-                      <img src="/team/ceo.png" alt="Olayinka Olasunkanmi" className="w-full h-full object-cover object-top" />
+                      <img src="/team/yinka.PNG" alt="Olayinka Olasunkanmi" className="w-full h-full object-cover object-top" />
                     </div>
                     <div className="mt-3 text-center">
                       <p className="font-bold text-dark text-sm sm:text-base">Olayinka Olasunkanmi</p>
                       <p className="text-gray-400 text-sm mt-0.5">CEO / Founder</p>
-                      <div className="flex items-center justify-center gap-4 mt-3 text-gray-400">
-                        <a href="https://x.com/ishow_leck?s=21" target="_blank" rel="noopener noreferrer" className="hover:text-dark transition-colors">
-                          <FaXTwitter className="w-4 h-4" />
-                        </a>
-                        <a href="https://www.instagram.com/ishowleck?igsh=ZmEyNGlrcnNmdGJh&utm_source=qr" target="_blank" rel="noopener noreferrer" className="hover:text-dark transition-colors">
-                          <FiInstagram className="w-4 h-4" />
-                        </a>
-                        <a href="https://www.linkedin.com/in/olasunkanmi-olayinka-habeeb?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noopener noreferrer" className="hover:text-dark transition-colors">
-                          <FiLinkedin className="w-4 h-4" />
-                        </a>
-                      </div>
+                  
                     </div>
                   </div>
                 </motion.div>
