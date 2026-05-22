@@ -176,7 +176,7 @@ export default function Testimonials() {
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: dir * -60, scale: 0.95 }}
               transition={{ duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="bg-white rounded-3xl px-6 py-7 sm:px-16 sm:py-10 md:px-20 md:py-12 shadow-2xl flex flex-col min-h-72 sm:min-h-80 md:min-h-72"
+              className="bg-white rounded-3xl px-6 py-10 sm:px-16 sm:py-12 md:px-20 md:py-14 shadow-2xl flex flex-col min-h-[340px] sm:min-h-[360px] md:min-h-[380px]"
             >
               {/* Stars */}
               <div className="flex gap-1 mb-5">

@@ -48,7 +48,7 @@ const teamMembers = [
     {
     name: "Ahmed",
     role: "Engineer",
-    image: "/team/ahmed4.jpeg",
+    image: "/team/ahmed5.jpeg",
     twitter: "https://x.com/9ja_UntitledDev",
     instagram: "https://www.instagram.com/_untitleddev?igsh=cHdxeW9tbXgxcmdt",
     linkedin: "https://www.linkedin.com/in/ahmed940",
@@ -75,7 +75,7 @@ const teamMembers = [
   {
     name: "Moyosore",
     role: "Operations",
-    image: "/team/mo.jpeg",
+    image: "/team/mo5.jpeg",
     twitter: "https://x.com/Moyolistic_moyo",
     instagram: "https://www.instagram.com/mo_dedamola?utm_source=qr&igsh=cWVybmRtaTFpbXYy",
     linkedin: "https://www.linkedin.com/in/moyosore-adetunji-ab70a427b?utm_source=share_via&utm_content=profile&utm_medium=member_android",
@@ -258,9 +258,9 @@ export default function TheSpotPage() {
                     className="bg-white rounded-2xl overflow-hidden shadow-lg"
                   >
                     <div className="flex flex-col sm:flex-row">
-                      <div className="relative w-full sm:w-1/2 bg-gray-100 h-64 sm:h-80 overflow-hidden shrink-0 flex items-center justify-center">
+                      <div className="relative w-full sm:w-1/2 bg-gray-100 h-80 sm:h-96 overflow-hidden shrink-0 flex items-center justify-center">
                         {teamMembers[currentMember].image ? (
-                          <Image src={teamMembers[currentMember].image} alt={teamMembers[currentMember].name} fill className="object-cover object-center" />
+                          <Image src={teamMembers[currentMember].image} alt={teamMembers[currentMember].name} fill className="object-cover object-top" />
                         ) : (
                           <FiUser className="w-14 h-14 sm:w-20 sm:h-20 text-gray-300" />
                         )}
@@ -296,6 +296,25 @@ export default function TheSpotPage() {
                 <FiChevronRight className="w-5 h-5" />
               </button>
             </motion.div>
+
+            {/* Dots + swipe hint */}
+            <div className="flex flex-col items-center gap-3 mt-6">
+              <div className="flex items-center gap-2">
+                {teamMembers.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => go(i)}
+                    className={`rounded-full transition-all duration-300 ${i === currentMember ? "bg-white w-6 h-2.5" : "bg-white/30 w-2.5 h-2.5 hover:bg-white/60"}`}
+                  />
+                ))}
+              </div>
+              <p className="sm:hidden flex items-center gap-1.5 text-white/50 text-xs font-medium select-none">
+                <FiChevronLeft className="w-3.5 h-3.5" />
+                Swipe to explore
+                <FiChevronRight className="w-3.5 h-3.5" />
+              </p>
+            </div>
+
           </div>
         </section>
 

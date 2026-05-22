@@ -8,7 +8,7 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   FiSearch, FiMapPin, FiShare2, FiShoppingCart,
-  FiUserPlus, FiX, FiCheck, FiShoppingBag, FiStar, FiArrowRight,
+  FiUserPlus, FiX, FiCheck, FiShoppingBag, FiArrowRight,
 } from "react-icons/fi";
 import { useApi } from "@/lib/useApi";
 import type { VendorProfile } from "@/lib/api";
@@ -195,6 +195,14 @@ export default function ShopsPage() {
   const [search, setSearch] = useState("");
   const [debouncedQ, setDebouncedQ] = useState("");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -298,27 +306,29 @@ export default function ShopsPage() {
         </div>
 
         {/* arc row — mirrors landing page category icons */}
-        <div className="flex justify-center items-start gap-5 sm:gap-10 md:gap-14 px-6 pb-14">
+        <div className="flex flex-wrap justify-center items-start gap-5 sm:gap-8 md:gap-14 px-4 sm:px-6 pb-14">
           {loading
             ? Array.from({ length: 6 }, (_, i) => (
                 <div
                   key={i}
-                  className="flex flex-col items-center gap-2.5 shrink-0 animate-pulse"
-                  style={{ transform: `translateY(${ARC_Y[i] ?? 0}px)` }}
+                  className="flex flex-col items-center gap-3 shrink-0 animate-pulse"
+                  style={{ transform: `translateY(${isMobile ? 0 : (ARC_Y[i] ?? 0)}px)` }}
                 >
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gray-100" />
-                  <div className="w-12 h-2.5 bg-gray-100 rounded-full" />
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white shadow-md ring-2 ring-gray-100 p-2.5">
+                    <div className="w-full h-full rounded-full bg-gray-100" />
+                  </div>
+                  <div className="w-14 h-2.5 bg-gray-100 rounded-full" />
                 </div>
               ))
             : (vendors || []).slice(0, 6).map((vendor, i) => (
                 <motion.div
                   key={vendor.id}
-                  initial={{ opacity: 0, y: (ARC_Y[i] ?? 0) + 16 }}
-                  animate={{ opacity: 1, y: ARC_Y[i] ?? 0 }}
+                  initial={{ opacity: 0, y: (isMobile ? 0 : (ARC_Y[i] ?? 0)) + 16 }}
+                  animate={{ opacity: 1, y: isMobile ? 0 : (ARC_Y[i] ?? 0) }}
                   transition={{ duration: 0.45, delay: 0.1 + i * 0.07 }}
-                  className="flex flex-col items-center gap-2.5 shrink-0"
+                  className="shrink-0"
                 >
-                  <Link href={`/shops/${vendor.id}`} className="group flex flex-col items-center gap-2.5">
+                  <Link href={`/shops/${vendor.id}`} className="group flex flex-col items-center gap-3">
                     <motion.div
                       whileHover={{ scale: 1.12, y: -8 }}
                       whileTap={{ scale: 0.95 }}
@@ -329,20 +339,18 @@ export default function ShopsPage() {
                         <div className="absolute inset-0 rounded-full bg-amber-300/40 blur-md scale-110 -z-10" />
                       )}
 
-                      <div className={`
-                        w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden
-                        border-2 border-white flex items-center justify-center
-                        shadow-md group-hover:shadow-xl group-hover:shadow-black/10
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white overflow-hidden p-2.5
+                        shadow-md group-hover:shadow-2xl group-hover:shadow-black/10
                         ring-2 ring-transparent group-hover:ring-gray-200
-                        transition-all duration-300
-                        ${AVATAR_BG[i % AVATAR_BG.length]}
-                      `}>
+                        transition-all duration-300">
                         {vendor.image ? (
-                          <Image src={vendor.image} alt={vendor.name} width={80} height={80} className="w-full h-full object-cover" />
+                          <Image src={vendor.image} alt={vendor.name} width={96} height={96} className="w-full h-full object-cover rounded-full" />
                         ) : (
-                          <span className="text-xl sm:text-2xl font-black text-white select-none">
-                            {vendor.name?.charAt(0) || "?"}
-                          </span>
+                          <div className={`w-full h-full rounded-full ${AVATAR_BG[i % AVATAR_BG.length]} flex items-center justify-center`}>
+                            <span className="text-xl sm:text-2xl font-black text-white select-none">
+                              {vendor.name?.charAt(0) || "?"}
+                            </span>
+                          </div>
                         )}
                       </div>
 
@@ -359,7 +367,7 @@ export default function ShopsPage() {
                       )}
                     </motion.div>
 
-                    <span className="text-xs font-semibold text-gray-500 group-hover:text-gray-900 text-center w-16 sm:w-20 truncate leading-tight transition-colors duration-200">
+                    <span className="text-xs sm:text-sm font-semibold text-gray-500 group-hover:text-gray-900 text-center max-w-[84px] sm:max-w-[96px] leading-tight transition-colors duration-200 truncate">
                       {vendor.name}
                     </span>
                   </Link>
