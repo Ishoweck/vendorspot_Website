@@ -47,7 +47,7 @@ function authHeaders() {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cart, itemCount, clearCart } = useCart();
+  const { cart, itemCount, clearCart, applyCoupon } = useCart();
   const { toast } = useToast();
 
   // Guest mode state
@@ -106,6 +106,21 @@ export default function CheckoutPage() {
   const [selectedRate, setSelectedRate] = useState<DeliveryRate | null>(null);
   const [loadingRates, setLoadingRates] = useState(false);
   const [ratesLoaded, setRatesLoaded] = useState(false);
+
+  // Promo code state
+  const [promoInput, setPromoInput] = useState("");
+  const [promoLoading, setPromoLoading] = useState(false);
+  const [promoMessage, setPromoMessage] = useState<{ text: string; ok: boolean } | null>(null);
+
+  const handleApplyPromo = async () => {
+    if (!promoInput.trim()) return;
+    setPromoLoading(true);
+    setPromoMessage(null);
+    const result = await applyCoupon(promoInput.trim().toUpperCase());
+    setPromoMessage({ text: result.message, ok: result.success });
+    if (result.success) setPromoInput("");
+    setPromoLoading(false);
+  };
 
   // Payment & order state
   const [paymentMethod, setPaymentMethod] = useState<"wallet" | "paystack">("paystack");
@@ -510,11 +525,27 @@ export default function CheckoutPage() {
                     <FiTag className="w-4 h-4" /> Apply Promo Code
                   </p>
                   <div className="flex gap-2">
-                    <input type="text" placeholder="Enter promo code" className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors" />
-                    <button className="bg-primary text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors">
-                      Apply
+                    <input
+                      type="text"
+                      value={promoInput}
+                      onChange={(e) => setPromoInput(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && handleApplyPromo()}
+                      placeholder="Enter promo code"
+                      className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors"
+                    />
+                    <button
+                      onClick={handleApplyPromo}
+                      disabled={promoLoading || !promoInput.trim()}
+                      className="bg-primary text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-primary-dark disabled:opacity-50 transition-colors"
+                    >
+                      {promoLoading ? "..." : "Apply"}
                     </button>
                   </div>
+                  {promoMessage && (
+                    <p className={`text-xs mt-2 font-medium ${promoMessage.ok ? "text-green-600" : "text-red-500"}`}>
+                      {promoMessage.text}
+                    </p>
+                  )}
                 </div>
 
                 {/* Order summary */}
