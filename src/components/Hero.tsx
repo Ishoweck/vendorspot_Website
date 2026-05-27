@@ -73,7 +73,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="flex flex-wrap justify-center items-start gap-6 md:gap-8 lg:gap-14 px-6 sm:px-8 pb-16 sm:pb-20 md:pb-20"
+          className="flex flex-wrap justify-center items-start gap-4 sm:gap-6 md:gap-8 lg:gap-14 px-4 sm:px-8 pb-16 sm:pb-20 md:pb-20"
         >
           {categories.map((cat, i) => (
             <motion.div
@@ -89,7 +89,7 @@ export default function Hero() {
                   whileTap={{ scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 320, damping: 22 }}
                 >
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white overflow-hidden p-2.5
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-white overflow-hidden p-2.5
                     shadow-md group-hover:shadow-2xl group-hover:shadow-white/40
                     ring-2 ring-transparent group-hover:ring-white/50
                     transition-all duration-300">

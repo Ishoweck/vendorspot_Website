@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  FiSearch, FiMapPin, FiShare2, FiShoppingCart,
+  FiSearch, FiMapPin, FiShare2,
   FiUserPlus, FiX, FiCheck, FiShoppingBag, FiArrowRight,
 } from "react-icons/fi";
 import { useApi } from "@/lib/useApi";
@@ -56,7 +56,7 @@ function ShopSkeleton() {
 }
 
 /* ─── shop card ─── */
-function ShopCard({ shop, index }: { shop: VendorProfile; index: number }) {
+function ShopCard({ shop, index, compact = false }: { shop: VendorProfile; index: number; compact?: boolean }) {
   const grad = COVER_GRADIENTS[index % COVER_GRADIENTS.length];
   const avatarBg = AVATAR_BG[index % AVATAR_BG.length];
   const { toast } = useToast();
@@ -108,87 +108,108 @@ function ShopCard({ shop, index }: { shop: VendorProfile; index: number }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: Math.min(index, 8) * 0.055, ease: "easeOut" }}
-      className="group bg-white rounded-2xl sm:rounded-3xl overflow-hidden border border-gray-100 hover:border-gray-200 hover:shadow-xl hover:shadow-black/8 transition-all duration-300 flex flex-col"
+      className={`group bg-white rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col border ${shop.isPremium ? "border-primary/30 hover:border-primary/60" : "border-gray-100 hover:border-gray-200"}`}
     >
       {/* cover */}
-      <div className="relative h-20 sm:h-32 flex-shrink-0 overflow-hidden">
+      <div className={`relative flex-shrink-0 overflow-hidden ${compact ? "h-14 sm:h-16" : "h-24 sm:h-28"}`}>
         {shop.coverImage ? (
           <img src={shop.coverImage} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         ) : (
-          <div className={`bg-gradient-to-br ${grad} w-full h-full group-hover:scale-105 transition-transform duration-500`}>
-            <div className="absolute inset-0 opacity-30"
-              style={{ backgroundImage: "radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.5) 0%, transparent 70%)" }} />
+          <div className={`bg-gradient-to-br ${grad} w-full h-full`}>
+            <div className="absolute inset-0 opacity-20"
+              style={{ backgroundImage: "radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.8) 0%, transparent 70%)" }} />
           </div>
         )}
+
+        {/* follow button */}
         <button
           onClick={handleFollow}
-          className={`absolute top-2 right-2 w-7 h-7 sm:w-8 sm:h-8 backdrop-blur-md rounded-full flex items-center justify-center transition-all border ${
+          className={`absolute top-2 right-2 w-7 h-7 backdrop-blur-md rounded-full flex items-center justify-center transition-all border shadow-sm ${
             following
-              ? "bg-white/90 border-white text-primary"
-              : "bg-white/20 hover:bg-white/40 border-white/30 text-white"
+              ? "bg-white border-white text-primary"
+              : "bg-black/20 hover:bg-black/30 border-white/20 text-white"
           }`}
           title={following ? "Unfollow" : "Follow"}
         >
           {following
-            ? <FiCheck className="w-3 h-3 sm:w-3.5 sm:h-3.5" strokeWidth={3} />
-            : <FiUserPlus className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+            ? <FiCheck className="w-3.5 h-3.5" strokeWidth={2.5} />
+            : <FiUserPlus className="w-3.5 h-3.5" />
           }
         </button>
       </div>
 
-      {/* avatar */}
-      <div className="px-3 sm:px-4 -mt-4 sm:-mt-6 relative z-10">
-        <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white shadow-md ring-2 ring-white overflow-hidden flex items-center justify-center">
+      {/* avatar — overlaps cover */}
+      <div className={`px-2 sm:px-3 relative z-10 flex items-end justify-between ${compact ? "-mt-4" : "-mt-5 px-3 sm:px-4"}`}>
+        <div className={`rounded-full bg-white shadow-md ring-2 ${shop.isPremium ? "ring-primary/40" : "ring-white"} overflow-hidden flex items-center justify-center flex-shrink-0 ${compact ? "w-8 h-8" : "w-10 h-10 sm:w-12 sm:h-12"}`}>
           {shop.image ? (
             <img src={shop.image} alt={shop.name} className="w-full h-full object-cover" />
           ) : (
             <div className={`w-full h-full ${avatarBg} flex items-center justify-center`}>
-              <span className="text-xs sm:text-base font-black text-white">{shop.name?.charAt(0) || "?"}</span>
+              <span className="text-sm sm:text-base font-black text-white">{shop.name?.charAt(0) || "?"}</span>
             </div>
           )}
         </div>
+
+        {/* share */}
+        <button
+          onClick={handleShare}
+          className="w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors text-gray-500 hover:text-gray-800 mb-1"
+          title="Share"
+        >
+          {copied ? <FiCheck className="w-3.5 h-3.5 text-emerald-500" /> : <FiShare2 className="w-3.5 h-3.5" />}
+        </button>
       </div>
 
       {/* body */}
-      <div className="px-3 sm:px-4 pt-1.5 sm:pt-2 pb-3 sm:pb-4 flex flex-col flex-1">
+      <div className={`flex flex-col flex-1 ${compact ? "px-2 pt-1.5 pb-2" : "px-3 sm:px-4 pt-2 pb-3 sm:pb-4"}`}>
+        {/* name + badge */}
         <div className="flex items-center gap-1 mb-0.5">
-          <p className="text-xs sm:text-sm font-bold text-gray-900 truncate leading-tight">{shop.name}</p>
-          {shop.verified && (
-            <span className="flex-shrink-0 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-emerald-500 rounded-full flex items-center justify-center">
-              <FiCheck className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-white" strokeWidth={3} />
-            </span>
+          <p className={`font-bold text-gray-900 truncate leading-snug ${compact ? "text-[11px]" : "text-sm"}`}>{shop.name}</p>
+          {(shop.isPremium || shop.verified) && (
+            <Image
+              src="/icons/verify.svg"
+              alt={shop.isPremium ? "Premium" : "Verified"}
+              width={14}
+              height={14}
+              style={{
+                width: 14, height: 14, flexShrink: 0,
+                filter: shop.isPremium
+                  ? "brightness(0) saturate(100%) invert(38%) sepia(93%) saturate(1500%) hue-rotate(199deg) brightness(101%) contrast(102%)"
+                  : "brightness(0) saturate(100%) invert(75%) sepia(68%) saturate(1250%) hue-rotate(5deg) brightness(101%) contrast(102%)"
+              }}
+            />
           )}
         </div>
 
-        <div className="hidden sm:flex items-center gap-1 text-xs text-gray-400 mb-2">
-          <FiMapPin className="w-3 h-3 flex-shrink-0" />
-          <span className="truncate">{shop.location || "Lagos, Nigeria"}</span>
-        </div>
+        {/* location */}
+        {!compact && (
+          <div className="flex items-center gap-1 text-[11px] text-gray-400 mb-2">
+            <FiMapPin className="w-2.5 h-2.5 flex-shrink-0" />
+            <span className="truncate">{shop.location || "Lagos, Nigeria"}</span>
+          </div>
+        )}
 
-        <p className="hidden sm:block text-xs text-gray-500 leading-relaxed line-clamp-2 flex-1">
-          {shop.description || "Visit this shop to explore their products and collections."}
-        </p>
+        {/* description */}
+        {!compact && (
+          <p className="text-[11px] sm:text-xs text-gray-500 leading-relaxed line-clamp-2 flex-1 mb-3">
+            {shop.description || "Visit this shop to explore their products and collections."}
+          </p>
+        )}
 
-        {/* actions */}
-        <div className="flex gap-1.5 sm:gap-2 mt-2 sm:mt-4">
-          <button
-            onClick={handleShare}
-            className="hidden sm:flex flex-1 items-center justify-center gap-1.5 border border-gray-200 rounded-2xl py-2.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all"
-          >
-            {copied ? <><FiCheck className="w-3.5 h-3.5 text-emerald-500" /> Copied!</> : <><FiShare2 className="w-3.5 h-3.5" /> Share</>}
-          </button>
-          <Link
-            href={`/shops/${shop.id}`}
-            className="flex-1 flex items-center justify-center gap-1.5 bg-gray-900 hover:bg-gray-700 rounded-xl sm:rounded-2xl py-2 sm:py-2.5 text-xs font-semibold text-white transition-all"
-          >
-            <FiShoppingCart className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-            <span>Shop</span>
-          </Link>
-        </div>
+        {/* shop button */}
+        <Link
+          href={`/shops/${shop.id}`}
+          className={`flex items-center justify-center gap-1 bg-gray-900 hover:bg-gray-700 rounded-lg text-white font-semibold transition-all ${compact ? "py-1.5 text-[10px] mt-1.5" : "py-2 sm:py-2.5 text-xs gap-1.5 rounded-xl mt-0"}`}
+        >
+          <FiShoppingBag className={compact ? "w-2.5 h-2.5" : "w-3.5 h-3.5"} />
+          {compact ? "Shop" : "Visit Shop"}
+        </Link>
       </div>
     </motion.div>
   );
 }
+
+const PAGE_SIZE = 12;
 
 /* ─── page ─── */
 export default function ShopsPage() {
@@ -196,6 +217,9 @@ export default function ShopsPage() {
   const [debouncedQ, setDebouncedQ] = useState("");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [page, setPage] = useState(1);
+  const [gridSize, setGridSize] = useState<"comfortable" | "compact">("comfortable");
+  const gridRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 640);
@@ -210,11 +234,33 @@ export default function ShopsPage() {
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
   }, [search]);
 
-  const endpoint = debouncedQ ? `/vendor/top?q=${encodeURIComponent(debouncedQ)}` : "/vendor/top";
-  const { data: vendors, loading } = useApi<VendorProfile[]>(endpoint);
+  useEffect(() => { setPage(1); }, [debouncedQ]);
 
-  const clearSearch = () => { setSearch(""); setDebouncedQ(""); };
+  // Top sellers arc — always uses /vendor/top
+  const { data: topVendors, loading: topLoading } = useApi<VendorProfile[]>("/vendor/top");
+
+  // All shops grid — fetch all vendors with a high limit
+  const allEndpoint = debouncedQ
+    ? `/vendor/top?q=${encodeURIComponent(debouncedQ)}&limit=200`
+    : "/vendor/top?limit=200";
+  const { data: vendors, loading } = useApi<VendorProfile[]>(allEndpoint);
+
+  const clearSearch = () => { setSearch(""); setDebouncedQ(""); setPage(1); };
   const isSearching = debouncedQ.length > 0;
+
+  const allShops = vendors || [];
+  const totalPages = Math.ceil(allShops.length / PAGE_SIZE);
+  const pageShops = allShops.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  const goToPage = (p: number) => {
+    setPage(p);
+    setTimeout(() => {
+      if (gridRef.current) {
+        const top = gridRef.current.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top, behavior: "smooth" });
+      }
+    }, 50);
+  };
 
   return (
     <>
@@ -307,7 +353,7 @@ export default function ShopsPage() {
 
         {/* arc row — mirrors landing page category icons */}
         <div className="flex flex-wrap justify-center items-start gap-5 sm:gap-8 md:gap-14 px-4 sm:px-6 pb-14">
-          {loading
+          {topLoading
             ? Array.from({ length: 6 }, (_, i) => (
                 <div
                   key={i}
@@ -320,7 +366,13 @@ export default function ShopsPage() {
                   <div className="w-14 h-2.5 bg-gray-100 rounded-full" />
                 </div>
               ))
-            : (vendors || []).slice(0, 6).map((vendor, i) => (
+            : [...(topVendors || [])]
+                .sort((a, b) => {
+                  if (a.isPremium !== b.isPremium) return a.isPremium ? -1 : 1;
+                  return (b.rating ?? 0) - (a.rating ?? 0);
+                })
+                .slice(0, 6)
+                .map((vendor, i) => (
                 <motion.div
                   key={vendor.id}
                   initial={{ opacity: 0, y: (isMobile ? 0 : (ARC_Y[i] ?? 0)) + 16 }}
@@ -339,12 +391,14 @@ export default function ShopsPage() {
                         <div className="absolute inset-0 rounded-full bg-amber-300/40 blur-md scale-110 -z-10" />
                       )}
 
-                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white overflow-hidden p-2.5
+                      <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white overflow-hidden p-2.5
                         shadow-md group-hover:shadow-2xl group-hover:shadow-black/10
-                        ring-2 ring-transparent group-hover:ring-gray-200
-                        transition-all duration-300">
+                        ring-2 transition-all duration-300
+                        ${vendor.isPremium
+                          ? "ring-primary group-hover:ring-primary"
+                          : "ring-transparent group-hover:ring-gray-200"}`}>
                         {vendor.image ? (
-                          <Image src={vendor.image} alt={vendor.name} width={96} height={96} className="w-full h-full object-cover rounded-full" />
+                          <Image src={vendor.userAvatar || vendor.image} alt={vendor.name} width={96} height={96} className="w-full h-full object-cover rounded-full" style={{ width: "100%", height: "100%" }} />
                         ) : (
                           <div className={`w-full h-full rounded-full ${AVATAR_BG[i % AVATAR_BG.length]} flex items-center justify-center`}>
                             <span className="text-xl sm:text-2xl font-black text-white select-none">
@@ -360,9 +414,20 @@ export default function ShopsPage() {
                         </span>
                       )}
 
-                      {vendor.verified && (
-                        <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-2 border-white flex items-center justify-center shadow-sm">
-                          <FiCheck className="w-2.5 h-2.5 text-white" strokeWidth={3} />
+                      {(vendor.isPremium || vendor.verified) && (
+                        <span className="absolute -bottom-1 -right-1 w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white shadow-sm bg-white flex items-center justify-center">
+                          <Image
+                            src="/icons/verify.svg"
+                            alt={vendor.isPremium ? "Premium" : "Verified"}
+                            width={20}
+                            height={20}
+                            style={{
+                              width: 20, height: 20,
+                              filter: vendor.isPremium
+                                ? "brightness(0) saturate(100%) invert(38%) sepia(93%) saturate(1500%) hue-rotate(199deg) brightness(101%) contrast(102%)"
+                                : "brightness(0) saturate(100%) invert(75%) sepia(68%) saturate(1250%) hue-rotate(5deg) brightness(101%) contrast(102%)"
+                            }}
+                          />
                         </span>
                       )}
                     </motion.div>
@@ -381,7 +446,7 @@ export default function ShopsPage() {
 </AnimatePresence>
 
         {/* ── All Shops grid ── */}
-        <section id="all-shops" className="py-8 sm:py-10 px-4">
+        <section id="all-shops" className="py-8 sm:py-10 px-4" ref={gridRef}>
           <div className="max-w-6xl mx-auto">
             {/* header row */}
             <div className="flex items-center justify-between mb-6">
@@ -407,14 +472,37 @@ export default function ShopsPage() {
                   </span>
                 )}
               </motion.h2>
-              {isSearching && (
-                <button
-                  onClick={clearSearch}
-                  className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-gray-900 bg-white border border-gray-200 px-3 py-1.5 rounded-xl transition-all"
-                >
-                  <FiX className="w-3.5 h-3.5" /> Clear
-                </button>
-              )}
+              <div className="flex items-center gap-2">
+                {isSearching && (
+                  <button
+                    onClick={clearSearch}
+                    className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-gray-900 bg-white border border-gray-200 px-3 py-1.5 rounded-xl transition-all"
+                  >
+                    <FiX className="w-3.5 h-3.5" /> Clear
+                  </button>
+                )}
+                {/* grid size toggle */}
+                <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-xl p-1">
+                  <button
+                    onClick={() => setGridSize("comfortable")}
+                    title="Comfortable"
+                    className={`p-1.5 rounded-lg transition-all ${gridSize === "comfortable" ? "bg-gray-900 text-white" : "text-gray-400 hover:text-gray-700"}`}
+                  >
+                    <div className="grid grid-cols-2 gap-[2px] w-3.5 h-3.5">
+                      {Array.from({ length: 4 }).map((_, i) => <div key={i} className="bg-current rounded-[1px]" />)}
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => setGridSize("compact")}
+                    title="Compact"
+                    className={`p-1.5 rounded-lg transition-all ${gridSize === "compact" ? "bg-gray-900 text-white" : "text-gray-400 hover:text-gray-700"}`}
+                  >
+                    <div className="grid grid-cols-3 gap-[2px] w-3.5 h-3.5">
+                      {Array.from({ length: 9 }).map((_, i) => <div key={i} className="bg-current rounded-[1px]" />)}
+                    </div>
+                  </button>
+                </div>
+              </div>
             </div>
 
             {/* grid with AnimatePresence keyed to search query */}
@@ -423,7 +511,11 @@ export default function ShopsPage() {
                 <motion.div
                   key="skeleton"
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                  className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4"
+                  className={`grid gap-2 sm:gap-3 ${
+                    gridSize === "compact"
+                      ? "grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6"
+                      : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4"
+                  }`}
                 >
                   {Array.from({ length: 8 }, (_, i) => <ShopSkeleton key={i} />)}
                 </motion.div>
@@ -453,15 +545,44 @@ export default function ShopsPage() {
                 </motion.div>
               ) : (
                 <motion.div
-                  key={`grid-${debouncedQ}`}
+                  key={`grid-${debouncedQ}-${page}`}
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
-                  className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4"
+                  className={`grid gap-2 sm:gap-3 ${
+                    gridSize === "compact"
+                      ? "grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6"
+                      : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4"
+                  }`}
                 >
-                  {vendors.map((shop, i) => <ShopCard key={shop.id} shop={shop} index={i} />)}
+                  {pageShops.map((shop, i) => <ShopCard key={shop.id} shop={shop} index={i} compact={gridSize === "compact"} />)}
                 </motion.div>
               )}
             </AnimatePresence>
+
+            {/* ── Pagination ── */}
+            {!loading && totalPages > 1 && (
+              <div className="flex items-center justify-between mt-8 sm:mt-10">
+                <button
+                  onClick={() => goToPage(page - 1)}
+                  disabled={page === 1}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-2xl border border-gray-200 bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <FiArrowRight className="w-4 h-4 rotate-180" /> Previous
+                </button>
+
+                <span className="text-sm text-gray-500 font-medium">
+                  Page <span className="text-gray-900 font-bold">{page}</span> of <span className="text-gray-900 font-bold">{totalPages}</span>
+                </span>
+
+                <button
+                  onClick={() => goToPage(page + 1)}
+                  disabled={page === totalPages}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-2xl border border-gray-200 bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  Next <FiArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
           </div>
         </section>
 

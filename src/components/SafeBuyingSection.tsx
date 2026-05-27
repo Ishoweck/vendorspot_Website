@@ -69,7 +69,7 @@ export default function SafeBuyingSection() {
     <section className="bg-primary overflow-hidden py-14 sm:py-22 pb-10">
       {/* ── Text row ── */}
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
-        <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-8 md:gap-16 mb-14 sm:mb-18">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-6 sm:gap-8 md:gap-16 mb-10 sm:mb-14">
 
           {/* Left: headline + trust pills */}
           <div className="md:max-w-lg">

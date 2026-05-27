@@ -106,6 +106,7 @@ export interface VendorProfile {
   name: string;
   description: string;
   image: string;
+  userAvatar: string;
   coverImage: string;
   location: string;
   rating: number;

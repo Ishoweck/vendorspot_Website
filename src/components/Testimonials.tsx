@@ -141,7 +141,7 @@ export default function Testimonials() {
       <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full pointer-events-none"
         style={{ background: "radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%)", transform: "translate(35%, 35%)" }} />
 
-      <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 relative z-10">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-10 relative z-10">
 
         {/* Header */}
         <motion.div
@@ -176,7 +176,7 @@ export default function Testimonials() {
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: dir * -60, scale: 0.95 }}
               transition={{ duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="bg-white rounded-3xl px-6 py-10 sm:px-16 sm:py-12 md:px-20 md:py-14 shadow-2xl flex flex-col min-h-[340px] sm:min-h-[360px] md:min-h-[380px]"
+              className="bg-white rounded-3xl px-5 py-8 sm:px-10 sm:py-10 md:px-16 md:py-12 shadow-2xl flex flex-col min-h-75 sm:min-h-85 md:min-h-90"
             >
               {/* Stars */}
               <div className="flex gap-1 mb-5">

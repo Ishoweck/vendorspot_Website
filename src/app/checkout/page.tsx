@@ -345,8 +345,8 @@ export default function CheckoutPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
               {/* ── Left column ── */}
               <div className="lg:col-span-2 space-y-4">
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                  <h1 className="text-2xl font-bold text-dark mb-6">Checkout</h1>
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-6">
+                  <h1 className="text-xl sm:text-2xl font-bold text-dark mb-4 sm:mb-6">Checkout</h1>
 
                   {/* ── Delivery Address ── */}
                   <section className="mb-6">
