@@ -130,6 +130,15 @@ function ProductsPageContent() {
 
   useEffect(() => { setSearch(urlQuery); }, [urlQuery]);
 
+  // Capture affiliate ref code from URL and persist it for checkout
+  useEffect(() => {
+    const ref = searchParams.get("ref");
+    if (ref) {
+      sessionStorage.setItem("affiliateCode", ref);
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/affiliate/track/${ref}`).catch(() => {});
+    }
+  }, [searchParams]);
+
   useEffect(() => {
     if (suggestDebounce.current) clearTimeout(suggestDebounce.current);
     if (!search.trim() || search.trim().length < 2) { setSuggestions([]); return; }
