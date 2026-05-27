@@ -260,7 +260,7 @@ export default function ShopDetailPage() {
               </div>
 
               {/* Action buttons */}
-              <div className="flex gap-2 flex-shrink-0">
+              <div className="flex gap-2 flex-wrap sm:flex-nowrap flex-shrink-0">
                 <button
                   onClick={handleShare}
                   className="flex items-center gap-1.5 border border-gray-200 bg-white rounded-xl px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors"

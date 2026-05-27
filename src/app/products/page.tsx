@@ -191,7 +191,7 @@ function ProductsPageContent() {
       <main className="flex-1">
 
         {/* Hero */}
-        <section className="relative overflow-hidden pt-24 sm:pt-32 pb-12 sm:pb-20 px-6 text-center"
+        <section className="relative overflow-hidden pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 text-center"
           style={{ backgroundColor: "#8A38F5" }}>
           {/* Decorative blobs */}
           <div className="absolute top-0 right-0 w-96 h-96 pointer-events-none"

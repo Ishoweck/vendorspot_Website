@@ -43,7 +43,7 @@ export function useApi<T>(endpoint: string | null) {
         const res = await fetch(`${API_BASE}${endpoint}`);
         if (!res.ok) throw new Error(`API error: ${res.status}`);
         const json = await res.json();
-        if (!cancelled) {
+if (!cancelled) {
           setData(extractData(json.data) as T);
           setError(null);
         }

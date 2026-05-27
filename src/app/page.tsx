@@ -31,6 +31,19 @@ const JourneySection = dynamic(() => import("@/components/JourneySection"), {
   ),
 });
 
+const SellEverything = dynamic(() => import("@/components/SellEverything"), {
+  loading: () => (
+    <SectionSkeleton>
+      <div className="max-w-7xl mx-auto space-y-8">
+        <Pulse className="h-9 w-64 mx-auto" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => <Pulse key={i} className="h-36" />)}
+        </div>
+      </div>
+    </SectionSkeleton>
+  ),
+});
+
 const SafeBuyingSection = dynamic(() => import("@/components/SafeBuyingSection"), {
   loading: () => (
     <SectionSkeleton bg="bg-primary">
@@ -120,6 +133,7 @@ export default function Home() {
       <main className="flex-1">
         <Hero />
         <JourneySection />
+        <SellEverything />
         {isLoggedIn && <StoriesOnSpot />}
         <SafeBuyingSection />
         <TopSellers />
