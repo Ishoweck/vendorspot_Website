@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import Link from "next/link";
+import Image from "next/image";
 import {
   FiMapPin, FiShare2, FiUserPlus, FiUserCheck, FiStar,
   FiShoppingBag, FiCheck, FiPackage,
@@ -109,7 +110,7 @@ export default function ShopDetailPage() {
       window.location.href =
         /android/i.test(navigator.userAgent)
           ? "https://play.google.com/store/apps/details?id=com.vendorspot.app"
-          : "https://apps.apple.com/app/vendorspot/id000000000";
+          : "https://apps.apple.com/ng/app/vendorspot-thespot/id6761906107";
     }, 1500);
   };
 
@@ -134,7 +135,7 @@ export default function ShopDetailPage() {
     return (
       <>
         <Navbar />
-        <main className="min-h-screen bg-gray-50 mt-16">
+        <main className="min-h-screen bg-gray-50 mt-12 sm:mt-16">
           <div className="bg-gray-200 h-32 w-full animate-pulse" />
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm -mt-6 p-5 animate-pulse">
@@ -183,9 +184,9 @@ export default function ShopDetailPage() {
   return (
     <>
       <Navbar />
-      <main className="bg-gray-50 min-h-screen pt-16 pb-16">
+      <main className="bg-gray-50 min-h-screen pt-12 sm:pt-16 pb-16">
         {/* Open in App Banner */}
-        <div className="bg-[#CC3366] text-white px-4 py-3 flex items-center justify-between">
+        <div className="bg-[#CC3366] text-white px-4 py-3 mt-6 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img src="/VLogo.svg" alt="Vendorspot" className="w-7 h-7 rounded" />
             <span className="text-sm font-medium">View this store in the Vendorspot app</span>
@@ -231,11 +232,19 @@ export default function ShopDetailPage() {
                   <h1 className="text-lg sm:text-xl font-bold text-dark leading-tight">
                     {vendor.businessName}
                   </h1>
-                  {vendor.verificationStatus === "verified" && (
-                    <FiCheck className="w-4 h-4 text-blue-500 flex-shrink-0" strokeWidth={2.5} title="Verified" />
-                  )}
-                  {vendor.isPremium && (
-                    <span className="bg-yellow-400 text-dark text-[10px] font-bold px-2 py-0.5 rounded-full">PREMIUM</span>
+                  {(vendor.isPremium || vendor.verificationStatus === "verified") && (
+                    <Image
+                      src="/icons/verify.svg"
+                      alt={vendor.isPremium ? "Premium" : "Verified"}
+                      width={18}
+                      height={18}
+                      style={{
+                        width: 18, height: 18, flexShrink: 0,
+                        filter: vendor.isPremium
+                          ? "brightness(0) saturate(100%) invert(38%) sepia(93%) saturate(1500%) hue-rotate(199deg) brightness(101%) contrast(102%)"
+                          : "brightness(0) saturate(100%) invert(75%) sepia(68%) saturate(1250%) hue-rotate(5deg) brightness(101%) contrast(102%)"
+                      }}
+                    />
                   )}
                 </div>
 

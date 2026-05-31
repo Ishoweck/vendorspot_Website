@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/lib/CartContext";
 import { ToastProvider } from "@/components/Toast";
+import SupportChat from "@/components/SupportChat";
 
 const inter = Inter({
   variable: "--font-geist-sans",
@@ -36,7 +37,10 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} antialiased`}>
       <body className="min-h-screen flex flex-col" suppressHydrationWarning>
         <CartProvider>
-          <ToastProvider>{children}</ToastProvider>
+          <ToastProvider>
+            {children}
+            <SupportChat />
+          </ToastProvider>
         </CartProvider>
       </body>
     </html>

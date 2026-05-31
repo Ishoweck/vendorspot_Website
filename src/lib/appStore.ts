@@ -4,8 +4,7 @@
 // URL scheme:       vendorspot://   (registered in app.json "scheme")
 // Universal Links:  applinks:vendorspotng.com  (iOS associated domains)
 //
-// TODO: replace APP_STORE_URL numeric ID once the app is published on App Store
-export const APP_STORE_URL    = "https://apps.apple.com/app/vendorspot/id000000000"; // replace numeric id after App Store submission
+export const APP_STORE_URL    = "https://apps.apple.com/ng/app/vendorspot-thespot/id6761906107";
 export const PLAY_STORE_URL   = "https://play.google.com/store/apps/details?id=com.vendorspot.app";
 export const ANDROID_PACKAGE  = "com.vendorspot.app";
 export const IOS_BUNDLE_ID    = "com.vendorspotng.vendorspot";
