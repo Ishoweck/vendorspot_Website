@@ -68,46 +68,64 @@ export default function Hero() {
           </div>
         </motion.div>
 
-        {/* Category icons — U-shape arc */}
+        {/* Category icons — grid on mobile, U-arc on md+ */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="flex flex-wrap justify-center items-start gap-4 sm:gap-6 md:gap-8 lg:gap-14 px-4 sm:px-8 pb-16 sm:pb-20 md:pb-20"
+          className="px-6 sm:px-8 pb-16 sm:pb-20"
         >
-          {categories.map((cat, i) => (
-            <motion.div
-              key={cat.slug}
-              initial={{ opacity: 0, y: arcOffsets[i] + 16 }}
-              animate={{ opacity: 1, y: arcOffsets[i] }}
-              transition={{ duration: 0.45, delay: 0.25 + i * 0.07 }}
-              className="shrink-0"
-            >
-              <Link href={`/products?category=${cat.slug}`} className="flex flex-col items-center gap-3 group">
-                <motion.div
-                  whileHover={{ scale: 1.12, y: -8 }}
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ type: "spring", stiffness: 320, damping: 22 }}
-                >
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-white overflow-hidden p-2.5
-                    shadow-md group-hover:shadow-2xl group-hover:shadow-white/40
-                    ring-2 ring-transparent group-hover:ring-white/50
-                    transition-all duration-300">
-                    <Image
-                      src={cat.image}
-                      alt={cat.name}
-                      width={96}
-                      height={96}
-                      className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110"
-                    />
-                  </div>
-                </motion.div>
-                <span className="text-xs sm:text-sm font-semibold text-white/75 group-hover:text-white text-center max-w-21 leading-tight transition-all duration-300 group-hover:font-bold">
-                  {cat.name}
-                </span>
-              </Link>
-            </motion.div>
-          ))}
+          {/* Mobile: clean 3-column grid, no arc */}
+          <div className="grid grid-cols-3 gap-x-4 gap-y-6 md:hidden">
+            {categories.map((cat, i) => (
+              <motion.div
+                key={cat.slug}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.25 + i * 0.06 }}
+              >
+                <Link href={`/products?category=${cat.slug}`} className="flex flex-col items-center gap-2 group">
+                  <motion.div whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 320, damping: 22 }}>
+                    <div className="w-20 h-20 rounded-full bg-white overflow-hidden p-2.5 shadow-md ring-2 ring-transparent transition-all duration-300">
+                      <Image src={cat.image} alt={cat.name} width={80} height={80} className="w-full h-full object-contain" />
+                    </div>
+                  </motion.div>
+                  <span className="text-xs font-semibold text-white/75 text-center leading-tight">{cat.name}</span>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Desktop: single-row U-arc */}
+          <div className="hidden md:flex justify-center items-start gap-8 lg:gap-14">
+            {categories.map((cat, i) => (
+              <motion.div
+                key={cat.slug}
+                initial={{ opacity: 0, y: arcOffsets[i] + 16 }}
+                animate={{ opacity: 1, y: arcOffsets[i] }}
+                transition={{ duration: 0.45, delay: 0.25 + i * 0.07 }}
+                className="shrink-0"
+              >
+                <Link href={`/products?category=${cat.slug}`} className="flex flex-col items-center gap-3 group">
+                  <motion.div
+                    whileHover={{ scale: 1.12, y: -8 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 320, damping: 22 }}
+                  >
+                    <div className="w-24 h-24 rounded-full bg-white overflow-hidden p-2.5
+                      shadow-md group-hover:shadow-2xl group-hover:shadow-white/40
+                      ring-2 ring-transparent group-hover:ring-white/50
+                      transition-all duration-300">
+                      <Image src={cat.image} alt={cat.name} width={96} height={96} className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110" />
+                    </div>
+                  </motion.div>
+                  <span className="text-sm font-semibold text-white/75 group-hover:text-white text-center leading-tight transition-all duration-300 group-hover:font-bold">
+                    {cat.name}
+                  </span>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
 
         {/* App download buttons */}

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
@@ -157,7 +157,7 @@ export default function ProductDetailPage() {
         window.location.href =
           /android/i.test(navigator.userAgent)
             ? "https://play.google.com/store/apps/details?id=com.vendorspot.app"
-            : "https://apps.apple.com/app/vendorspot/id000000000";
+            : "https://apps.apple.com/ng/app/vendorspot-thespot/id6761906107";
       }
     }, 1500);
   };
