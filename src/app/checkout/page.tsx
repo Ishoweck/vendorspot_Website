@@ -7,7 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useCart } from "@/lib/CartContext";
 import { useToast } from "@/components/Toast";
-import { FiMapPin, FiTag, FiTruck, FiChevronRight, FiCheck, FiPlus, FiCreditCard, FiLoader, FiPackage, FiAlertCircle } from "react-icons/fi";
+import { FiMapPin, FiTag, FiTruck, FiChevronRight, FiCheck, FiPlus, FiCreditCard, FiLoader, FiPackage, FiAlertCircle, FiShield, FiX } from "react-icons/fi";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
 
@@ -43,6 +43,24 @@ function authHeaders() {
   const h: Record<string, string> = { "Content-Type": "application/json" };
   if (token) h["Authorization"] = `Bearer ${token}`;
   return h;
+}
+
+function calcBuyerProtectionFee(baseTotal: number): number {
+  if (baseTotal >= 100001) return 2000;
+  if (baseTotal >= 50001)  return 1500;
+  if (baseTotal >= 20001)  return 1000;
+  if (baseTotal >= 1000)   return 500;
+  return 0;
+}
+
+function calcGatewayFee(amount: number, gateway: "paystack" | "flutterwave" | "wallet"): number {
+  if (amount <= 0 || gateway === "wallet") return 0;
+  if (gateway === "paystack") {
+    if (amount <= 2500) return Math.ceil(amount * 0.015);
+    return Math.min(Math.ceil((amount + 100) / 0.985) - amount, 2000);
+  }
+  // flutterwave: 1.4% capped at ₦2,000
+  return Math.min(Math.ceil(amount / 0.986) - amount, 2000);
 }
 
 export default function CheckoutPage() {
@@ -125,12 +143,18 @@ export default function CheckoutPage() {
   };
 
   // Payment & order state
-  const [paymentMethod, setPaymentMethod] = useState<"wallet" | "paystack">("paystack");
+  const [paymentMethod, setPaymentMethod] = useState<"wallet" | "paystack" | "flutterwave">("paystack");
   const [placingOrder, setPlacingOrder] = useState(false);
+  const [showProtectionInfo, setShowProtectionInfo] = useState(false);
+  const [walletBalance, setWalletBalance] = useState<number | null>(null);
 
   const selectedAddress = addresses.find((a) => a._id === selectedAddressId);
   const shippingCost = selectedRate?.price ?? 0;
-  const grandTotal = cart.subtotal + shippingCost - cart.discount;
+  const baseTotal = Math.max(0, cart.subtotal - cart.discount + shippingCost);
+  const buyerProtectionFee = selectedRate ? calcBuyerProtectionFee(baseTotal) : 0;
+  const orderTotal = baseTotal + buyerProtectionFee;
+  const gatewayFee = selectedRate ? calcGatewayFee(orderTotal, paymentMethod) : 0;
+  const grandTotal = orderTotal + gatewayFee;
 
   const loadAddresses = () => {
     if (!getToken()) { setLoadingAddresses(false); return; }
@@ -149,8 +173,16 @@ export default function CheckoutPage() {
       .finally(() => setLoadingAddresses(false));
   };
 
-  // Load saved addresses on mount (if already authed)
-  useEffect(() => { loadAddresses(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // Load saved addresses and wallet balance on mount (if already authed)
+  useEffect(() => {
+    loadAddresses();
+    if (getToken()) {
+      fetch(`${API_BASE}/wallet`, { headers: authHeaders() })
+        .then((r) => r.json())
+        .then((json) => { if (json.success) setWalletBalance(json.data?.wallet?.balance ?? 0); })
+        .catch(() => {});
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSaveAddress = async () => {
     if (!addressForm.street || !addressForm.city || !addressForm.state || !addressForm.fullName || !addressForm.phone) {
@@ -272,7 +304,7 @@ export default function CheckoutPage() {
         ...(pendingAffiliateCode && { affiliateCode: pendingAffiliateCode }),
       };
 
-      if (paymentMethod === "paystack") {
+      if (paymentMethod === "paystack" || paymentMethod === "flutterwave") {
         const res = await fetch(`${API_BASE}/orders/initialize-payment`, {
           method: "POST",
           headers: authHeaders(),
@@ -521,20 +553,64 @@ export default function CheckoutPage() {
                     <p className="text-sm font-bold text-dark flex items-center gap-2 mb-3">
                       <FiCreditCard className="w-4 h-4" /> Payment Method
                     </p>
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      {(["paystack", "wallet"] as const).map((method) => (
+                    <div className="divide-y divide-gray-100 border border-gray-200 rounded-xl overflow-hidden">
+                      {/* Paystack */}
+                      <button
+                        onClick={() => setPaymentMethod("paystack")}
+                        className={`w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors ${paymentMethod === "paystack" ? "bg-pink-50" : "bg-white hover:bg-gray-50"}`}
+                      >
+                        <div className="w-13 h-9 rounded-lg flex flex-col items-center justify-center px-2 flex-shrink-0" style={{ backgroundColor: "#011B33", minWidth: 52 }}>
+                          <span className="text-[9px] font-black leading-none" style={{ color: "#00C3F9" }}>pay</span>
+                          <span className="text-[9px] font-black leading-none text-white">stack</span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-dark">Paystack</p>
+                          <p className="text-xs text-gray-400">Debit/credit card · Bank transfer</p>
+                        </div>
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${paymentMethod === "paystack" ? "border-primary bg-primary" : "border-gray-300"}`}>
+                          {paymentMethod === "paystack" && <div className="w-2 h-2 rounded-full bg-white" />}
+                        </div>
+                      </button>
+
+                      {/* Flutterwave */}
+                      <button
+                        onClick={() => setPaymentMethod("flutterwave")}
+                        className={`w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors ${paymentMethod === "flutterwave" ? "bg-pink-50" : "bg-white hover:bg-gray-50"}`}
+                      >
+                        <div className="w-13 h-9 rounded-lg flex flex-col items-center justify-center px-2 flex-shrink-0" style={{ backgroundColor: "#FF6900", minWidth: 52 }}>
+                          <span className="text-[9px] font-black leading-none text-white">flutter</span>
+                          <span className="text-[9px] font-black leading-none" style={{ color: "#FFD700" }}>wave</span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-dark">Flutterwave</p>
+                          <p className="text-xs text-gray-400">Card · Bank transfer · USSD & more</p>
+                        </div>
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${paymentMethod === "flutterwave" ? "border-primary bg-primary" : "border-gray-300"}`}>
+                          {paymentMethod === "flutterwave" && <div className="w-2 h-2 rounded-full bg-white" />}
+                        </div>
+                      </button>
+
+                      {/* Wallet — only for logged-in users */}
+                      {isAuthed && (
                         <button
-                          key={method}
-                          onClick={() => setPaymentMethod(method)}
-                          className={`flex-1 px-4 py-3 rounded-xl border text-sm font-medium transition-colors ${
-                            paymentMethod === method
-                              ? "border-primary bg-pink-50 text-primary"
-                              : "border-gray-200 text-gray-600 hover:border-gray-300"
-                          }`}
+                          onClick={() => setPaymentMethod("wallet")}
+                          disabled={walletBalance !== null && walletBalance < grandTotal}
+                          className={`w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors disabled:opacity-60 ${paymentMethod === "wallet" ? "bg-pink-50" : "bg-white hover:bg-gray-50"}`}
                         >
-                          {method === "paystack" ? "Pay with Card (Paystack)" : "Pay with Wallet"}
+                          <div className="w-13 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#EDE9FE", minWidth: 52 }}>
+                            <FiCreditCard className="w-5 h-5" style={{ color: "#6366F1" }} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-dark">Wallet Balance</p>
+                            <p className={`text-xs font-medium ${walletBalance === null ? "text-gray-400" : walletBalance >= grandTotal ? "text-green-600" : "text-red-500"}`}>
+                              {walletBalance === null ? "Loading…" : `₦${walletBalance.toLocaleString()}${walletBalance < grandTotal ? " · Insufficient" : ""}`}
+                            </p>
+                          </div>
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${paymentMethod === "wallet" ? "border-primary bg-primary" : "border-gray-300"}`}>
+                            {paymentMethod === "wallet" && <div className="w-2 h-2 rounded-full bg-white" />}
+                          </div>
                         </button>
-                      ))}
+                      )}
                     </div>
                   </section>
                 </div>
@@ -595,10 +671,28 @@ export default function CheckoutPage() {
                         <span className="font-medium">-₦{cart.discount.toLocaleString()}</span>
                       </div>
                     )}
+                    {buyerProtectionFee > 0 && (
+                      <div className="flex justify-between text-gray-600">
+                        <button
+                          onClick={() => setShowProtectionInfo(true)}
+                          className="flex items-center gap-1.5 text-left hover:text-gray-800 transition-colors"
+                        >
+                          <span className="text-sm">Buyer Protection</span>
+                          <span className="w-4 h-4 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0" style={{ backgroundColor: "#CC3366" }}>?</span>
+                        </button>
+                        <span className="font-medium text-dark">₦{buyerProtectionFee.toLocaleString()}</span>
+                      </div>
+                    )}
+                    {gatewayFee > 0 && (
+                      <div className="flex justify-between text-gray-600">
+                        <span className="text-sm">{paymentMethod === "flutterwave" ? "Flutterwave" : "Paystack"} fee</span>
+                        <span className="font-medium text-dark">₦{gatewayFee.toLocaleString()}</span>
+                      </div>
+                    )}
                   </div>
                   <div className="flex justify-between font-bold text-dark text-base mt-4 pt-3 border-t border-gray-100">
-                    <span>Total</span>
-                    <span>₦{(selectedRate ? grandTotal : cart.subtotal - cart.discount).toLocaleString()}</span>
+                    <span>Total to Pay</span>
+                    <span style={{ color: "#CC3366" }}>₦{(selectedRate ? grandTotal : Math.max(0, cart.subtotal - cart.discount)).toLocaleString()}</span>
                   </div>
                   <button
                     onClick={handlePlaceOrder}
@@ -646,6 +740,69 @@ export default function CheckoutPage() {
         </div>
       </main>
       <Footer />
+
+      {/* Buyer Protection Info Modal */}
+      {showProtectionInfo && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 px-0 sm:px-4" onClick={() => setShowProtectionInfo(false)}>
+          <div className="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-2xl p-5 pb-8 sm:pb-6" onClick={(e) => e.stopPropagation()}>
+            {/* Header */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2 flex-1 min-w-0 pr-2">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#CC3366" }}>
+                  <FiShield className="w-4 h-4 text-white" />
+                </div>
+                <h3 className="text-base font-bold text-gray-900">Why Vendorspot Charges a Buyer Protection Fee</h3>
+              </div>
+              <button onClick={() => setShowProtectionInfo(false)} className="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0">
+                <FiX className="w-6 h-6" />
+              </button>
+            </div>
+
+            <p className="text-sm text-gray-600 leading-5 mb-4">
+              Every order on Vendorspot is covered by our Buyer Protection programme. Your payment is held securely in escrow and only released to the vendor after you confirm you&apos;ve received your item in good condition.
+            </p>
+
+            <p className="text-sm font-semibold text-gray-800 mb-3">Your protection includes:</p>
+
+            <ul className="space-y-2 mb-4">
+              {[
+                "Secure escrow holding until you confirm delivery",
+                "Order monitoring from payment to doorstep",
+                "Priority dispute resolution if anything goes wrong",
+                "Verified refund processing when eligible",
+                "Fraud prevention on every transaction",
+                "Delivery coordination support",
+              ].map((item, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-gray-700 leading-5">
+                  <span className="text-green-500 flex-shrink-0">✅</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+
+            <div className="rounded-xl p-4 mb-5" style={{ backgroundColor: "#FFF0F5" }}>
+              <p className="text-sm text-gray-700 leading-5">
+                This small fee keeps the entire trust system running, so every purchase you make on Vendorspot is backed by real protection, not just a promise.
+              </p>
+              <p className="text-sm font-semibold mt-2" style={{ color: "#CC3366" }}>
+                Shop with confidence. We&apos;ve got your back.
+              </p>
+              <div className="flex items-start gap-1 mt-3 pt-3 border-t border-pink-200">
+                <FiAlertCircle className="w-3.5 h-3.5 text-gray-400 flex-shrink-0 mt-0.5" />
+                <p className="text-xs text-gray-400">This fee is non-refundable, even if an order is cancelled or refunded.</p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowProtectionInfo(false)}
+              className="w-full py-3 rounded-xl text-white text-sm font-semibold transition-colors"
+              style={{ backgroundColor: "#CC3366" }}
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
