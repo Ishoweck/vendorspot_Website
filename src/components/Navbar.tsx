@@ -173,10 +173,10 @@ export default function Navbar() {
             </Link>
           )}
 
-          <Link href="/cart" className="relative p-2.5 bg-accent rounded-full hover:bg-accent-dark transition-all duration-500 ease-in-out shadow-sm ring-2 ring-accent/30 hover:ring-accent/60">
+          <Link href="/cart" className="relative overflow-visible p-2.5 bg-accent rounded-full hover:bg-accent-dark transition-all duration-500 ease-in-out shadow-sm ring-2 ring-accent/30 hover:ring-accent/60">
             <FiShoppingCart className="w-5 h-5 text-dark" />
             {itemCount > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 shadow-sm">
+              <span className="absolute -top-1 -right-1 z-10 min-w-[18px] h-[18px] bg-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 shadow-sm">
                 {itemCount > 99 ? "99+" : itemCount}
               </span>
             )}

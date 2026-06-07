@@ -191,7 +191,7 @@ export default function CartPage() {
                       </div>
                       <div className="flex justify-between text-gray-600">
                         <span>Delivery Fee</span>
-                        <span className="font-medium text-dark">₦{cart.deliveryFee.toLocaleString()}</span>
+                        <span className="text-xs font-medium text-gray-400 italic">Calculated at checkout</span>
                       </div>
                       {cart.discount > 0 && (
                         <div className="flex justify-between text-green-600">
@@ -201,8 +201,11 @@ export default function CartPage() {
                       )}
                     </div>
                     <div className="flex justify-between font-bold text-dark text-base mt-4 pt-3 border-t border-gray-100">
-                      <span>Total</span>
-                      <span>₦{cart.total.toLocaleString()}</span>
+                      <div>
+                        <p>Subtotal</p>
+                        <p className="text-[10px] font-normal text-gray-400 mt-0.5">Delivery added at checkout</p>
+                      </div>
+                      <span>₦{cart.subtotal.toLocaleString()}</span>
                     </div>
                     <motion.button
                       whileTap={{ scale: 0.98 }}

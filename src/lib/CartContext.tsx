@@ -1,11 +1,9 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { friendlyError } from "./errorMessage";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
-// Flat placeholder fee shown before the user picks a courier at checkout
-const DELIVERY_FEE = 2500;
-// Key used to persist guest cart across page reloads
 const LOCAL_KEY = "vendorspot_cart";
 
 export interface CartProduct {
@@ -44,7 +42,7 @@ interface CartContextValue {
   applyCoupon: (code: string) => Promise<{ success: boolean; message: string }>;
 }
 
-const emptyCart: Cart = { items: [], subtotal: 0, deliveryFee: DELIVERY_FEE, discount: 0, total: DELIVERY_FEE };
+const emptyCart: Cart = { items: [], subtotal: 0, deliveryFee: 0, discount: 0, total: 0 };
 
 const CartContext = createContext<CartContextValue>({
   cart: emptyCart,
@@ -59,7 +57,7 @@ const CartContext = createContext<CartContextValue>({
 
 function totals(items: CartItem[], discount = 0) {
   const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
-  return { subtotal, deliveryFee: DELIVERY_FEE, discount, total: subtotal + DELIVERY_FEE - discount };
+  return { subtotal, deliveryFee: 0, discount, total: subtotal - discount };
 }
 
 function getToken() {
@@ -111,11 +109,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setLoading(true);
     try {
       if (getToken()) {
-        await fetch(`${API_BASE}/cart/add`, {
+        const res = await fetch(`${API_BASE}/cart/add`, {
           method: "POST",
           headers: headers(),
           body: JSON.stringify({ productId, quantity, variant }),
         });
+        const json = await res.json();
+        if (!json.success) throw new Error(friendlyError(json.message || "Failed to add to cart", "Failed to add to cart"));
         await fetchBackend();
       } else {
         setCart((prev) => {

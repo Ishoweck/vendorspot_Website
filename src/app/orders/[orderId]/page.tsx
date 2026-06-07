@@ -9,6 +9,7 @@ import {
   FiCheck, FiPackage, FiMapPin, FiChevronRight, FiDownload,
   FiTruck, FiClock, FiAlertCircle, FiShoppingBag, FiXCircle,
 } from "react-icons/fi";
+import { friendlyError } from "@/lib/errorMessage";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
 
@@ -165,15 +166,34 @@ export default function OrderPage() {
       const res = await fetch(`${API_BASE}/orders/${order._id}/download/${itemId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const json = await res.json();
-      if (json.success && json.data?.downloadUrl) {
-        window.open(json.data.downloadUrl, "_blank", "noopener,noreferrer");
-      } else {
-        throw new Error(json.message || "Download URL not available");
+
+      if (!res.ok) {
+        // Error response — only try JSON if the server says so
+        const ct = res.headers.get("content-type") || "";
+        if (ct.includes("application/json")) {
+          const json = await res.json();
+          throw new Error(json.message || "Download failed");
+        }
+        throw new Error("Download failed. Please try again.");
       }
-    } catch (err: any) {
-      setDownloadError(err.message || "Could not start download. Please try again.");
-      setTimeout(() => setDownloadError(null), 4000);
+
+      // Success — stream is binary; read as blob and trigger browser save-dialog
+      const blob = await res.blob();
+      const disposition = res.headers.get("content-disposition") || "";
+      const nameMatch = disposition.match(/filename="?([^";\r\n]+)"?/i);
+      const filename = nameMatch?.[1]?.trim() || "download";
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 30_000);
+    } catch (err: unknown) {
+      setDownloadError(friendlyError(err, "Could not start download. Please try again."));
+      setTimeout(() => setDownloadError(null), 5000);
     } finally {
       setDownloading(null);
     }
@@ -383,7 +403,7 @@ export default function OrderPage() {
                           className="flex items-center gap-1.5 bg-primary text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-primary-dark disabled:opacity-60 transition-colors flex-shrink-0"
                         >
                           <FiDownload className="w-3.5 h-3.5" />
-                          {downloading === itemId ? "Opening…" : "Download"}
+                          {downloading === itemId ? "Downloading…" : "Download"}
                         </button>
                       </div>
                     );

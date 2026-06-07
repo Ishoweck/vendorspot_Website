@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useCart } from "@/lib/CartContext";
 import { useToast } from "@/components/Toast";
-import { FiMapPin, FiTag, FiTruck, FiChevronRight, FiCheck, FiPlus, FiCreditCard, FiLoader, FiPackage } from "react-icons/fi";
+import { FiMapPin, FiTag, FiTruck, FiChevronRight, FiCheck, FiPlus, FiCreditCard, FiLoader, FiPackage, FiAlertCircle } from "react-icons/fi";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
 
@@ -106,6 +106,8 @@ export default function CheckoutPage() {
   const [selectedRate, setSelectedRate] = useState<DeliveryRate | null>(null);
   const [loadingRates, setLoadingRates] = useState(false);
   const [ratesLoaded, setRatesLoaded] = useState(false);
+  const [ratesFallback, setRatesFallback] = useState(false);
+  const lastFetchedAddressId = useRef<string | null>(null);
 
   // Promo code state
   const [promoInput, setPromoInput] = useState("");
@@ -172,6 +174,7 @@ export default function CheckoutPage() {
         setRates([]);
         setSelectedRate(null);
         setRatesLoaded(false);
+        lastFetchedAddressId.current = null; // force re-fetch for the new address
         toast("Address saved!", "success");
       } else {
         toast(json.message || "Failed to save address.", "error");
@@ -183,42 +186,66 @@ export default function CheckoutPage() {
     }
   };
 
-  const handleCalculateRates = async () => {
-    if (!selectedAddress) {
-      toast("Please select or add a delivery address first.", "warning");
-      return;
-    }
+  const HARDCODED_FALLBACK: DeliveryRate[] = [
+    { type: "standard", name: "Standard Delivery", description: "Estimated 5–7 business days", price: 2500, estimatedDays: "5–7 days", courier: "Standard Courier" },
+    { type: "express",  name: "Express Delivery",  description: "Estimated 2–3 business days", price: 5000, estimatedDays: "2–3 days",  courier: "Express Courier"  },
+  ];
+
+  const handleCalculateRates = useCallback(async (addr?: Address) => {
+    const target = addr || selectedAddress;
+    if (!target) return;
     setLoadingRates(true);
     setRates([]);
     setSelectedRate(null);
     setRatesLoaded(false);
+    setRatesFallback(false);
     try {
       const params = new URLSearchParams({
-        street: selectedAddress.street,
-        city: selectedAddress.city,
-        state: selectedAddress.state,
-        fullName: selectedAddress.fullName,
-        phone: selectedAddress.phone,
+        street: target.street,
+        city: target.city,
+        state: target.state,
+        fullName: target.fullName,
+        phone: target.phone,
       });
       const res = await fetch(`${API_BASE}/orders/delivery-rates?${params}`, { headers: authHeaders() });
       const json = await res.json();
       if (json.success) {
-        // Strip pickup options — this site only supports home delivery
-      const list: DeliveryRate[] = (json.data?.rates || []).filter(
-          (r: DeliveryRate) => r.type !== "store_pickup" && r.type !== "pickup" && r.type !== "self_pickup"
+        const list: DeliveryRate[] = (json.data?.rates || []).filter(
+          (r: DeliveryRate) => !["store_pickup", "pickup", "self_pickup", "digital"].includes(r.type)
         );
-        setRates(list);
+        const isFallback = json.data?.source === "fallback" || list.length === 0;
+        const finalList = list.length > 0 ? list : HARDCODED_FALLBACK;
+        setRates(finalList);
+        setRatesFallback(isFallback || list.length === 0);
         setRatesLoaded(true);
-        if (list.length === 0) toast("No shipping options available for this address.", "warning");
+        // Auto-select cheapest option
+        const cheapest = finalList.reduce((min, r) => r.price < min.price ? r : min, finalList[0]);
+        setSelectedRate(cheapest);
       } else {
-        toast(json.message || "Could not fetch shipping rates.", "error");
+        // Backend error — fall back silently
+        setRates(HARDCODED_FALLBACK);
+        setSelectedRate(HARDCODED_FALLBACK[0]);
+        setRatesFallback(true);
+        setRatesLoaded(true);
       }
     } catch {
-      toast("Failed to fetch shipping rates. Check your connection.", "error");
+      // Network error — fall back silently
+      setRates(HARDCODED_FALLBACK);
+      setSelectedRate(HARDCODED_FALLBACK[0]);
+      setRatesFallback(true);
+      setRatesLoaded(true);
     } finally {
       setLoadingRates(false);
     }
-  };
+  }, [selectedAddress]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Auto-fetch rates whenever the selected address changes
+  useEffect(() => {
+    if (!selectedAddressId || loadingAddresses) return;
+    if (selectedAddressId === lastFetchedAddressId.current) return;
+    lastFetchedAddressId.current = selectedAddressId;
+    handleCalculateRates();
+  }, [selectedAddressId, loadingAddresses]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handlePlaceOrder = async () => {
     if (!selectedAddress) { toast("Please select a delivery address.", "warning"); return; }
@@ -430,19 +457,23 @@ export default function CheckoutPage() {
                       <FiTruck className="w-4 h-4" /> Shipping Options
                     </p>
 
-                    <button
-                      onClick={handleCalculateRates}
-                      disabled={loadingRates || !selectedAddress}
-                      className="w-full sm:w-auto flex items-center justify-center gap-2 bg-primary text-white text-sm font-semibold px-6 py-2.5 rounded-xl hover:bg-primary-dark disabled:opacity-60 transition-colors mb-4"
-                    >
-                      {loadingRates ? (
-                        <>
-                          <FiLoader className="w-4 h-4 animate-spin" /> Fetching rates...
-                        </>
-                      ) : (
-                        "Calculate Shipping Rates"
-                      )}
-                    </button>
+                    {!selectedAddress && (
+                      <p className="text-sm text-gray-400 py-2">Select a delivery address above to see shipping options.</p>
+                    )}
+
+                    {loadingRates && (
+                      <div className="flex items-center gap-2 text-sm text-gray-500 py-3">
+                        <FiLoader className="w-4 h-4 animate-spin text-primary" />
+                        Fetching delivery rates…
+                      </div>
+                    )}
+
+                    {ratesLoaded && ratesFallback && (
+                      <div className="flex items-start gap-2 mb-3 p-3 bg-amber-50 border border-amber-100 rounded-xl">
+                        <FiAlertCircle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                        <p className="text-xs text-amber-700">Live shipping rates are temporarily unavailable. Showing estimated delivery options — your actual fee may vary.</p>
+                      </div>
+                    )}
 
                     {ratesLoaded && rates.length > 0 && (
                       <div className="space-y-2">
@@ -467,7 +498,7 @@ export default function CheckoutPage() {
                                 )}
                                 <div className="min-w-0">
                                   <p className="text-sm font-semibold text-dark truncate">{rate.name}</p>
-                                  <p className="text-xs text-gray-500">{rate.estimatedDays} {rate.estimatedDays === "1" ? "day" : "days"}</p>
+                                  <p className="text-xs text-gray-500">{rate.description}</p>
                                 </div>
                               </div>
                               <div className="flex items-center gap-3 flex-shrink-0">
@@ -482,10 +513,6 @@ export default function CheckoutPage() {
                           </button>
                         ))}
                       </div>
-                    )}
-
-                    {ratesLoaded && rates.length === 0 && (
-                      <p className="text-sm text-gray-500 text-center py-4">No shipping options available for this address.</p>
                     )}
                   </section>
 

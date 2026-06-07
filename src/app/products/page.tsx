@@ -18,7 +18,7 @@ const quickCategories = [
   { label: "Fashion",      Icon: FiShoppingBag },
   { label: "Phones",       Icon: FiSmartphone },
   { label: "Home",         Icon: FiHome },
-  { label: "Flash Sales",  Icon: FiZap },
+  { label: "Deals",        Icon: FiZap },
   { label: "Trending",     Icon: FiTrendingUp },
 ];
 
@@ -42,8 +42,8 @@ function ProductSkeleton() {
   );
 }
 
-function SectionHeader({ title, icon, titleColor = "text-dark", badge }: {
-  title: string; icon?: string; titleColor?: string; badge?: string;
+function SectionHeader({ title, icon, titleColor = "text-dark", badge, viewAllHref, showViewAll = false }: {
+  title: string; icon?: string; titleColor?: string; badge?: string; viewAllHref?: string; showViewAll?: boolean;
 }) {
   return (
     <div className="flex items-start justify-between gap-3 mb-5 sm:mb-8 px-4">
@@ -61,27 +61,39 @@ function SectionHeader({ title, icon, titleColor = "text-dark", badge }: {
           </span>
         )}
       </motion.div>
-      <a href="#" className="flex items-center gap-1 text-xs sm:text-sm font-medium text-gray-400 hover:text-primary transition-colors group shrink-0 whitespace-nowrap mt-0.5">
-        View All <FiArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 group-hover:translate-x-0.5 transition-transform" />
-      </a>
+      {showViewAll && viewAllHref && (
+        <Link href={viewAllHref} className="flex items-center gap-1 text-xs sm:text-sm font-medium text-gray-400 hover:text-primary transition-colors group shrink-0 whitespace-nowrap mt-0.5">
+          View All <FiArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 group-hover:translate-x-0.5 transition-transform" />
+        </Link>
+      )}
     </div>
   );
 }
 
+const COL_CLASS: Record<number, string> = {
+  2: "grid-cols-2",
+  3: "grid-cols-2 sm:grid-cols-3",
+  4: "grid-cols-2 sm:grid-cols-4",
+  5: "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5",
+};
+
 function ProductSection({
   title, icon, titleColor = "text-dark", badge,
   products, loading, fallback, horizontal = false,
+  cols = 5, displayLimit = 10, viewAllHref,
 }: {
   title: string; icon?: string; titleColor?: string; badge?: string;
   products: Product[] | null; loading: boolean; fallback: typeof fallbackProducts;
-  horizontal?: boolean;
+  horizontal?: boolean; cols?: 2 | 3 | 4 | 5; displayLimit?: number; viewAllHref?: string;
 }) {
-  const items = products && products.length > 0 ? products : loading ? [] : fallback;
+  const raw = products && products.length > 0 ? products : loading ? [] : fallback;
+  const showViewAll = !loading && !!products && products.length > displayLimit;
+  const items = raw.slice(0, displayLimit);
 
   return (
     <section className="py-8 sm:py-10">
       <div className="max-w-7xl mx-auto">
-        <SectionHeader title={title} icon={icon} titleColor={titleColor} badge={badge} />
+        <SectionHeader title={title} icon={icon} titleColor={titleColor} badge={badge} viewAllHref={viewAllHref} showViewAll={showViewAll} />
         {horizontal ? (
           <div className="flex gap-3 sm:gap-4 overflow-x-auto px-4 pb-3 scrollbar-hide">
             {loading
@@ -99,10 +111,10 @@ function ProductSection({
             key={loading ? "loading" : "loaded"}
             variants={stagger} initial="hidden" whileInView="visible"
             viewport={{ once: true, margin: "-60px" }}
-            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 px-4"
+            className={`grid ${COL_CLASS[cols]} gap-3 sm:gap-4 px-4`}
           >
             {loading
-              ? Array.from({ length: 5 }, (_, i) => <ProductSkeleton key={i} />)
+              ? Array.from({ length: Math.min(displayLimit, 8) }, (_, i) => <ProductSkeleton key={i} />)
               : items.map((product) => (
                   <motion.div key={product.id || product._id} variants={fadeUp}>
                     <ProductCard {...product} />
@@ -179,11 +191,11 @@ function ProductsPageContent() {
   const isFiltered = !!(urlQuery || categorySlug);
   const searchEndpoint  = urlQuery ? `/products/search?q=${encodeURIComponent(urlQuery)}&limit=20` : null;
   const { data: searchResults, loading: searchLoading } = useApi<Product[]>(searchEndpoint);
-  const { data: newArrivals,   loading: loadingNew     } = useApi<Product[]>(isFiltered ? null : "/products/new-arrivals?limit=10");
-  const { data: recommended,   loading: loadingRec     } = useApi<Product[]>(isFiltered ? null : "/products/recommended?limit=5");
-  const { data: flashSales,    loading: loadingFlash   } = useApi<Product[]>(isFiltered ? null : "/products/flash-sales?limit=5");
-  const { data: trending,      loading: loadingTrend   } = useApi<Product[]>(isFiltered ? null : "/products/trending?limit=5");
-  const { data: digital,       loading: loadingDigital } = useApi<Product[]>(isFiltered ? null : "/products?productType=digital&limit=5");
+  const { data: newArrivals,   loading: loadingNew     } = useApi<Product[]>(isFiltered ? null : "/products/new-arrivals?limit=17");
+  const { data: recommended,   loading: loadingRec     } = useApi<Product[]>(isFiltered ? null : "/products/recommended?limit=11");
+  const { data: flashSales,    loading: loadingFlash   } = useApi<Product[]>(isFiltered ? null : "/products/flash-sales?limit=9");
+  const { data: trending,      loading: loadingTrend   } = useApi<Product[]>(isFiltered ? null : "/products/trending?limit=6");
+  const { data: digital,       loading: loadingDigital } = useApi<Product[]>(isFiltered ? null : "/products?productType=digital&limit=6");
 
   return (
     <>
@@ -429,9 +441,9 @@ function ProductsPageContent() {
               initial={{ opacity: 0 }} animate={{ opacity: 1 }}
               exit={{ opacity: 0 }} transition={{ duration: 0.25 }}
             >
-              <ProductSection title="New Arrivals" icon="✨" products={newArrivals} loading={loadingNew} fallback={fallbackProducts} />
-              <ProductSection title="Recommended for You" titleColor="text-primary" badge="Personalised" products={recommended} loading={loadingRec} fallback={fallbackProducts} horizontal />
-              <ProductSection title="Flash Sales" icon="⚡" badge="Limited Time" products={flashSales} loading={loadingFlash} fallback={fallbackProducts} />
+              <ProductSection title="New Arrivals" icon="✨" products={newArrivals} loading={loadingNew} fallback={fallbackProducts} cols={4} displayLimit={16} viewAllHref="/products/new-arrivals" />
+              <ProductSection title="Recommended for You" titleColor="text-primary" badge="Personalised" products={recommended} loading={loadingRec} fallback={fallbackProducts} horizontal displayLimit={10} viewAllHref="/products/recommended" />
+              <ProductSection title="Deals &amp; Discounts" icon="⚡" badge="Limited Time" products={flashSales} loading={loadingFlash} fallback={fallbackProducts} cols={4} displayLimit={8} viewAllHref="/products/deals" />
 
               {/* Digital banner */}
               <section className="px-4 py-6">

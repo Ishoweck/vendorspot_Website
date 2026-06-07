@@ -47,13 +47,17 @@ export default function ProductCard(props: ProductCardProps) {
   const [liked, setLiked] = useState(false);
 
   const handleAddToCart = async (e: React.MouseEvent) => {
-    // Stop propagation so clicking the cart button doesn't navigate to product page
     e.preventDefault();
     e.stopPropagation();
-    await addToCart(productId, { _id: productId, name, price, images: images || [], slug }, 1);
-    setAdded(true);
-    toast(`${name} added to cart`, "success");
-    setTimeout(() => setAdded(false), 1500);
+    try {
+      await addToCart(productId, { _id: productId, name, price, images: images || [], slug }, 1);
+      setAdded(true);
+      toast(`${name} added to cart`, "success");
+      setTimeout(() => setAdded(false), 1500);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to add to cart";
+      toast(msg, "error");
+    }
   };
 
   return (

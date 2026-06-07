@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { friendlyError } from "./errorMessage";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
 
@@ -19,6 +20,45 @@ function extractData(responseData: unknown): unknown {
     }
   }
   return responseData;
+}
+
+export function usePagedApi<T>(endpoint: string | null) {
+  const [data, setData] = useState<T[] | null>(null);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+  const [loading, setLoading] = useState(endpoint !== null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (endpoint === null) { setData(null); setLoading(false); return; }
+    let cancelled = false;
+    async function load() {
+      try {
+        setLoading(true);
+        const res = await fetch(`${API_BASE}${endpoint}`);
+        if (!res.ok) throw new Error(`API error: ${res.status}`);
+        const json = await res.json();
+        if (!cancelled) {
+          const d = json.data as Record<string, unknown>;
+          const arr = (Array.isArray(d) ? d : Object.values(d).find(v => Array.isArray(v))) as T[] || [];
+          setData(arr);
+          setTotal((d.total as number) || arr.length);
+          setTotalPages((d.totalPages as number) || 1);
+          setHasMore((d.hasMore as boolean) || false);
+          setError(null);
+        }
+      } catch (err) {
+        if (!cancelled) setError(friendlyError(err, "Failed to load. Please try again."));
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    load();
+    return () => { cancelled = true; };
+  }, [endpoint]);
+
+  return { data, total, totalPages, hasMore, loading, error };
 }
 
 export function useApi<T>(endpoint: string | null) {
