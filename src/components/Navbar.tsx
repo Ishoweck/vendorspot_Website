@@ -60,7 +60,7 @@ export default function Navbar() {
     setUser(null);
     setUserMenuOpen(false);
     // Hard-navigate so the cart context and any server state fully resets
-    window.location.href = "/";
+    window.location.href = "/home";
   };
 
   const openUserMenu  = () => { if (userMenuTimer.current) clearTimeout(userMenuTimer.current); setUserMenuOpen(true); };
@@ -80,7 +80,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-10 flex items-center justify-between h-12 sm:h-16">
 
         {/* Logo */}
-        <Link href="/" className="shrink-0 bg-white rounded-full px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-100 shadow-sm">
+        <Link href="/home" className="shrink-0 bg-white rounded-full px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-100 shadow-sm">
           <Image src="/VLogo.svg" alt="Vendorspot" width={120} height={20} className="h-4 sm:h-5 w-auto" style={{ width: "auto" }} />
         </Link>
 
