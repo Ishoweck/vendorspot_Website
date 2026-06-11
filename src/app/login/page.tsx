@@ -14,10 +14,15 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showActivationCta, setShowActivationCta] = useState(false);
+  const [activationSent, setActivationSent] = useState(false);
+  const [activationLoading, setActivationLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setShowActivationCta(false);
+    setActivationSent(false);
     if (!email || !password) { setError("Please fill in all fields."); return; }
     setLoading(true);
     try {
@@ -27,7 +32,18 @@ export default function LoginPage() {
         body: JSON.stringify({ email, password }),
       });
       const json = await res.json();
-      if (!res.ok || !json.success) { setError(json.message || "Invalid email or password."); return; }
+      if (!res.ok || !json.success) {
+        const msg: string = json.message || "Invalid email or password.";
+        if (msg === "Please verify your email first" || msg === "Account is not active") {
+          setError(msg === "Account is not active"
+            ? "Your account is not active yet."
+            : "Your email address hasn't been verified yet.");
+          setShowActivationCta(true);
+        } else {
+          setError(msg);
+        }
+        return;
+      }
       const token = json.data?.accessToken || json.data?.token || json.accessToken || json.token;
       if (!token) { setError("Login failed — no token received."); return; }
       localStorage.setItem("vendorspot_token", token);
@@ -37,6 +53,25 @@ export default function LoginPage() {
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSendActivation = async () => {
+    if (!email) { setError("Please enter your email address first."); return; }
+    setActivationLoading(true);
+    try {
+      await fetch(`${API_BASE}/auth/resend-activation`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      setActivationSent(true);
+      setShowActivationCta(false);
+      setError("");
+    } catch {
+      setError("Failed to send activation email. Please try again.");
+    } finally {
+      setActivationLoading(false);
     }
   };
 
@@ -71,6 +106,22 @@ export default function LoginPage() {
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           <AnimateError error={error} />
+          {showActivationCta && (
+            <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+              className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800">
+              <p className="mb-2">Send an activation link to <strong>{email}</strong> to get access.</p>
+              <button type="button" onClick={handleSendActivation} disabled={activationLoading}
+                className="font-semibold text-primary hover:underline disabled:opacity-60">
+                {activationLoading ? "Sending…" : "Send activation email →"}
+              </button>
+            </motion.div>
+          )}
+          {activationSent && (
+            <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+              className="bg-green-50 border border-green-200 rounded-xl px-4 py-3 text-sm text-green-800">
+              Activation link sent! Check your email and click the link to activate your account.
+            </motion.div>
+          )}
 
           {/* Email */}
           <motion.div variants={fadeUp}>
