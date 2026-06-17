@@ -60,6 +60,32 @@ const roles = [
       "E-commerce or marketplace experience preferred",
     ],
   },
+  {
+    id: "graphic-designer",
+    title: "Graphic Designer / Art Director",
+    type: "Volunteer",
+    location: "Remote / Lagos",
+    department: "Design",
+    color: "bg-teal-500",
+    description:
+      "We're looking for a talented Graphic Designer and Art Director to shape the visual identity of Vendorspot across all touchpoints — from in-app UI assets and social media visuals to marketing campaigns and brand collateral. If you think in stories and communicate through design, this is your seat.",
+    responsibilities: [
+      "Create high-quality graphics for social media, campaigns, and marketing materials",
+      "Design UI assets, banners, illustrations, and promotional visuals for the platform",
+      "Art-direct campaign shoots and visual content to maintain brand consistency",
+      "Develop and maintain brand guidelines and design systems",
+      "Collaborate with the Marketing and Product teams on visual storytelling",
+      "Produce motion graphics and short animated assets where needed",
+    ],
+    requirements: [
+      "Strong portfolio demonstrating graphic design and brand work",
+      "Proficiency in Figma, Adobe Illustrator, Photoshop, or equivalent tools",
+      "Solid understanding of typography, colour theory, and layout",
+      "Experience designing for digital-first brands (social, web, mobile)",
+      "Eye for detail and ability to uphold visual consistency across touchpoints",
+      "Motion design or video editing skills are a strong plus",
+    ],
+  },
 ];
 
 const perks = [

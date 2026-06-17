@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -248,6 +248,23 @@ export default function ShopsPage() {
   const clearSearch = () => { setSearch(""); setDebouncedQ(""); setPage(1); };
   const isSearching = debouncedQ.length > 0;
 
+  // Arc: weekly top vendors first (with userAvatar), fall back to all vendors to always fill 6
+  const arcSellers = useMemo(() => {
+    const sortFn = (a: VendorProfile, b: VendorProfile) => {
+      if (a.isPremium !== b.isPremium) return a.isPremium ? -1 : 1;
+      return (b.rating ?? 0) - (a.rating ?? 0);
+    };
+    const primary = [...(topVendors || [])]
+      .filter((v) => !!v.userAvatar)
+      .sort(sortFn);
+    if (primary.length >= 6) return primary.slice(0, 6);
+    const primaryIds = new Set(primary.map((v) => v.id));
+    const fallback = [...(vendors || [])]
+      .filter((v) => !primaryIds.has(v.id) && !!(v.userAvatar || v.image))
+      .sort(sortFn);
+    return [...primary, ...fallback].slice(0, 6);
+  }, [topVendors, vendors]);
+
   const allShops = vendors || [];
   const totalPages = Math.ceil(allShops.length / PAGE_SIZE);
   const pageShops = allShops.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -366,13 +383,7 @@ export default function ShopsPage() {
                   <div className="w-14 h-2.5 bg-gray-100 rounded-full" />
                 </div>
               ))
-            : [...(topVendors || [])]
-                .sort((a, b) => {
-                  if (a.isPremium !== b.isPremium) return a.isPremium ? -1 : 1;
-                  return (b.rating ?? 0) - (a.rating ?? 0);
-                })
-                .slice(0, 6)
-                .map((vendor, i) => (
+            : arcSellers.map((vendor, i) => (
                 <motion.div
                   key={vendor.id}
                   initial={{ opacity: 0, y: (isMobile ? 0 : (ARC_Y[i] ?? 0)) + 16 }}
@@ -397,7 +408,7 @@ export default function ShopsPage() {
                         ${vendor.isPremium
                           ? "ring-primary group-hover:ring-primary"
                           : "ring-transparent group-hover:ring-gray-200"}`}>
-                        {vendor.image ? (
+                        {(vendor.userAvatar || vendor.image) ? (
                           <Image src={vendor.userAvatar || vendor.image} alt={vendor.name} width={96} height={96} className="w-full h-full object-cover rounded-full" style={{ width: "100%", height: "100%" }} />
                         ) : (
                           <div className={`w-full h-full rounded-full ${AVATAR_BG[i % AVATAR_BG.length]} flex items-center justify-center`}>

@@ -80,8 +80,30 @@ const teamMembers = [
     instagram: "https://www.instagram.com/mo_dedamola?utm_source=qr&igsh=cWVybmRtaTFpbXYy",
     linkedin: "https://www.linkedin.com/in/moyosore-adetunji-ab70a427b?utm_source=share_via&utm_content=profile&utm_medium=member_android",
   },
-
- 
+  {
+    name: "Kehinde Ayola",
+    role: "Finance",
+    image: "/team/Kehinde Ayoola - Finance.png",
+    twitter: "https://x.com/thorseeks",
+    instagram: "https://www.instagram.com/papioseeks?utm_source=qr&igsh=ZDgycm90bHMwc3Vs",
+    linkedin: "https://www.linkedin.com/in/muhammed-ayoola-056642417?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+  },
+  {
+    name: "Afeez Rabiu",
+    role: "Growth",
+    image: "/team/Afeez Rabiu - Growth.png",
+    twitter: "",
+    instagram: "",
+    linkedin: "",
+  },
+  {
+    name: "Bisola Shomide",
+    role: "Growth",
+    image: "/team/Bisola Shomide - Growth.png",
+    twitter: "https://x.com/sisiolojuede?s=11",
+    instagram: "https://www.instagram.com/sisiolojuede?igsh=YzdxdTNlZmt2OW51&utm_source=qr",
+    linkedin: "https://www.linkedin.com/in/shomidebisola",
+  },
 ];
 
 export default function TheSpotPage() {

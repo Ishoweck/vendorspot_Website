@@ -30,7 +30,7 @@ const footerLinks: Record<string, { label: string; href: string }[]> = {
 
 const socials = [
   { name: "X (Formerly Twitter)", Icon: FaXTwitter,   href: "https://x.com/vendorsspot",                             color: "#ffffff" },
-  { name: "Facebook",             Icon: FaFacebookF,  href: "https://www.facebook.com/onlinetradefair",              color: "#1877F2" },
+  { name: "Facebook",             Icon: FaFacebookF,  href: "https://www.facebook.com/share/1HHY9cRjPy/",           color: "#1877F2" },
   { name: "Tiktok",               Icon: FaTiktok,     href: "https://www.tiktok.com/@vendorsspot",                   color: "#ff0050" },
   { name: "Instagram",            Icon: FiInstagram,  href: "https://www.instagram.com/vendorsspot",                 color: "#E1306C" },
   { name: "Linkedin",             Icon: FaLinkedinIn, href: "https://www.linkedin.com/company/vendorspot/",          color: "#0A66C2" },

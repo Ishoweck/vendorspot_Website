@@ -21,7 +21,7 @@ export default function JourneySection() {
   if (isLoggedIn) return null;
 
   return (
-    <section className="py-16 sm:py-24 md:py-28 bg-white">
+    <section className="pt-16 sm:pt-24 md:pt-28 pb-4 sm:pb-6 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Section heading */}
