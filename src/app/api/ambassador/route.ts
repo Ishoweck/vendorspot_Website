@@ -3,7 +3,9 @@ import { Resend } from "resend";
 
 export async function POST(req: NextRequest) {
   try {
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const key = process.env.RESEND_API_KEY;
+    console.log("[Ambassador] key present:", !!key, "| starts with:", key?.slice(0, 6));
+    const resend = new Resend(key);
     const { role, name, email, phone, location, social, why } = await req.json();
 
     await resend.emails.send({
