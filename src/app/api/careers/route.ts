@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
     const { role, name, email, portfolio, message } = await req.json();
 
     await resend.emails.send({
-      from: "Vendorspot Careers <onboarding@resend.dev>",
+      from: "Vendorspot Careers <support@vendorspotng.com>",
       to: "support@vendorspotng.com",
       replyTo: email,
       subject: `[Job Application] ${role} — ${name}`,

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
@@ -8,29 +8,61 @@ import Link from "next/link";
 
 export default function AffiliateLandingPage() {
   const { code } = useParams<{ code: string }>();
-  const [attempted, setAttempted] = useState(false);
+  const [appInstalled, setAppInstalled] = useState<boolean | null>(null);
 
   const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
 
   useEffect(() => {
     if (!code) return;
-    sessionStorage.setItem("affiliateCode", code);
+    // Track the affiliate click on the server
     fetch(`${API_BASE}/affiliate/track/${code}`).catch(() => {});
-
-    // Try to hand off to the native app; if the scheme isn't handled the browser stays on this page
-    const deepLink = `vendorspot://affiliate/${code}`;
-    window.location.href = deepLink;
-
-    // After 1.5s with no navigation we assume the app isn't installed; show the store buttons
-    const timer = setTimeout(() => {
-      setAttempted(true);
-    }, 1500);
-
-    return () => clearTimeout(timer);
+    // Persist code in sessionStorage for website checkout
+    sessionStorage.setItem("affiliateCode", code);
   }, [code]);
 
-  const openInStore = () => {
-    window.location.href = /android/i.test(navigator.userAgent)
+  // Called when user taps "Open App" (requires user gesture — works on iOS)
+  const openInApp = () => {
+    const deepLink = `vendorspot://affiliate/${code}`;
+    const start = Date.now();
+    window.location.href = deepLink;
+    setTimeout(() => {
+      // If we're still here after 1.5s the app isn't installed
+      if (Date.now() - start < 2000) {
+        setAppInstalled(false);
+      }
+    }, 1500);
+  };
+
+  const downloadApp = async () => {
+    const isAndroid = /android/i.test(navigator.userAgent);
+    const platform  = isAndroid ? 'android' : 'ios';
+
+    // 1. Server-side deferred deep link — survives clipboard being cleared.
+    //    Backend pairs this IP + signals with the affiliate code; the app
+    //    calls /resolve on first launch to retrieve it.
+    try {
+      await fetch(`${API_BASE}/deferred-link/store`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          affiliateCode: code,
+          platform,
+          timezone:  Intl.DateTimeFormat().resolvedOptions().timeZone,
+          language:  navigator.language,
+        }),
+      });
+    } catch {
+      // non-blocking — proceed even if the request fails
+    }
+
+    // 2. Clipboard as a fast secondary fallback (best-effort)
+    try {
+      await navigator.clipboard.writeText(`vendorspot://affiliate/${code}`);
+    } catch {
+      // clipboard unavailable — safe to ignore
+    }
+
+    window.location.href = isAndroid
       ? "https://play.google.com/store/apps/details?id=com.vendorspot.app"
       : "https://apps.apple.com/ng/app/vendorspot-thespot/id6761906107";
   };
@@ -52,21 +84,45 @@ export default function AffiliateLandingPage() {
             <p className="text-lg font-bold text-[#CC3366] tracking-widest">{code}</p>
           </div>
 
-          <button
-            onClick={openInStore}
-            className="w-full bg-[#CC3366] text-white font-bold py-4 rounded-2xl mb-3 text-base"
-          >
-            Download the App
-          </button>
+          {appInstalled === false ? (
+            // App isn't installed — show download CTA
+            <>
+              <button
+                onClick={downloadApp}
+                className="w-full bg-[#CC3366] text-white font-bold py-4 rounded-2xl mb-3 text-base"
+              >
+                Download the App
+              </button>
+              <p className="text-xs text-gray-400 mb-4">
+                Your referral code will be applied automatically when you open the app after installing.
+              </p>
+            </>
+          ) : (
+            // Default: try opening the app first
+            <>
+              <button
+                onClick={openInApp}
+                className="w-full bg-[#CC3366] text-white font-bold py-4 rounded-2xl mb-3 text-base"
+              >
+                Open in App
+              </button>
+              <button
+                onClick={downloadApp}
+                className="w-full border-2 border-[#CC3366] text-[#CC3366] font-bold py-3 rounded-2xl mb-3 text-base"
+              >
+                Download the App
+              </button>
+            </>
+          )}
 
           <Link
             href={`/products?ref=${code}`}
-            className="block w-full border-2 border-[#CC3366] text-[#CC3366] font-bold py-4 rounded-2xl text-base"
+            className="block w-full text-sm text-gray-400 underline py-2"
           >
             Continue on Website
           </Link>
 
-          <p className="text-xs text-gray-400 mt-6">
+          <p className="text-xs text-gray-400 mt-4">
             The referral code will be automatically applied at checkout.
           </p>
         </div>

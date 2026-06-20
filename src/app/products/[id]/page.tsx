@@ -148,8 +148,8 @@ export default function ProductDetailPage() {
   const [copied, setCopied] = useState(false);
 
   const openInApp = () => {
-    const deepLink = `vendorspot://products/${id}`;
-    const fallback = `https://vendorspotng.com/products/${id}`;
+    const ref = new URLSearchParams(window.location.search).get("ref");
+    const deepLink = `vendorspot://products/${id}${ref ? `?ref=${ref}` : ""}`;
     const start = Date.now();
     window.location.href = deepLink;
     setTimeout(() => {

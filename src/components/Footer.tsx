@@ -14,6 +14,7 @@ const footerLinks: Record<string, { label: string; href: string }[]> = {
     { label: "Terms & Conditions", href: "/terms" },
     { label: "Privacy Policy",     href: "/privacy" },
     { label: "Blog",               href: "/blog" },
+    { label: "Ambassador Program", href: "/ambassador-program" },
   ],
   "Customer Care": [
     { label: "Help Center",       href: "/help" },

@@ -35,32 +35,6 @@ const roles = [
     ],
   },
   {
-    id: "ads-manager",
-    title: "Ads Manager",
-    type: "Volunteer",
-    location: "Remote / Lagos",
-    department: "Growth",
-    color: "bg-rose-500",
-    description:
-      "We need a performance-focused Ads Manager to run and scale paid campaigns across Meta, Google, and TikTok. You'll own our ad spend, optimise for conversions, and help us profitably acquire buyers and vendors on the platform.",
-    responsibilities: [
-      "Plan, launch, and manage paid campaigns across Meta, Google, and TikTok",
-      "Set up pixel tracking, conversion events, and attribution properly",
-      "Run A/B tests on creatives, audiences, and landing pages",
-      "Monitor spend daily, optimise for ROAS and CPA targets",
-      "Produce weekly performance reports with clear recommendations",
-      "Work with the creative team to brief and iterate on ad assets",
-    ],
-    requirements: [
-      "2+ years running paid social and search campaigns",
-      "Proven track record of managing budgets and hitting ROAS targets",
-      "Strong grasp of Meta Ads Manager and Google Ads",
-      "Experience with pixel setup, custom audiences, and retargeting",
-      "Analytical mindset — comfortable with data and spreadsheets",
-      "E-commerce or marketplace experience preferred",
-    ],
-  },
-  {
     id: "graphic-designer",
     title: "Graphic Designer / Art Director",
     type: "Volunteer",
@@ -338,7 +312,7 @@ export default function CareersPage() {
               <p className="text-sm font-bold text-dark mb-1">Don&apos;t see your role?</p>
               <p className="text-sm text-gray-400 mb-5">We&apos;re always open to exceptional people. Send us an open application.</p>
               <a
-                href="mailto:support@vendorspotng.com?subject=Open Application — Vendorspot"
+                href="mailto:support@vendorspotng.com?subject=Open%20Application%20%E2%80%94%20Vendorspot"
                 className="inline-flex items-center gap-2 border border-gray-200 text-dark text-sm font-semibold px-6 py-3 rounded-full hover:bg-gray-50 transition-colors"
               >
                 <FiSend className="w-4 h-4" /> Email us directly
