@@ -276,6 +276,7 @@ function ApplyModal({ preselected, onClose }: { preselected: AmbassadorType; onC
   const [form, setForm]       = useState({ name: "", email: "", phone: "", location: "", social: "", why: "" });
   const [sent, setSent]       = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError]     = useState("");
 
   const set = (key: keyof typeof form) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -284,13 +285,20 @@ function ApplyModal({ preselected, onClose }: { preselected: AmbassadorType; onC
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await fetch("/api/ambassador", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ role: `${type === "student" ? "Student" : "State"} Ambassador`, ...form }),
-    }).catch(() => {});
-    setLoading(false);
-    setSent(true);
+    setError("");
+    try {
+      const res = await fetch("/api/ambassador", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ role: `${type === "student" ? "Student" : "State"} Ambassador`, ...form }),
+      });
+      if (!res.ok) throw new Error("send_failed");
+      setSent(true);
+    } catch {
+      setError("Something went wrong sending your application. Please try again or email us directly at support@vendorspotng.com.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const selectedType = ambassadorTypes.find((a) => a.id === type);
@@ -472,6 +480,12 @@ function ApplyModal({ preselected, onClose }: { preselected: AmbassadorType; onC
                   />
                 </div>
 
+                {error && (
+                  <div className="flex items-start gap-2 bg-red-50 text-red-500 text-xs px-4 py-3 rounded-xl leading-relaxed">
+                    <FiX className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                    {error}
+                  </div>
+                )}
                 <button
                   type="submit"
                   disabled={loading || !type}
