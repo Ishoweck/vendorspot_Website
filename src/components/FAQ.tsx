@@ -4,6 +4,8 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { fadeUp } from "@/lib/motion";
 
+
+
 const faqs = [
   { question: "What is Vendorspot?",                              answer: "Vendorspot is a secure marketplace where people can buy and sell physical and digital products, manage their stores, and enjoy seamless delivery services." },
   { question: "How do I start selling on Vendorspot?",           answer: "Simply create an account, set up your store, list your products, and start receiving orders. It only takes a few minutes to get started." },
