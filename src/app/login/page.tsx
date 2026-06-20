@@ -48,7 +48,8 @@ export default function LoginPage() {
       if (!token) { setError("Login failed — no token received."); return; }
       localStorage.setItem("vendorspot_token", token);
       if (json.data?.user) localStorage.setItem("vendorspot_user", JSON.stringify(json.data.user));
-      window.location.href = "/";
+      const isAmbassador = json.data?.user?.affiliateCode?.startsWith("AMB-");
+      window.location.href = isAmbassador ? "/ambassador-dashboard" : "/";
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {

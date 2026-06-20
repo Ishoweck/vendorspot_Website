@@ -290,7 +290,7 @@ function ApplyModal({ preselected, onClose }: { preselected: AmbassadorType; onC
       const res = await fetch("/api/ambassador", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role: `${type === "student" ? "Student" : "State"} Ambassador`, ...form }),
+        body: JSON.stringify({ role: type, ...form }),
       });
       if (!res.ok) throw new Error("send_failed");
       setSent(true);
@@ -753,6 +753,68 @@ export default function AmbassadorPage() {
                     <Icon className="w-4 h-4" />
                   </div>
                   <span className="text-sm font-medium text-dark">{label}</span>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Monthly Recognition Awards */}
+        <section className="py-16 sm:py-20 px-6 sm:px-8 lg:px-10 bg-gray-50">
+          <div className="max-w-4xl mx-auto">
+            <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
+              className="text-center mb-10">
+              <p className="text-xs font-bold text-primary uppercase tracking-widest mb-3">Monthly Awards</p>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-dark mb-4">Recognition that pays</h2>
+              <p className="text-sm text-gray-500 max-w-md mx-auto leading-relaxed">
+                Every month, we reward our top performing ambassadors. Show up consistently, grow your network, and you could be next.
+              </p>
+            </motion.div>
+
+            <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }}
+              className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-14">
+              {[
+                { label: "Top Ambassador", amount: "₦25,000", icon: "🥇", desc: "Highest total referrals (vendors + customers) for the month" },
+                { label: "Top Campus", amount: "₦30,000", icon: "🎓", desc: "Best performing student ambassador across all campuses" },
+                { label: "Most Improved", amount: "₦10,000", icon: "📈", desc: "Ambassador with the biggest growth from the previous month" },
+              ].map((award) => (
+                <motion.div key={award.label} variants={fadeUp}
+                  className="bg-white border border-gray-100 rounded-2xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
+                  <div className="text-4xl mb-3">{award.icon}</div>
+                  <p className="text-2xl font-extrabold text-primary mb-1">{award.amount}</p>
+                  <p className="text-sm font-bold text-dark mb-2">{award.label}</p>
+                  <p className="text-xs text-gray-500 leading-relaxed">{award.desc}</p>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            {/* Ambassador Benefits */}
+            <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
+              className="text-center mb-8">
+              <p className="text-xs font-bold text-primary uppercase tracking-widest mb-3">Perks</p>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-dark mb-3">Beyond the commission</h2>
+              <p className="text-sm text-gray-500 max-w-md mx-auto">
+                Ambassadors get access to exclusive benefits that go far beyond earnings.
+              </p>
+            </motion.div>
+
+            <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                { icon: "💰", label: "Cash Incentives", desc: "Monthly payouts for vendor and customer referrals, plus milestone bonuses" },
+                { icon: "🎁", label: "Vendorspot Merchandise", desc: "Exclusive branded merch — hoodies, kits, and more for top ambassadors" },
+                { icon: "💼", label: "Internship Opportunities", desc: "High-performing ambassadors get priority access to Vendorspot internship roles" },
+                { icon: "📜", label: "Leadership Certificates", desc: "Official certificates recognising your impact and ambassadorship" },
+                { icon: "✉️", label: "Recommendation Letters", desc: "Personalised reference letters from the Vendorspot team for your career" },
+                { icon: "🤝", label: "Networking Opportunities", desc: "Access to our ambassador community, events, and founder sessions" },
+              ].map((benefit) => (
+                <motion.div key={benefit.label} variants={fadeUp}
+                  className="flex gap-4 bg-white border border-gray-100 rounded-2xl p-5 hover:shadow-sm transition-shadow">
+                  <div className="text-2xl shrink-0">{benefit.icon}</div>
+                  <div>
+                    <p className="text-sm font-bold text-dark mb-1">{benefit.label}</p>
+                    <p className="text-xs text-gray-500 leading-relaxed">{benefit.desc}</p>
+                  </div>
                 </motion.div>
               ))}
             </motion.div>

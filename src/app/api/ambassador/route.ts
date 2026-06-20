@@ -8,16 +8,18 @@ export async function POST(req: NextRequest) {
     const resend = new Resend(key);
     const { role, name, email, phone, location, social, why } = await req.json();
 
+    const roleDisplay = role === 'student' ? 'Student Ambassador' : role === 'state' ? 'State Ambassador' : role;
+
     await resend.emails.send({
       from: "Vendorspot Ambassadors <support@vendorspotng.com>",
       to: "support@vendorspotng.com",
       replyTo: email,
-      subject: `[Ambassador Application] ${role} — ${name}`,
+      subject: `[Ambassador Application] ${roleDisplay} — ${name}`,
       html: `
         <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
           <div style="background:#d7004b;padding:24px 32px;border-radius:12px 12px 0 0">
             <h2 style="color:#ffffff;margin:0;font-size:20px">New Ambassador Application</h2>
-            <p style="color:rgba(255,255,255,0.7);margin:6px 0 0;font-size:14px">${role}</p>
+            <p style="color:rgba(255,255,255,0.7);margin:6px 0 0;font-size:14px">${roleDisplay}</p>
           </div>
 
           <div style="border:1px solid #e5e5e5;border-top:none;border-radius:0 0 12px 12px;overflow:hidden">
@@ -56,6 +58,18 @@ export async function POST(req: NextRequest) {
         </div>
       `,
     });
+
+    // Silently save submission to backend — failure must not block the user
+    try {
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://vapp-be.onrender.com/api';
+      await fetch(`${backendUrl}/ambassadors/submit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, phone, role, location, social, why }),
+      });
+    } catch (backendErr) {
+      console.error('[Ambassador] Backend save failed (non-blocking):', backendErr);
+    }
 
     return NextResponse.json({ ok: true });
   } catch (err: unknown) {

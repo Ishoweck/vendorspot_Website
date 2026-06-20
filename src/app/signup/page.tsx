@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiUser, FiMail, FiPhone, FiLock, FiEye, FiEyeOff, FiChevronDown, FiSmartphone } from "react-icons/fi";
+import { FiUser, FiMail, FiPhone, FiLock, FiEye, FiEyeOff, FiChevronDown, FiSmartphone, FiGift } from "react-icons/fi";
 import { fadeUp, stagger } from "@/lib/motion";
 import { detectOS, openAppOrStore, APP_STORE_URL, PLAY_STORE_URL, type OS } from "@/lib/appStore";
 
@@ -140,8 +140,15 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [hear, setHear] = useState("");
+  const [referralCode, setReferralCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get("ref") || params.get("referral") || params.get("referralCode");
+    if (ref) setReferralCode(ref.toUpperCase());
+  }, []);
 
   const strength = getStrength(password);
 
@@ -155,7 +162,7 @@ export default function SignupPage() {
       const res = await fetch(`${API_BASE}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fullName, email, phone: phone || undefined, password, role: "customer" }),
+        body: JSON.stringify({ fullName, email, phone: phone || undefined, password, role: "customer", referralCode: referralCode || undefined }),
       });
       const json = await res.json();
       if (!res.ok || !json.success) { setError(json.message || "Registration failed. Please try again."); return; }
@@ -299,6 +306,18 @@ export default function SignupPage() {
                   <option value="" disabled>How did you hear about Vendorspot?</option>
                   {hearOptions.map((o) => <option key={o} value={o} className="text-dark">{o}</option>)}
                 </select>
+              </div>
+
+              {/* Referral / Ambassador Code */}
+              <div className="relative">
+                <FiGift className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                <input
+                  type="text" value={referralCode} onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+                  placeholder="Referral code (optional)"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-dark placeholder-gray-400 focus:outline-none focus:border-primary focus:bg-white transition-colors font-mono tracking-wider"
+                  autoComplete="off"
+                  maxLength={20}
+                />
               </div>
 
               <motion.button

@@ -8,7 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   FiShoppingCart, FiMenu, FiX, FiChevronDown,
   FiPackage, FiBookOpen, FiMail, FiLogOut, FiUser, FiStar,
-  FiShoppingBag, FiBox,
+  FiShoppingBag, FiBox, FiAward,
 } from "react-icons/fi";
 import { useCart } from "@/lib/CartContext";
 
@@ -32,6 +32,8 @@ interface StoredUser {
   email?: string;
   avatar?: string;
   role?: string;
+  affiliateCode?: string;
+  isAffiliate?: boolean;
 }
 
 export default function Navbar() {
@@ -177,6 +179,11 @@ export default function Navbar() {
                     <Link href="/account" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-all">
                       <FiUser className="w-4 h-4 text-gray-400" /> My Account
                     </Link>
+                    {user?.affiliateCode?.startsWith("AMB-") && (
+                      <Link href="/ambassador-dashboard" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-primary font-medium hover:bg-primary/5 transition-all">
+                        <FiAward className="w-4 h-4" /> Ambassador Dashboard
+                      </Link>
+                    )}
                     <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-all">
                       <FiLogOut className="w-4 h-4" /> Log Out
                     </button>
@@ -346,6 +353,15 @@ export default function Navbar() {
                     </span>
                     My Account
                   </Link>
+                  {user?.affiliateCode?.startsWith("AMB-") && (
+                    <Link href="/ambassador-dashboard" onClick={close}
+                      className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium text-primary hover:bg-primary/5 transition-all">
+                      <span className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                        <FiAward className="w-4 h-4" />
+                      </span>
+                      Ambassador Dashboard
+                    </Link>
+                  )}
                   <button
                     onClick={() => { close(); handleLogout(); }}
                     className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 transition-all"

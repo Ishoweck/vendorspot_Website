@@ -7,7 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import {
   FiCheck, FiPackage, FiMapPin, FiChevronRight, FiDownload,
-  FiTruck, FiClock, FiAlertCircle, FiShoppingBag, FiXCircle,
+  FiTruck, FiClock, FiAlertCircle, FiShoppingBag, FiXCircle, FiCheckCircle,
 } from "react-icons/fi";
 import { friendlyError } from "@/lib/errorMessage";
 
@@ -47,8 +47,8 @@ interface Order {
   createdAt: string;
 }
 
-// Physical order status steps
-const STATUS_STEPS = ["pending", "confirmed", "processing", "shipped", "delivered"];
+// Physical order status steps — in_transit is a distinct step between shipped and delivered
+const STATUS_STEPS = ["pending", "confirmed", "processing", "shipped", "in_transit", "delivered"];
 const STATUS_LABELS: Record<string, string> = {
   pending:    "Order Placed",
   confirmed:  "Confirmed",
@@ -79,8 +79,7 @@ function StatusTracker({ status }: { status: string }) {
     );
   }
 
-  // in_transit and shipped share the same visual step — the tracker has no separate in_transit node
-  const currentIndex = STATUS_STEPS.indexOf(status === "in_transit" ? "shipped" : status);
+  const currentIndex = STATUS_STEPS.indexOf(status);
 
   return (
     <div className="w-full">
@@ -137,6 +136,8 @@ export default function OrderPage() {
   const [noToken, setNoToken] = useState(false);
   const [downloading, setDownloading] = useState<string | null>(null);
   const [downloadError, setDownloadError] = useState<string | null>(null);
+  const [completing, setCompleting] = useState(false);
+  const [completeError, setCompleteError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!orderId) { setLoading(false); return; }
@@ -196,6 +197,27 @@ export default function OrderPage() {
       setTimeout(() => setDownloadError(null), 5000);
     } finally {
       setDownloading(null);
+    }
+  };
+
+  const handleComplete = async () => {
+    const token = getToken();
+    if (!token || !order) return;
+    setCompleting(true);
+    setCompleteError(null);
+    try {
+      const res = await fetch(`${API_BASE}/orders/${order._id}/complete`, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) throw new Error(json.message || "Failed to complete order");
+      setOrder((prev) => prev ? { ...prev, status: "delivered" } : prev);
+    } catch (err: unknown) {
+      setCompleteError(friendlyError(err, "Could not complete order. Please try again."));
+      setTimeout(() => setCompleteError(null), 5000);
+    } finally {
+      setCompleting(false);
     }
   };
 
@@ -499,6 +521,37 @@ export default function OrderPage() {
               </div>
             </div>
           </div>
+
+          {/* ── Mark as Received (vendor has marked delivered, awaiting customer confirmation) ── */}
+          {order.status === "delivered" && (
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-9 h-9 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0">
+                  <FiCheckCircle className="w-5 h-5 text-green-500" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-dark">Received your order?</p>
+                  <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
+                    Once you confirm receipt, the vendor gets paid and your order is marked complete.
+                  </p>
+                </div>
+              </div>
+              {completeError && (
+                <div className="flex items-center gap-2 mb-3 p-3 bg-red-50 border border-red-100 rounded-xl text-xs text-red-600">
+                  <FiXCircle className="w-4 h-4 flex-shrink-0" />
+                  {completeError}
+                </div>
+              )}
+              <button
+                onClick={handleComplete}
+                disabled={completing}
+                className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold py-3 rounded-xl transition-colors disabled:opacity-60"
+              >
+                <FiCheckCircle className="w-4 h-4" />
+                {completing ? "Confirming…" : "I've Received My Order"}
+              </button>
+            </div>
+          )}
 
           {/* ── Actions ── */}
           <div className="flex gap-3 pb-4">
