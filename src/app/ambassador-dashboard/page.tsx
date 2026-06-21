@@ -346,43 +346,43 @@ export default function AmbassadorDashboard() {
       <Navbar />
       <main className="bg-white min-h-screen pb-24">
 
-        {/* ── Dark header ─────────────────────────────────────────────────────── */}
-        <section className="bg-[#0f0f0f] pt-24 sm:pt-28 pb-8 px-6">
+        {/* ── Header ──────────────────────────────────────────────────────────── */}
+        <section className="pt-24 sm:pt-28 pb-8 px-6 border-b border-gray-200">
           <div className="max-w-5xl mx-auto">
             <motion.div variants={fadeUp} initial="hidden" animate="visible">
 
               {/* Eyebrow */}
-              <div className="flex items-center gap-2 mb-4">
+              <div className="flex items-center gap-2 mb-3">
                 <span
-                  className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full"
-                  style={{ backgroundColor: `${BRAND}22`, color: BRAND }}
+                  className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border"
+                  style={{ color: BRAND, borderColor: `${BRAND}33`, backgroundColor: `${BRAND}0d` }}
                 >
                   {ambassador.role === "student" ? "Student Ambassador" : "State Ambassador"}
                 </span>
-                <span className="text-xs text-white/30">· since {fmtDate(ambassador.approvedAt)}</span>
+                <span className="text-xs text-gray-400">· since {fmtDate(ambassador.approvedAt)}</span>
               </div>
 
               {/* Name */}
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-white mb-6">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-6">
                 Hey, {ambassador.name.split(" ")[0]} 👋
               </h1>
 
               {/* Code + link */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* Code card */}
-                <div className="bg-white/5 border border-white/10 rounded-2xl px-5 py-4 flex items-center justify-between">
+                <div className="bg-white border border-gray-200 rounded-2xl px-5 py-4 flex items-center justify-between">
                   <div>
-                    <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-1">Ambassador Code</p>
-                    <p className="font-mono text-lg font-bold text-white tracking-widest">{ambassador.ambassadorCode}</p>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Ambassador Code</p>
+                    <p className="font-mono text-lg font-bold text-gray-900 tracking-widest">{ambassador.ambassadorCode}</p>
                   </div>
                   <CopyButton text={ambassador.ambassadorCode} />
                 </div>
 
                 {/* Link card */}
-                <div className="bg-white/5 border border-white/10 rounded-2xl px-5 py-4 flex items-center gap-3 min-w-0">
+                <div className="bg-white border border-gray-200 rounded-2xl px-5 py-4 flex items-center gap-3 min-w-0">
                   <div className="min-w-0 flex-1">
-                    <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-1">Referral Link</p>
-                    <p className="text-xs text-white/50 truncate">{referralLink}</p>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Referral Link</p>
+                    <p className="text-xs text-gray-500 truncate">{referralLink}</p>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
                     <CopyButton text={referralLink} label="Copy link" />
@@ -390,7 +390,7 @@ export default function AmbassadorDashboard() {
                       href={referralLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-white/30 hover:text-white/60 transition-colors"
+                      className="text-gray-300 hover:text-gray-500 transition-colors"
                     >
                       <FiExternalLink className="w-3.5 h-3.5" />
                     </a>
@@ -426,10 +426,14 @@ export default function AmbassadorDashboard() {
             ))}
           </motion.div>
 
+          <hr className="border-gray-200 mb-6" />
+
           {/* Milestone */}
           <motion.div variants={fadeUp} initial="hidden" animate="visible" transition={{ delay: 0.13 }} className="mb-6">
             <MilestoneBar milestone={milestone} />
           </motion.div>
+
+          <hr className="border-gray-200 mb-6" />
 
           {/* Tabs + tables */}
           <motion.div variants={fadeUp} initial="hidden" animate="visible" transition={{ delay: 0.18 }}>

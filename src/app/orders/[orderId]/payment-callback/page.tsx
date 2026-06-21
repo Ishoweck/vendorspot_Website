@@ -21,9 +21,17 @@ export default function PaymentCallbackPage() {
   const router = useRouter();
   const { clearCart } = useCart();
 
-  // Paystack appends reference & trxref as query params, but the route already captures it
-  // as orderId because the redirect URL pattern is /orders/{reference}/payment-callback
-  const reference = (params.orderId as string) || searchParams.get("reference") || searchParams.get("trxref") || "";
+  // Flutterwave redirects with ?status=successful&tx_ref=<ref>&transaction_id=<id>
+  // Paystack redirects with ?reference=<ref>&trxref=<ref>
+  const transaction_id = searchParams.get("transaction_id");
+  const flwStatus = searchParams.get("status");
+  const isFlutterwave = !!(transaction_id || flwStatus === "successful" || flwStatus === "cancelled");
+
+  const reference = (params.orderId as string)
+    || searchParams.get("tx_ref")
+    || searchParams.get("reference")
+    || searchParams.get("trxref")
+    || "";
 
   const [status, setStatus] = useState<"loading" | "success" | "failed">("loading");
   const [message, setMessage] = useState("Confirming your payment…");
@@ -36,10 +44,15 @@ export default function PaymentCallbackPage() {
       const token = getToken();
       if (!token) { setStatus("failed"); setMessage("Session expired. Please log in and check your orders."); return; }
       try {
+        const body: Record<string, string> = {
+          provider: isFlutterwave ? "flutterwave" : "paystack",
+        };
+        if (transaction_id) body.transaction_id = transaction_id;
+
         const res = await fetch(`${API_BASE}/orders/confirm-payment/${reference}`, {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ provider: "paystack" }),
+          body: JSON.stringify(body),
         });
         const json = await res.json();
         if (json.success) {
@@ -60,7 +73,7 @@ export default function PaymentCallbackPage() {
       }
     };
     confirm();
-  }, [reference]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [reference, isFlutterwave, transaction_id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const statusConfig = {
     loading: {
