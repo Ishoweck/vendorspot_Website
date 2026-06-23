@@ -441,9 +441,9 @@ function ProductsPageContent() {
               initial={{ opacity: 0 }} animate={{ opacity: 1 }}
               exit={{ opacity: 0 }} transition={{ duration: 0.25 }}
             >
-              <ProductSection title="New Arrivals" icon="✨" products={newArrivals} loading={loadingNew} fallback={fallbackProducts} cols={4} displayLimit={16} viewAllHref="/products/new-arrivals" />
+              <ProductSection title="New Arrivals" icon="✨" products={newArrivals} loading={loadingNew} fallback={fallbackProducts} cols={5} displayLimit={20} viewAllHref="/products/new-arrivals" />
               <ProductSection title="Recommended for You" titleColor="text-primary" badge="Personalised" products={recommended} loading={loadingRec} fallback={fallbackProducts} horizontal displayLimit={10} viewAllHref="/products/recommended" />
-              <ProductSection title="Deals &amp; Discounts" icon="⚡" badge="Limited Time" products={flashSales} loading={loadingFlash} fallback={fallbackProducts} cols={4} displayLimit={8} viewAllHref="/products/deals" />
+              <ProductSection title="Deals &amp; Discounts" icon="⚡" badge="Limited Time" products={flashSales} loading={loadingFlash} fallback={fallbackProducts} cols={5} displayLimit={10} viewAllHref="/products/deals" />
 
               {/* Digital banner */}
               <section className="px-4 py-6">
