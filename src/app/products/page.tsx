@@ -17,12 +17,12 @@ import type { Product, Category } from "@/lib/api";
 import { fadeUp, stagger } from "@/lib/motion";
 
 const quickCategories = [
-  { label: "Electronics", Icon: FiMonitor },
-  { label: "Fashion",     Icon: FiShoppingBag },
-  { label: "Phones",      Icon: FiSmartphone },
-  { label: "Home",        Icon: FiHome },
-  { label: "Deals",       Icon: FiZap },
-  { label: "Trending",    Icon: FiTrendingUp },
+  { label: "Electronics", Icon: FiMonitor,     keywords: ["electronics"] },
+  { label: "Fashion",     Icon: FiShoppingBag, keywords: ["fashion"] },
+  { label: "Phones",      Icon: FiSmartphone,  keywords: ["mobile-phones"] },
+  { label: "Home",        Icon: FiHome,         keywords: ["home-living"] },
+  { label: "Deals",       Icon: FiZap,          href: "/products/deals" },
+  { label: "Trending",    Icon: FiTrendingUp,   href: "/products/new-arrivals" },
 ];
 
 const SORT_OPTIONS = [
@@ -129,7 +129,7 @@ function ProductSection({
             key={loading ? "loading" : "loaded"}
             variants={stagger} initial="hidden" whileInView="visible"
             viewport={{ once: true, margin: "-60px" }}
-            className="flex flex-wrap gap-3 sm:gap-4 px-4 justify-center"
+            className="flex flex-wrap gap-3 sm:gap-4 px-4"
           >
             {loading
               ? Array.from({ length: Math.min(displayLimit, 8) }, (_, i) => (
@@ -360,15 +360,16 @@ function ProductsPageContent() {
   const norm = (v: string) =>
     v.toLowerCase().replace(/\s+state$/i, "").replace(/\s*[—–-]+\s*\w+$/i, "").trim();
 
-  // When filtering by category, fetch from the known-good category endpoint
+  // Pass state to the API so the backend can filter by vendor location
+  const stateParam = appliedState ? `&state=${encodeURIComponent(appliedState)}` : "";
+
   const categoryFilterEndpoint = (isCustomFiltered && filterCategoryId)
-    ? `/products/category/${filterCategoryId}?limit=60`
+    ? `/products/category/${filterCategoryId}?limit=60${stateParam}`
     : null;
   const { data: categoryFilterRaw, loading: loadingCatFilter } = useApi<Product[]>(categoryFilterEndpoint);
 
-  // When no category selected, fetch a broad product list for sort/state filtering
   const broadFilterEndpoint = (isCustomFiltered && !filterCategoryId)
-    ? "/products/new-arrivals?limit=80"
+    ? `/products?limit=80${stateParam}`
     : null;
   const { data: broadFilterRaw, loading: loadingBroadFilter } = useApi<Product[]>(broadFilterEndpoint);
 
@@ -380,32 +381,46 @@ function ProductsPageContent() {
     if (!raw) return null;
     let list = [...raw];
 
-    // State filter (client-side)
+    // Client-side state fallback — checks every possible field path the API might populate
     if (appliedState) {
       const needle = norm(appliedState);
       list = list.filter((p) => {
-        type PWithVendor = { vendor?: { businessAddress?: { state?: string }; location?: string } };
-        const raw2 = (p as unknown as PWithVendor).vendor?.businessAddress?.state
-          || (p as unknown as PWithVendor).vendor?.location || "";
-        const vendorState = norm(raw2);
-        return vendorState && (vendorState === needle || vendorState.includes(needle) || needle.includes(vendorState));
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const v = (p as any).vendor;
+        const candidates = [
+          typeof v === "object" && v ? v.businessAddress?.state : null,
+          typeof v === "object" && v ? v.businessAddress?.city : null,
+          typeof v === "object" && v ? v.location : null,
+          typeof v === "object" && v ? v.state : null,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (p as any).vendorState,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (p as any).location,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (p as any).state,
+        ].filter((c): c is string => typeof c === "string" && c.length > 0);
+
+        if (candidates.length === 0) return true; // can't determine — include by default
+        return candidates.some((c) => {
+          const s = norm(c);
+          return s === needle || s.includes(needle) || needle.includes(s);
+        });
       });
     }
 
-    // Sort (client-side — guaranteed to work regardless of API support)
+    // Sort (client-side)
     if (appliedSort === "price_asc") list.sort((a, b) => a.price - b.price);
     else if (appliedSort === "price_desc") list.sort((a, b) => b.price - a.price);
     else if (appliedSort === "rating") list.sort((a, b) => (b.averageRating ?? 0) - (a.averageRating ?? 0));
-    // "newest" is already the default API order, no client sort needed
 
     return list;
   }, [isCustomFiltered, filterCategoryId, categoryFilterRaw, broadFilterRaw, appliedSort, appliedState]);
 
-  const { data: newArrivals,   loading: loadingNew     } = useApi<Product[]>(isFiltered ? null : "/products/new-arrivals?limit=17");
-  const { data: recommended,   loading: loadingRec     } = useApi<Product[]>(isFiltered ? null : "/products/recommended?limit=11");
-  const { data: flashSales,    loading: loadingFlash   } = useApi<Product[]>(isFiltered ? null : "/products/flash-sales?limit=9");
-  const { data: trending,      loading: loadingTrend   } = useApi<Product[]>(isFiltered ? null : "/products/trending?limit=6");
-  const { data: digital,       loading: loadingDigital } = useApi<Product[]>(isFiltered ? null : "/products?productType=digital&limit=6");
+  const { data: newArrivals,   loading: loadingNew     } = useApi<Product[]>(isFiltered ? null : "/products/new-arrivals?limit=20");
+  const { data: recommended,   loading: loadingRec     } = useApi<Product[]>(isFiltered ? null : "/products/recommended?limit=10");
+  const { data: flashSales,    loading: loadingFlash   } = useApi<Product[]>(isFiltered ? null : "/products/flash-sales?limit=10");
+  const { data: trending,      loading: loadingTrend   } = useApi<Product[]>(isFiltered ? null : "/products/trending?limit=10");
+  const { data: digital,       loading: loadingDigital } = useApi<Product[]>(isFiltered ? null : "/products?productType=digital&limit=10");
 
   const clearApplied = () => { setAppliedSort(""); setAppliedCategory(""); setAppliedState(""); };
   const appliedSortLabel = SORT_OPTIONS.find(o => o.value === appliedSort)?.label ?? "Featured";
@@ -500,10 +515,30 @@ function ProductsPageContent() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="flex flex-wrap justify-center gap-2 mt-6"
             >
-              {quickCategories.map(({ label, Icon }) => (
+              {quickCategories.map(({ label, Icon, keywords, href }) => (
                 <button
                   key={label}
-                  onClick={() => { setSearch(label); router.push(`/products?q=${encodeURIComponent(label)}`); }}
+                  onClick={() => {
+                    if (href) {
+                      router.push(href);
+                      return;
+                    }
+                    if (keywords && allCategories) {
+                      const match = allCategories.find(c =>
+                        keywords.some(kw =>
+                          c.slug.toLowerCase().includes(kw) ||
+                          c.name.toLowerCase().includes(kw)
+                        )
+                      );
+                      if (match) {
+                        router.push(`/products?category=${match.slug}`);
+                        return;
+                      }
+                    }
+                    // Fallback to text search
+                    setSearch(label);
+                    router.push(`/products?q=${encodeURIComponent(label)}`);
+                  }}
                   className="flex items-center gap-1.5 bg-white/15 hover:bg-white/25 border border-white/20 text-white text-xs font-medium px-3.5 py-1.5 rounded-full transition-all duration-200"
                 >
                   <Icon className="w-3 h-3" />
@@ -539,7 +574,7 @@ function ProductsPageContent() {
                     </button>
                   </div>
                   {searchLoading ? (
-                    <div className="flex flex-wrap gap-3 sm:gap-4 justify-center">
+                    <div className="flex flex-wrap gap-3 sm:gap-4">
                       {Array.from({ length: 10 }, (_, i) => <div key={i} className={FLEX_ITEM_CLASS[5]}><ProductSkeleton /></div>)}
                     </div>
                   ) : !searchResults || searchResults.length === 0 ? (
@@ -554,7 +589,7 @@ function ProductsPageContent() {
                       </button>
                     </motion.div>
                   ) : (
-                    <motion.div variants={stagger} initial="hidden" animate="visible" className="flex flex-wrap gap-3 sm:gap-4 justify-center">
+                    <motion.div variants={stagger} initial="hidden" animate="visible" className="flex flex-wrap gap-3 sm:gap-4">
                       {searchResults.map((product) => (
                         <motion.div key={product.id || product._id} variants={fadeUp} className={FLEX_ITEM_CLASS[5]}>
                           <ProductCard {...product} />
@@ -590,7 +625,7 @@ function ProductsPageContent() {
                     </button>
                   </div>
                   {loadingCategory || (!categoryId && categorySlug) ? (
-                    <div className="flex flex-wrap gap-3 sm:gap-4 justify-center">
+                    <div className="flex flex-wrap gap-3 sm:gap-4">
                       {Array.from({ length: 10 }, (_, i) => <div key={i} className={FLEX_ITEM_CLASS[5]}><ProductSkeleton /></div>)}
                     </div>
                   ) : !categoryProducts || categoryProducts.length === 0 ? (
@@ -605,7 +640,7 @@ function ProductsPageContent() {
                       </button>
                     </motion.div>
                   ) : (
-                    <motion.div variants={stagger} initial="hidden" animate="visible" className="flex flex-wrap gap-3 sm:gap-4 justify-center">
+                    <motion.div variants={stagger} initial="hidden" animate="visible" className="flex flex-wrap gap-3 sm:gap-4">
                       {categoryProducts.map((product) => (
                         <motion.div key={product.id || product._id} variants={fadeUp} className={FLEX_ITEM_CLASS[5]}>
                           <ProductCard {...product} />
@@ -678,7 +713,7 @@ function ProductsPageContent() {
                   </div>
 
                   {loadingAll ? (
-                    <div className="flex flex-wrap gap-3 sm:gap-4 justify-center">
+                    <div className="flex flex-wrap gap-3 sm:gap-4">
                       {Array.from({ length: 10 }, (_, i) => <div key={i} className={FLEX_ITEM_CLASS[5]}><ProductSkeleton /></div>)}
                     </div>
                   ) : !filteredProducts || filteredProducts.length === 0 ? (
@@ -693,7 +728,7 @@ function ProductsPageContent() {
                       </button>
                     </div>
                   ) : (
-                    <motion.div variants={stagger} initial="hidden" animate="visible" className="flex flex-wrap gap-3 sm:gap-4 justify-center">
+                    <motion.div variants={stagger} initial="hidden" animate="visible" className="flex flex-wrap gap-3 sm:gap-4">
                       {filteredProducts.map((product) => (
                         <motion.div key={product.id || product._id} variants={fadeUp} className={FLEX_ITEM_CLASS[5]}>
                           <ProductCard {...product} />
@@ -769,8 +804,8 @@ function ProductsPageContent() {
                 </motion.div>
               </section>
 
-              <ProductSection title="Digital Products" products={digital} loading={loadingDigital} fallback={fallbackProducts} viewAllHref="/products/digital" />
-              <ProductSection title="Trending Now" icon="🔥" products={trending} loading={loadingTrend} fallback={fallbackProducts} viewAllHref="/products/new-arrivals" />
+              <ProductSection title="Digital Products" products={digital} loading={loadingDigital} fallback={fallbackProducts} cols={5} displayLimit={10} viewAllHref="/products/digital" />
+              <ProductSection title="Trending Now" icon="🔥" products={trending} loading={loadingTrend} fallback={fallbackProducts} cols={5} displayLimit={10} viewAllHref="/products/new-arrivals" />
 
               {/* View All section */}
               <section className="px-4 py-8 sm:py-12">

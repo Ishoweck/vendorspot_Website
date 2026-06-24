@@ -162,7 +162,7 @@ function DigitalProductsContent() {
                 initial="hidden"
                 animate="visible"
                 exit={{ opacity: 0 }}
-                className="flex flex-wrap gap-3 sm:gap-4 justify-center"
+                className="flex flex-wrap gap-3 sm:gap-4"
               >
                 {loading
                   ? Array.from({ length: PAGE_SIZE }, (_, i) => (
