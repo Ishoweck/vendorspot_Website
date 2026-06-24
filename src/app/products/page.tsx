@@ -26,7 +26,7 @@ const quickCategories = [
 ];
 
 const SORT_OPTIONS = [
-  { value: "",           label: "Featured" },
+  { value: "",           label: "Default" },
   { value: "newest",    label: "Newest First" },
   { value: "price_asc", label: "Price: Low → High" },
   { value: "price_desc",label: "Price: High → Low" },
@@ -360,11 +360,10 @@ function ProductsPageContent() {
   const norm = (v: string) =>
     v.toLowerCase().replace(/\s+state$/i, "").replace(/\s*[—–-]+\s*\w+$/i, "").trim();
 
-  // Pass state to the API so the backend can filter by vendor location
   const stateParam = appliedState ? `&state=${encodeURIComponent(appliedState)}` : "";
 
   const categoryFilterEndpoint = (isCustomFiltered && filterCategoryId)
-    ? `/products/category/${filterCategoryId}?limit=60${stateParam}`
+    ? `/products?category=${filterCategoryId}&limit=60${stateParam}`
     : null;
   const { data: categoryFilterRaw, loading: loadingCatFilter } = useApi<Product[]>(categoryFilterEndpoint);
 
@@ -381,40 +380,13 @@ function ProductsPageContent() {
     if (!raw) return null;
     let list = [...raw];
 
-    // Client-side state fallback — checks every possible field path the API might populate
-    if (appliedState) {
-      const needle = norm(appliedState);
-      list = list.filter((p) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const v = (p as any).vendor;
-        const candidates = [
-          typeof v === "object" && v ? v.businessAddress?.state : null,
-          typeof v === "object" && v ? v.businessAddress?.city : null,
-          typeof v === "object" && v ? v.location : null,
-          typeof v === "object" && v ? v.state : null,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (p as any).vendorState,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (p as any).location,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (p as any).state,
-        ].filter((c): c is string => typeof c === "string" && c.length > 0);
-
-        if (candidates.length === 0) return true; // can't determine — include by default
-        return candidates.some((c) => {
-          const s = norm(c);
-          return s === needle || s.includes(needle) || needle.includes(s);
-        });
-      });
-    }
-
-    // Sort (client-side)
+    // Sort (client-side — state is filtered by the API)
     if (appliedSort === "price_asc") list.sort((a, b) => a.price - b.price);
     else if (appliedSort === "price_desc") list.sort((a, b) => b.price - a.price);
     else if (appliedSort === "rating") list.sort((a, b) => (b.averageRating ?? 0) - (a.averageRating ?? 0));
 
     return list;
-  }, [isCustomFiltered, filterCategoryId, categoryFilterRaw, broadFilterRaw, appliedSort, appliedState]);
+  }, [isCustomFiltered, filterCategoryId, categoryFilterRaw, broadFilterRaw, appliedSort]);
 
   const { data: newArrivals,   loading: loadingNew     } = useApi<Product[]>(isFiltered ? null : "/products/new-arrivals?limit=20");
   const { data: recommended,   loading: loadingRec     } = useApi<Product[]>(isFiltered ? null : "/products/recommended?limit=10");
