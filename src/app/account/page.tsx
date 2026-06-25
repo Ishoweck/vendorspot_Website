@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import FooterMini from "@/components/FooterMini";
 import { fadeUp } from "@/lib/motion";
 import {
   FiMail, FiLock, FiPackage, FiTrash2, FiCheck,
@@ -314,7 +314,7 @@ export default function AccountPage() {
 
         </div>
       </main>
-      <Footer />
+      <FooterMini />
     </>
   );
 }

@@ -26,7 +26,7 @@ const quickCategories = [
 ];
 
 const SORT_OPTIONS = [
-  { value: "",           label: "Featured" },
+  { value: "",           label: "Default" },
   { value: "newest",    label: "Newest First" },
   { value: "price_asc", label: "Price: Low → High" },
   { value: "price_desc",label: "Price: High → Low" },
@@ -360,11 +360,10 @@ function ProductsPageContent() {
   const norm = (v: string) =>
     v.toLowerCase().replace(/\s+state$/i, "").replace(/\s*[—–-]+\s*\w+$/i, "").trim();
 
-  // Pass state to the API so the backend can filter by vendor location
   const stateParam = appliedState ? `&state=${encodeURIComponent(appliedState)}` : "";
 
   const categoryFilterEndpoint = (isCustomFiltered && filterCategoryId)
-    ? `/products/category/${filterCategoryId}?limit=60${stateParam}`
+    ? `/products?category=${filterCategoryId}&limit=60${stateParam}`
     : null;
   const { data: categoryFilterRaw, loading: loadingCatFilter } = useApi<Product[]>(categoryFilterEndpoint);
 
@@ -381,40 +380,13 @@ function ProductsPageContent() {
     if (!raw) return null;
     let list = [...raw];
 
-    // Client-side state fallback — checks every possible field path the API might populate
-    if (appliedState) {
-      const needle = norm(appliedState);
-      list = list.filter((p) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const v = (p as any).vendor;
-        const candidates = [
-          typeof v === "object" && v ? v.businessAddress?.state : null,
-          typeof v === "object" && v ? v.businessAddress?.city : null,
-          typeof v === "object" && v ? v.location : null,
-          typeof v === "object" && v ? v.state : null,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (p as any).vendorState,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (p as any).location,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (p as any).state,
-        ].filter((c): c is string => typeof c === "string" && c.length > 0);
-
-        if (candidates.length === 0) return true; // can't determine — include by default
-        return candidates.some((c) => {
-          const s = norm(c);
-          return s === needle || s.includes(needle) || needle.includes(s);
-        });
-      });
-    }
-
-    // Sort (client-side)
+    // Sort (client-side — state is filtered by the API)
     if (appliedSort === "price_asc") list.sort((a, b) => a.price - b.price);
     else if (appliedSort === "price_desc") list.sort((a, b) => b.price - a.price);
     else if (appliedSort === "rating") list.sort((a, b) => (b.averageRating ?? 0) - (a.averageRating ?? 0));
 
     return list;
-  }, [isCustomFiltered, filterCategoryId, categoryFilterRaw, broadFilterRaw, appliedSort, appliedState]);
+  }, [isCustomFiltered, filterCategoryId, categoryFilterRaw, broadFilterRaw, appliedSort]);
 
   const { data: newArrivals,   loading: loadingNew     } = useApi<Product[]>(isFiltered ? null : "/products/new-arrivals?limit=20");
   const { data: recommended,   loading: loadingRec     } = useApi<Product[]>(isFiltered ? null : "/products/recommended?limit=10");
@@ -812,24 +784,28 @@ function ProductsPageContent() {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }} transition={{ duration: 0.5 }}
-                  className="max-w-7xl mx-auto relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#8A38F5] to-[#d7004b] px-6 sm:px-12 py-12 sm:py-16 text-center"
+                  className="max-w-7xl mx-auto relative overflow-hidden rounded-3xl bg-dark px-6 sm:px-12 py-12 sm:py-16 text-center"
                 >
+                  {/* subtle dot grid */}
                   <div className="absolute inset-0 pointer-events-none"
-                    style={{ backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
+                    style={{ backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
+                  {/* faint pink accent glow */}
+                  <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full pointer-events-none"
+                    style={{ background: "radial-gradient(circle, rgba(204,51,102,0.18) 0%, transparent 70%)" }} />
                   <div className="relative z-10">
-                    <p className="text-white/60 text-xs font-bold uppercase tracking-widest mb-3">Explore Everything</p>
+                    <p className="text-white/40 text-xs font-bold uppercase tracking-widest mb-3">Explore Everything</p>
                     <h3 className="text-white text-2xl sm:text-4xl font-extrabold mb-3 leading-tight">Browse All Products</h3>
-                    <p className="text-white/60 text-sm mb-8 max-w-sm mx-auto">
+                    <p className="text-white/40 text-sm mb-8 max-w-sm mx-auto">
                       Thousands of items across every category — sorted, filtered, and ready to shop.
                     </p>
                     <div className="flex flex-wrap items-center justify-center gap-3">
-                      <Link href="/products/new-arrivals" className="inline-flex items-center gap-2 bg-white text-[#8A38F5] text-sm font-bold rounded-full px-6 py-3 hover:bg-white/90 transition-colors shadow-lg">
+                      <Link href="/products/new-arrivals" className="inline-flex items-center gap-2 bg-primary text-white text-sm font-bold rounded-full px-6 py-3 hover:bg-primary-dark transition-colors shadow-lg">
                         New Arrivals <FiArrowRight className="w-4 h-4" />
                       </Link>
-                      <Link href="/products/deals" className="inline-flex items-center gap-2 bg-white/15 hover:bg-white/25 border border-white/30 text-white text-sm font-bold rounded-full px-6 py-3 transition-colors">
+                      <Link href="/products/deals" className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/15 border border-white/15 text-white text-sm font-bold rounded-full px-6 py-3 transition-colors">
                         Deals &amp; Discounts <FiZap className="w-4 h-4" />
                       </Link>
-                      <Link href="/products/digital" className="inline-flex items-center gap-2 bg-white/15 hover:bg-white/25 border border-white/30 text-white text-sm font-bold rounded-full px-6 py-3 transition-colors">
+                      <Link href="/products/digital" className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/15 border border-white/15 text-white text-sm font-bold rounded-full px-6 py-3 transition-colors">
                         Digital Products
                       </Link>
                     </div>
