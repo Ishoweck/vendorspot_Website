@@ -784,24 +784,28 @@ function ProductsPageContent() {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }} transition={{ duration: 0.5 }}
-                  className="max-w-7xl mx-auto relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#8A38F5] to-[#d7004b] px-6 sm:px-12 py-12 sm:py-16 text-center"
+                  className="max-w-7xl mx-auto relative overflow-hidden rounded-3xl bg-dark px-6 sm:px-12 py-12 sm:py-16 text-center"
                 >
+                  {/* subtle dot grid */}
                   <div className="absolute inset-0 pointer-events-none"
-                    style={{ backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
+                    style={{ backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
+                  {/* faint pink accent glow */}
+                  <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full pointer-events-none"
+                    style={{ background: "radial-gradient(circle, rgba(204,51,102,0.18) 0%, transparent 70%)" }} />
                   <div className="relative z-10">
-                    <p className="text-white/60 text-xs font-bold uppercase tracking-widest mb-3">Explore Everything</p>
+                    <p className="text-white/40 text-xs font-bold uppercase tracking-widest mb-3">Explore Everything</p>
                     <h3 className="text-white text-2xl sm:text-4xl font-extrabold mb-3 leading-tight">Browse All Products</h3>
-                    <p className="text-white/60 text-sm mb-8 max-w-sm mx-auto">
+                    <p className="text-white/40 text-sm mb-8 max-w-sm mx-auto">
                       Thousands of items across every category — sorted, filtered, and ready to shop.
                     </p>
                     <div className="flex flex-wrap items-center justify-center gap-3">
-                      <Link href="/products/new-arrivals" className="inline-flex items-center gap-2 bg-white text-[#8A38F5] text-sm font-bold rounded-full px-6 py-3 hover:bg-white/90 transition-colors shadow-lg">
+                      <Link href="/products/new-arrivals" className="inline-flex items-center gap-2 bg-primary text-white text-sm font-bold rounded-full px-6 py-3 hover:bg-primary-dark transition-colors shadow-lg">
                         New Arrivals <FiArrowRight className="w-4 h-4" />
                       </Link>
-                      <Link href="/products/deals" className="inline-flex items-center gap-2 bg-white/15 hover:bg-white/25 border border-white/30 text-white text-sm font-bold rounded-full px-6 py-3 transition-colors">
+                      <Link href="/products/deals" className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/15 border border-white/15 text-white text-sm font-bold rounded-full px-6 py-3 transition-colors">
                         Deals &amp; Discounts <FiZap className="w-4 h-4" />
                       </Link>
-                      <Link href="/products/digital" className="inline-flex items-center gap-2 bg-white/15 hover:bg-white/25 border border-white/30 text-white text-sm font-bold rounded-full px-6 py-3 transition-colors">
+                      <Link href="/products/digital" className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/15 border border-white/15 text-white text-sm font-bold rounded-full px-6 py-3 transition-colors">
                         Digital Products
                       </Link>
                     </div>
