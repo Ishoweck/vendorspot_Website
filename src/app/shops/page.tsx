@@ -376,6 +376,34 @@ export default function ShopsPage() {
           </div>
         </section>
 
+        {/* Trust ticker */}
+        {(() => {
+          const single = 'Verified Vendors Only — We verify every vendor so you can shop with peace of mind.';
+          const items = Array.from({ length: 12 }, () => single);
+          return (
+            <div className="overflow-hidden py-3 border-y border-white/20" style={{ background: '#d7004b' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  width: 'max-content',
+                  animation: 'ticker 120s linear infinite',
+                }}
+              >
+                {[...items, ...items].map((text, i) => (
+                  <span
+                    key={i}
+                    className="inline-flex items-center shrink-0 text-white text-xs sm:text-sm font-semibold"
+                    style={{ paddingLeft: '3rem', paddingRight: '3rem' }}
+                  >
+                    {text}
+                    <span className="ml-12 text-white/30">✦</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
+
         {/* ── Top Sellers arc ── */}
         <AnimatePresence>
   {!isSearching && (

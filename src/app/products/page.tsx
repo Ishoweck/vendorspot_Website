@@ -521,6 +521,34 @@ function ProductsPageContent() {
           </div>
         </section>
 
+        {/* Trust ticker */}
+        {(() => {
+          const single = 'What you see is what you get. If your order is significantly different, you\'re eligible for a refund.';
+          const items = Array.from({ length: 12 }, () => single);
+          return (
+            <div className="overflow-hidden py-3 border-y border-white/20" style={{ background: '#d7004b' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  width: 'max-content',
+                  animation: 'ticker 120s linear infinite',
+                }}
+              >
+                {[...items, ...items].map((text, i) => (
+                  <span
+                    key={i}
+                    className="inline-flex items-center shrink-0 text-white text-xs sm:text-sm font-semibold"
+                    style={{ paddingLeft: '3rem', paddingRight: '3rem' }}
+                  >
+                    {text}
+                    <span className="ml-12 text-white/30">✦</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
+
         <AnimatePresence mode="wait">
           {urlQuery ? (
             <motion.div
